@@ -218,7 +218,7 @@
 		9FCCD5BE2088D6A200F2D9F3 /* SignalLibraryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalLibraryStore.swift; sourceTree = "<group>"; };
 		9FCCD5D22089E0AC00F2D9F3 /* SignalContext+Optionals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SignalContext+Optionals.swift"; sourceTree = "<group>"; };
 		9FCDD50720A1E21A006835DC /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
-		9FE925DE208A08F6008ABCE4 /* SQLiteDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SQLiteDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9FE925DE208A08F6008ABCE4 /* Signal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Signal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9FE925E0208A08F6008ABCE4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9FE925E2208A08F6008ABCE4 /* ChatsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsViewController.swift; sourceTree = "<group>"; };
 		9FE925E4208A08F6008ABCE4 /* MessagesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesViewController.swift; sourceTree = "<group>"; };
@@ -472,7 +472,7 @@
 			children = (
 				9FFB8B05208629B60067BCE9 /* SignalServiceSwift.framework */,
 				9FFB8B0E208629B60067BCE9 /* SignalServiceSwiftTests.xctest */,
-				9FE925DE208A08F6008ABCE4 /* SQLiteDemo.app */,
+				9FE925DE208A08F6008ABCE4 /* Signal.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -662,9 +662,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		9FE925DD208A08F6008ABCE4 /* SQLiteDemo */ = {
+		9FE925DD208A08F6008ABCE4 /* Signal */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9FE925EF208A08F8008ABCE4 /* Build configuration list for PBXNativeTarget "SQLiteDemo" */;
+			buildConfigurationList = 9FE925EF208A08F8008ABCE4 /* Build configuration list for PBXNativeTarget "Signal" */;
 			buildPhases = (
 				9FE925DA208A08F6008ABCE4 /* Sources */,
 				9FE925DB208A08F6008ABCE4 /* Frameworks */,
@@ -676,9 +676,9 @@
 			);
 			dependencies = (
 			);
-			name = SQLiteDemo;
+			name = Signal;
 			productName = SQLiteDemo;
-			productReference = 9FE925DE208A08F6008ABCE4 /* SQLiteDemo.app */;
+			productReference = 9FE925DE208A08F6008ABCE4 /* Signal.app */;
 			productType = "com.apple.product-type.application";
 		};
 		9FFB8B04208629B60067BCE9 /* SignalServiceSwift */ = {
@@ -756,7 +756,7 @@
 			targets = (
 				9FFB8B04208629B60067BCE9 /* SignalServiceSwift */,
 				9FFB8B0D208629B60067BCE9 /* SignalServiceSwiftTests */,
-				9FE925DD208A08F6008ABCE4 /* SQLiteDemo */,
+				9FE925DD208A08F6008ABCE4 /* Signal */,
 			);
 		};
 /* End PBXProject section */
@@ -1212,7 +1212,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		9FE925EF208A08F8008ABCE4 /* Build configuration list for PBXNativeTarget "SQLiteDemo" */ = {
+		9FE925EF208A08F8008ABCE4 /* Build configuration list for PBXNativeTarget "Signal" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9FE925F0208A08F8008ABCE4 /* Debug */,

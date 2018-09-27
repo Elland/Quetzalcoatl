@@ -103,7 +103,7 @@ public class OutgoingSignalMessage: SignalMessage {
         case preKeyWhisper
         case unencryptedWhisper
 
-        // TODO: Add remaining types! Check group messages!
+        // TODO: Add remaining types if needed. Check group messages.
         public init(_ raw: CiphertextType) {
             switch raw {
             case .message:

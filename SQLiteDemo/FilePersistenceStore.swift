@@ -717,4 +717,9 @@ extension FilePersistenceStore: PersistenceStore {
 
         return recipients
     }
+
+    func deleteAllChatsAndMessages() {
+        try! self.dbConnection.run(self.chatsTable.drop(ifExists: true))
+        try! self.dbConnection.run(self.messagesTable.drop(ifExists: true))
+    }
 }

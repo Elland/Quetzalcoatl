@@ -36,6 +36,9 @@ public protocol PersistenceStore: SignalLibraryStoreDelegate {
 
     func updateAttachment(_ attachment: SignalServiceAttachmentPointer)
     func storeAttachment(_  attachment: SignalServiceAttachmentPointer)
+
+    /* Delete all chats and messages */
+    func deleteAllChatsAndMessages()
 }
 
 public protocol SignalServiceStoreChatDelegate {
@@ -308,6 +311,6 @@ public class SignalServiceStore {
     }
 
     func deleteAllChatsAndMessages() {
-        //TODO: delete stuff
+        self.persistenceStore.deleteAllChatsAndMessages()
     }
 }
