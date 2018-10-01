@@ -62,17 +62,21 @@ class ChatsViewController: UIViewController {
 
     var chats: [SignalChat] = []
 
-    @IBOutlet var tableView: UITableView!
+    lazy var tableView: UITableView = {
+        let view = UITableView(frame: .zero, style: .plain)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.separatorStyle = .none
+        view.delegate = self
+        view.dataSource = self
+
+        return view
+    }()
 
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        fatalError()
-    }
-
-    required init?(coder aDecoder: NSCoder) {
         if let user = self.persistenceStore.retrieveUser() {
             self.user = user
 
-            super.init(coder: aDecoder)
+            super.init(nibName: nil, bundle: nil)
 
             self.signalClient.startSocket()
             self.signalClient.shouldKeepSocketAlive = true
@@ -81,24 +85,28 @@ class ChatsViewController: UIViewController {
         } else {
             self.user = User(privateKey: "0989d7b7ccfe3baf39ed441d001df834173e0729916210d14f60068d1d22c595")
 
-            super.init(coder: aDecoder)
+            super.init(nibName: nil, bundle: nil)
 
             self.register(user: self.user)
         }
 
         self.signalClient.store.chatDelegate = self
     }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let destination = segue.destination as? MessagesViewController,
-            let indexPath = sender as? IndexPath else {
-            fatalError()
-        }
+    override func viewDidLoad() {
+        super.viewDidLoad()
 
-        destination.chat = self.chats[indexPath.row]
-        destination.delegate = self
-        
-        self.signalClient.store.messageDelegate = destination
+        let createChatButton = UIBarButtonItem(title: "Create chat", style: .plain, target: self, action: #selector(self.didTapCreateChatButton(_:)))
+        self.navigationItem.rightBarButtonItem = createChatButton
+
+        self.tableView.register(ChatCell.self)
+
+        self.view.addSubview(self.tableView)
+        self.tableView.fillSuperview()
     }
 
     func register(user: User) {
@@ -159,8 +167,8 @@ class ChatsViewController: UIViewController {
 
     @IBAction func didTapCreateChatButton(_ sender: Any) {
         // Group message test
-//        self.signalClient.sendGroupMessage("", type: .new, to: [self.testContact, self.otherContact, self.ellenContact, self.user.address])
-//        // 1:1 chat test.
+        //        self.signalClient.sendGroupMessage("", type: .new, to: [self.testContact, self.otherContact, self.ellenContact, self.user.address])
+        //        // 1:1 chat test.
         let chat = self.signalClient.store.fetchOrCreateChat(with: self.igorPhoneContact.name)
         self.didRequestSendRandomMessage(in: chat)
     }
@@ -172,7 +180,7 @@ extension ChatsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! ChatCell
+        let cell = tableView.dequeue(ChatCell.self, for: indexPath)
 
         self.configureCell(cell, at: indexPath)
 
@@ -221,7 +229,13 @@ extension ChatsViewController: SignalServiceStoreChatDelegate {
 
 extension ChatsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.performSegue(withIdentifier: "chat", sender: indexPath)
+        let chat = self.chats[indexPath.row]
+
+        let destination = MessagesViewController(chat: chat)
+        destination.delegate = self
+
+        self.signalClient.store.messageDelegate = destination
+        self.navigationController?.pushViewController(destination, animated: true)
     }
 
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -258,7 +272,7 @@ extension ChatsViewController: MessagesViewControllerDelegate {
 
 extension ChatsViewController: SignalRecipientsDisplayDelegate {
     func displayName(for address: String) -> String {
-       return ContactManager.displayName(for: address)
+        return ContactManager.displayName(for: address)
     }
 
     func image(for address: String) -> UIImage? {

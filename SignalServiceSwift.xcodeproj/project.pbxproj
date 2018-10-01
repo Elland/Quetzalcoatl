@@ -34,6 +34,13 @@
 		9F8F25192091D3A10020FF00 /* SignalRecipientsDisplayDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F8F25182091D3A10020FF00 /* SignalRecipientsDisplayDelegate.swift */; };
 		9F8F251B209219680020FF00 /* SignalServiceAttachmentsProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F8F251A209219680020FF00 /* SignalServiceAttachmentsProcessor.swift */; };
 		9F8F251D209348260020FF00 /* SignalServiceAttachmentPointer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F8F251C209348260020FF00 /* SignalServiceAttachmentPointer.swift */; };
+		9FA5FD7721621E3B0046F0A7 /* Cells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FD7521621E2A0046F0A7 /* Cells.swift */; };
+		9FA5FD7C21621F130046F0A7 /* SLKTextView+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FD7A21621F120046F0A7 /* SLKTextView+SLKAdditions.m */; };
+		9FA5FD8321621F6A0046F0A7 /* UIView+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FD8121621F6A0046F0A7 /* UIView+SLKAdditions.m */; };
+		9FA5FD84216223CA0046F0A7 /* SLKInputAccessoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FD7E21621F520046F0A7 /* SLKInputAccessoryView.m */; };
+		9FA5FD852162243F0046F0A7 /* SLKTextInputbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FD6C21621DD70046F0A7 /* SLKTextInputbar.m */; };
+		9FA5FD862162244E0046F0A7 /* SLKTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FD7221621E0C0046F0A7 /* SLKTextView.m */; };
+		9FA8AF44216219EB0067EAE6 /* MessagesViewController+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FA8AF42216219C50067EAE6 /* MessagesViewController+Keyboard.swift */; };
 		9FA8EEF920878F8A00D0CBB6 /* CommonCrypto.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FFD1DD42086305B00FA4626 /* CommonCrypto.framework */; };
 		9FA8EEFA20878F8A00D0CBB6 /* SwiftProtobuf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FFD1DD52086305B00FA4626 /* SwiftProtobuf.framework */; };
 		9FA8EEFB20878F8A00D0CBB6 /* Teapot.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FFD1DD32086305B00FA4626 /* Teapot.framework */; };
@@ -50,12 +57,10 @@
 		9FE925E1208A08F6008ABCE4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE925E0208A08F6008ABCE4 /* AppDelegate.swift */; };
 		9FE925E3208A08F6008ABCE4 /* ChatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE925E2208A08F6008ABCE4 /* ChatsViewController.swift */; };
 		9FE925E5208A08F6008ABCE4 /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE925E4208A08F6008ABCE4 /* MessagesViewController.swift */; };
-		9FE925E8208A08F6008ABCE4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9FE925E6208A08F6008ABCE4 /* Main.storyboard */; };
 		9FE925EA208A08F8008ABCE4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9FE925E9208A08F8008ABCE4 /* Assets.xcassets */; };
 		9FE925ED208A08F8008ABCE4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9FE925EB208A08F8008ABCE4 /* LaunchScreen.storyboard */; };
 		9FE925F3208A0992008ABCE4 /* UserBootstrapParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE925F2208A0992008ABCE4 /* UserBootstrapParams.swift */; };
 		9FE925F6208A099B008ABCE4 /* FilePersistenceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE925F4208A099A008ABCE4 /* FilePersistenceStore.swift */; };
-		9FE925F7208A099B008ABCE4 /* Cells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE925F5208A099A008ABCE4 /* Cells.swift */; };
 		9FE925FA208A09B1008ABCE4 /* SofaMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE925F9208A09B1008ABCE4 /* SofaMessage.swift */; };
 		9FE92608208A0BAD008ABCE4 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE92607208A0BAD008ABCE4 /* User.swift */; };
 		9FF2E496208A1F85001C666C /* SignalServiceSwift.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9FFB8B05208629B60067BCE9 /* SignalServiceSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -214,6 +219,21 @@
 		9F8F25182091D3A10020FF00 /* SignalRecipientsDisplayDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalRecipientsDisplayDelegate.swift; sourceTree = "<group>"; };
 		9F8F251A209219680020FF00 /* SignalServiceAttachmentsProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalServiceAttachmentsProcessor.swift; sourceTree = "<group>"; };
 		9F8F251C209348260020FF00 /* SignalServiceAttachmentPointer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalServiceAttachmentPointer.swift; sourceTree = "<group>"; };
+		9FA5FD6C21621DD70046F0A7 /* SLKTextInputbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLKTextInputbar.m; sourceTree = "<group>"; };
+		9FA5FD6D21621DD80046F0A7 /* SLKTextInputbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKTextInputbar.h; sourceTree = "<group>"; };
+		9FA5FD7121621E0C0046F0A7 /* SLKTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKTextView.h; sourceTree = "<group>"; };
+		9FA5FD7221621E0C0046F0A7 /* SLKTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLKTextView.m; sourceTree = "<group>"; };
+		9FA5FD7521621E2A0046F0A7 /* Cells.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cells.swift; sourceTree = "<group>"; };
+		9FA5FD7821621EEE0046F0A7 /* SLKTextInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKTextInput.h; sourceTree = "<group>"; };
+		9FA5FD7921621F120046F0A7 /* Signal-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Signal-Bridging-Header.h"; sourceTree = "<group>"; };
+		9FA5FD7A21621F120046F0A7 /* SLKTextView+SLKAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLKTextView+SLKAdditions.m"; sourceTree = "<group>"; };
+		9FA5FD7B21621F130046F0A7 /* SLKTextView+SLKAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SLKTextView+SLKAdditions.h"; sourceTree = "<group>"; };
+		9FA5FD7D21621F370046F0A7 /* SLKUIConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKUIConstants.h; sourceTree = "<group>"; };
+		9FA5FD7E21621F520046F0A7 /* SLKInputAccessoryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLKInputAccessoryView.m; sourceTree = "<group>"; };
+		9FA5FD7F21621F520046F0A7 /* SLKInputAccessoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKInputAccessoryView.h; sourceTree = "<group>"; };
+		9FA5FD8121621F6A0046F0A7 /* UIView+SLKAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+SLKAdditions.m"; sourceTree = "<group>"; };
+		9FA5FD8221621F6A0046F0A7 /* UIView+SLKAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+SLKAdditions.h"; sourceTree = "<group>"; };
+		9FA8AF42216219C50067EAE6 /* MessagesViewController+Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MessagesViewController+Keyboard.swift"; sourceTree = "<group>"; };
 		9FA8EF052087963700D0CBB6 /* Starscream.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Starscream.framework; path = Carthage/Build/iOS/Starscream.framework; sourceTree = SOURCE_ROOT; };
 		9FCCD5BE2088D6A200F2D9F3 /* SignalLibraryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalLibraryStore.swift; sourceTree = "<group>"; };
 		9FCCD5D22089E0AC00F2D9F3 /* SignalContext+Optionals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SignalContext+Optionals.swift"; sourceTree = "<group>"; };
@@ -222,13 +242,11 @@
 		9FE925E0208A08F6008ABCE4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9FE925E2208A08F6008ABCE4 /* ChatsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsViewController.swift; sourceTree = "<group>"; };
 		9FE925E4208A08F6008ABCE4 /* MessagesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesViewController.swift; sourceTree = "<group>"; };
-		9FE925E7208A08F6008ABCE4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		9FE925E9208A08F8008ABCE4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9FE925EC208A08F8008ABCE4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9FE925EE208A08F8008ABCE4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9FE925F2208A0992008ABCE4 /* UserBootstrapParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserBootstrapParams.swift; sourceTree = "<group>"; };
 		9FE925F4208A099A008ABCE4 /* FilePersistenceStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilePersistenceStore.swift; sourceTree = "<group>"; };
-		9FE925F5208A099A008ABCE4 /* Cells.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cells.swift; sourceTree = "<group>"; };
 		9FE925F9208A09B1008ABCE4 /* SofaMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SofaMessage.swift; sourceTree = "<group>"; };
 		9FE92607208A0BAD008ABCE4 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		9FF2E498208A201F001C666C /* SQLite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SQLite.framework; path = Carthage/Build/iOS/SQLite.framework; sourceTree = "<group>"; };
@@ -404,6 +422,26 @@
 			path = Cells;
 			sourceTree = "<group>";
 		};
+		9FA5FD7021621DF50046F0A7 /* TextInput */ = {
+			isa = PBXGroup;
+			children = (
+				9FA5FD7D21621F370046F0A7 /* SLKUIConstants.h */,
+				9FA5FD7821621EEE0046F0A7 /* SLKTextInput.h */,
+				9FA5FD7121621E0C0046F0A7 /* SLKTextView.h */,
+				9FA5FD7221621E0C0046F0A7 /* SLKTextView.m */,
+				9FA5FD6D21621DD80046F0A7 /* SLKTextInputbar.h */,
+				9FA5FD6C21621DD70046F0A7 /* SLKTextInputbar.m */,
+				9FA5FD7B21621F130046F0A7 /* SLKTextView+SLKAdditions.h */,
+				9FA5FD7A21621F120046F0A7 /* SLKTextView+SLKAdditions.m */,
+				9FA5FD8221621F6A0046F0A7 /* UIView+SLKAdditions.h */,
+				9FA5FD8121621F6A0046F0A7 /* UIView+SLKAdditions.m */,
+				9FA5FD7F21621F520046F0A7 /* SLKInputAccessoryView.h */,
+				9FA5FD7E21621F520046F0A7 /* SLKInputAccessoryView.m */,
+				9FA5FD7921621F120046F0A7 /* Signal-Bridging-Header.h */,
+			);
+			path = TextInput;
+			sourceTree = "<group>";
+		};
 		9FA8EEF820878F8A00D0CBB6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -411,7 +449,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		9FE925DF208A08F6008ABCE4 /* SQLiteDemo */ = {
+		9FE925DF208A08F6008ABCE4 /* SignalDemo */ = {
 			isa = PBXGroup;
 			children = (
 				9F0A19C320A0A2AF0051B268 /* SweetUIKit.framework */,
@@ -421,20 +459,21 @@
 				9FF2E499208A2020001C666C /* Teapot.framework */,
 				9FE925E0208A08F6008ABCE4 /* AppDelegate.swift */,
 				9FE925E2208A08F6008ABCE4 /* ChatsViewController.swift */,
+				9FA5FD7521621E2A0046F0A7 /* Cells.swift */,
 				9FE92607208A0BAD008ABCE4 /* User.swift */,
 				9FE925E4208A08F6008ABCE4 /* MessagesViewController.swift */,
+				9FA8AF42216219C50067EAE6 /* MessagesViewController+Keyboard.swift */,
 				9FE925F2208A0992008ABCE4 /* UserBootstrapParams.swift */,
-				9FE925F5208A099A008ABCE4 /* Cells.swift */,
+				9FA5FD7021621DF50046F0A7 /* TextInput */,
 				9F0A19AF20A09F7E0051B268 /* Cells */,
 				9FE925F8208A09B1008ABCE4 /* Sofa */,
 				9FE925F4208A099A008ABCE4 /* FilePersistenceStore.swift */,
-				9FE925E6208A08F6008ABCE4 /* Main.storyboard */,
 				9FE925E9208A08F8008ABCE4 /* Assets.xcassets */,
 				9FE925EB208A08F8008ABCE4 /* LaunchScreen.storyboard */,
 				9FCDD50620A1E21A006835DC /* Localizable.strings */,
 				9FE925EE208A08F8008ABCE4 /* Info.plist */,
 			);
-			path = SQLiteDemo;
+			path = SignalDemo;
 			sourceTree = "<group>";
 		};
 		9FE925F8208A09B1008ABCE4 /* Sofa */ = {
@@ -461,7 +500,7 @@
 			children = (
 				9FFB8B07208629B60067BCE9 /* SignalServiceSwift */,
 				9FFB8B12208629B60067BCE9 /* SignalServiceSwiftTests */,
-				9FE925DF208A08F6008ABCE4 /* SQLiteDemo */,
+				9FE925DF208A08F6008ABCE4 /* SignalDemo */,
 				9FFB8B06208629B60067BCE9 /* Products */,
 				9FA8EEF820878F8A00D0CBB6 /* Frameworks */,
 			);
@@ -731,6 +770,7 @@
 				TargetAttributes = {
 					9FE925DD208A08F6008ABCE4 = {
 						CreatedOnToolsVersion = 9.3;
+						LastSwiftMigration = 1000;
 					};
 					9FFB8B04208629B60067BCE9 = {
 						CreatedOnToolsVersion = 9.3;
@@ -769,7 +809,6 @@
 				9FE925ED208A08F8008ABCE4 /* LaunchScreen.storyboard in Resources */,
 				9FE925EA208A08F8008ABCE4 /* Assets.xcassets in Resources */,
 				9FCDD50820A1E21A006835DC /* Localizable.strings in Resources */,
-				9FE925E8208A08F6008ABCE4 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -814,15 +853,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				9FE925F6208A099B008ABCE4 /* FilePersistenceStore.swift in Sources */,
-				9FE925F7208A099B008ABCE4 /* Cells.swift in Sources */,
 				9FE925E5208A08F6008ABCE4 /* MessagesViewController.swift in Sources */,
+				9FA5FD862162244E0046F0A7 /* SLKTextView.m in Sources */,
 				9FE925F3208A0992008ABCE4 /* UserBootstrapParams.swift in Sources */,
+				9FA5FD84216223CA0046F0A7 /* SLKInputAccessoryView.m in Sources */,
+				9FA5FD852162243F0046F0A7 /* SLKTextInputbar.m in Sources */,
 				9FE92608208A0BAD008ABCE4 /* User.swift in Sources */,
 				9F0A19B920A09F7E0051B268 /* StatusCell.swift in Sources */,
 				9FE925E3208A08F6008ABCE4 /* ChatsViewController.swift in Sources */,
 				9F0A19B620A09F7E0051B268 /* MessagesTextCell.swift in Sources */,
 				9FE925E1208A08F6008ABCE4 /* AppDelegate.swift in Sources */,
+				9FA5FD8321621F6A0046F0A7 /* UIView+SLKAdditions.m in Sources */,
+				9FA5FD7721621E3B0046F0A7 /* Cells.swift in Sources */,
 				9FE925FA208A09B1008ABCE4 /* SofaMessage.swift in Sources */,
+				9FA8AF44216219EB0067EAE6 /* MessagesViewController+Keyboard.swift in Sources */,
+				9FA5FD7C21621F130046F0A7 /* SLKTextView+SLKAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -905,14 +950,6 @@
 			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
-		9FE925E6208A08F6008ABCE4 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				9FE925E7208A08F6008ABCE4 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		9FE925EB208A08F8008ABCE4 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -928,20 +965,23 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 29X3GG489T;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/SQLiteDemo/Carthage/Build/iOS",
+					"$(PROJECT_DIR)/SignalDemo/Carthage/Build/iOS",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
-				INFOPLIST_FILE = SQLiteDemo/Info.plist;
+				INFOPLIST_FILE = SignalDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bakkenbaeck.SQLiteDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bakkenbaeck.SignalDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "SignalDemo/TextInput/Signal-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -951,20 +991,22 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 29X3GG489T;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/SQLiteDemo/Carthage/Build/iOS",
+					"$(PROJECT_DIR)/SignalDemo/Carthage/Build/iOS",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
-				INFOPLIST_FILE = SQLiteDemo/Info.plist;
+				INFOPLIST_FILE = SignalDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bakkenbaeck.SQLiteDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bakkenbaeck.SignalDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "SignalDemo/TextInput/Signal-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
 			};

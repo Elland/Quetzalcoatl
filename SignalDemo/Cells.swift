@@ -77,7 +77,7 @@ class ChatCell: UITableViewCell {
 
         view.layer.masksToBounds = true
         view.layer.borderColor = UIColor.gray.cgColor
-        view.layer.borderWidth = .lineHeight
+        view.layer.borderWidth = 1.0
 
         return view
     }()

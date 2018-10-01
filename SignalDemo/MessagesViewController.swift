@@ -32,29 +32,42 @@ protocol MessagesViewControllerDelegate {
 }
 
 class MessagesViewController: UIViewController {
+    let chat: SignalChat
 
-    var chat: SignalChat!
-
-    var shouldScrollToBottom = false 
+    var shouldScrollToBottom = false
 
     lazy var messages: [SignalMessage] = {
         return self.chat.visibleMessages
     }()
 
+    let refreshControl = UIRefreshControl()
+
     var delegate: MessagesViewControllerDelegate?
 
-    private lazy var tableView: UITableView = {
+    var textBarHeightConstraint: NSLayoutConstraint!
+    var textBarBottomConstraint: NSLayoutConstraint!
+
+    lazy var textInputBar: SLKTextInputbar = {
+        let view = SLKTextInputbar(textViewClass: SLKTextView.self)
+        view.translatesAutoresizingMaskIntoConstraints = false
+//        view.textView.delegate = self
+
+        return view
+    }()
+
+    lazy var tableView: UITableView = {
         let view = UITableView(frame: .zero, style: .plain)
 
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .white
         view.estimatedRowHeight = 64.0
-        // view.scrollsToTop = false
         view.dataSource = self
         view.delegate = self
         view.separatorStyle = .none
         view.keyboardDismissMode = .interactive
-        view.contentInsetAdjustmentBehavior = .never
+        view.contentInsetAdjustmentBehavior = .always
+
+        view.addSubview(self.refreshControl)
 
         view.register(UITableViewCell.self)
         view.register(MessagesTextCell.self)
@@ -70,29 +83,39 @@ class MessagesViewController: UIViewController {
         return dateFormatter
     }()
 
+    init(chat: SignalChat) {
+        self.chat = chat
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.navigationItem.title = self.chat.displayName
-
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Send random", style: .plain, target: self, action: #selector(self.sendRandomMessage(_:)))
-
+        self.view.backgroundColor = .white
         self.addSubviewsAndConstraints()
+
+        NotificationCenter.default.addObserver(self, selector: #selector(self.didChangeTextViewText(_:)), name: UITextView.textDidChangeNotification, object: nil)
+
+        NotificationCenter.default.addObserver(self, selector: #selector(self.willShowOrHideKeyboard(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.willShowOrHideKeyboard(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.didShowOrHideKeyboard(_:)), name: UIResponder.keyboardDidHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.didShowOrHideKeyboard(_:)), name: UIResponder.keyboardDidShowNotification, object: nil)
 
         self.shouldScrollToBottom = true
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
-        self.tableView.isHidden = true
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
         self.scrollTableViewToBottom(animated: false)
-        self.tableView.isHidden = false
     }
 
     override func viewDidLayoutSubviews() {
@@ -113,11 +136,29 @@ class MessagesViewController: UIViewController {
 
     private func addSubviewsAndConstraints() {
         self.view.addSubview(self.tableView)
+        self.view.addSubview(self.textInputBar)
 
-        self.tableView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
+        self.navigationItem.title = self.chat.displayName
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Send random", style: .plain, target: self, action: #selector(self.sendRandomMessage(_:)))
+
+        NSLayoutConstraint.activate([
+            self.tableView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            self.tableView.bottomAnchor.constraint(equalTo: self.textInputBar.topAnchor),
+
+            self.textInputBar.leftAnchor.constraint(equalTo: self.view.leftAnchor),
+            self.textInputBar.rightAnchor.constraint(equalTo: self.view.rightAnchor),
+        ])
+
+        self.textBarBottomConstraint = self.textInputBar.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor)
+        self.textBarBottomConstraint.isActive = true
+
+        self.textBarHeightConstraint = self.textInputBar.heightAnchor.constraint(greaterThanOrEqualToConstant: self.textInputBar.appropriateHeight)
+        self.textBarHeightConstraint.isActive = true
+
         self.tableView.left(to: self.view)
         self.tableView.right(to: self.view)
-        self.tableView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+
+        self.view.layoutIfNeeded()
     }
 
     @objc func sendRandomMessage(_ sender: Any) {
@@ -211,5 +252,60 @@ extension MessagesViewController: SignalServiceStoreMessageDelegate {
             self.shouldScrollToBottom = false
             self.scrollTableViewToBottom(animated: true)
         }
+    }
+}
+
+extension MessagesViewController {
+    @objc func willShowOrHideKeyboard(_ notification: NSNotification) {
+        guard let userInfo = notification.userInfo else { return }
+
+        let endFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as! CGRect
+        let screenHeight = UIScreen.main.bounds.height
+
+        if notification.name == UIResponder.keyboardWillShowNotification {
+            self.textBarBottomConstraint.constant = -(screenHeight - self.view.safeAreaInsets.bottom - endFrame.origin.y)
+        } else {
+            self.textBarBottomConstraint.constant = 0
+        }
+
+        self.view.layoutIfNeeded()
+    }
+
+    @objc func didShowOrHideKeyboard(_ notification: NSNotification) {
+
+    }
+
+    @objc func didChangeTextViewText(_ notification: NSNotification) {
+        guard let view = notification.object as? SLKTextView, view  == self.textInputBar.textView else { return }
+
+        // Animated only if the view already appeared.
+        self.textDidUpdate()
+
+        self.processTextForAutoCompletion()
+    }
+
+    func textDidUpdate() {
+        let inputBarHeight = self.textInputBar.appropriateHeight
+
+        defer {
+            self.textInputBar.rightButton.isEnabled = self.canSendText()
+            self.view.layoutIfNeeded()
+        }
+
+        guard self.textBarHeightConstraint.constant != inputBarHeight else {
+            return
+        }
+
+        //let inputBarHeightDelta = inputBarHeight - self.textBarHeightConstraint.constant
+        //let newOffset = CGPoint(x: 0, y: self.tableView.contentOffset.y + inputBarHeightDelta)
+        self.textBarHeightConstraint.constant = inputBarHeight
+    }
+
+    func processTextForAutoCompletion() {
+
+    }
+
+    func canSendText() -> Bool {
+        return !self.textInputBar.textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 }
