@@ -3,7 +3,6 @@
 //  SignalServiceSwift
 //
 //  Created by Igor Ranieri on 17.04.18.
-//  Copyright © 2018 Bakken&Bæck. All rights reserved.
 //
 
 #import "signal_protocol.h"

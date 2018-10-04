@@ -3,7 +3,6 @@
 //  SignalWrapper
 //
 //  Created by Igor Ranieri on 06.04.18.
-//  Copyright © 2018 Bakken&Bæck. All rights reserved.
 //
 
 import Starscream
@@ -150,9 +149,11 @@ public class SignalClient {
     public func sendGroupMessage(_ body: String, type: OutgoingSignalMessage.GroupMetaMessageType, to recipientAddresses: [SignalAddress], attachments: [Data] = []) {
         let names = recipientAddresses.map { (address) -> String in address.name }
         let chat = self.store.fetchOrCreateChat(with: names)
-        guard let recipients = chat.recipients?.filter({ recipient -> Bool in recipient.name != self.messageSender?.sender.username }) else { return }
 
-        let message = OutgoingSignalMessage(recipientId: chat.uniqueId, chatId: chat.uniqueId, body: body, groupMessageType: type, store: self.store)
+        guard let messageSender = self.messageSender else { fatalError() }
+        guard let recipients = chat.recipients?.filter({ recipient -> Bool in recipient.name != messageSender.sender.username }) else { return }
+
+        let message = OutgoingSignalMessage(recipientId: chat.uniqueId, senderId: messageSender.sender.username, chatId: chat.uniqueId, body: body, groupMessageType: type, store: self.store)
         try? self.store.save(message)
 
         let dispatchGroup = DispatchGroup()
@@ -179,7 +180,8 @@ public class SignalClient {
     }
 
     public func sendMessage(_ body: String, to recipientAddress: SignalAddress, in chat: SignalChat, attachments: [Data] = []) {
-        let message = OutgoingSignalMessage(recipientId: recipientAddress.name, chatId: chat.uniqueId, body: body, store: self.store)
+        guard let senderId = self.messageSender?.sender.username else { fatalError() }
+        let message = OutgoingSignalMessage(recipientId: recipientAddress.name, senderId: senderId, chatId: chat.uniqueId, body: body, store: self.store)
         try! self.store.save(message)
 
         let dispatchGroup = DispatchGroup()
@@ -201,6 +203,15 @@ public class SignalClient {
                 }
             }
         }
+    }
+
+    public func deleteMessage(_ message: SignalMessage) {
+        try! self.store.delete(message)
+    }
+
+    public func requestNewIdentity(for address: SignalAddress) {
+        // TODO: handle multiple devices
+        _ = self.libraryStore.saveRemoteIdentity(with: address, identityKey: nil)
     }
 }
 

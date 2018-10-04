@@ -3,7 +3,6 @@
 //  SignalWrapper
 //
 //  Created by Igor Ranieri on 21.03.18.
-//  Copyright © 2018 Bakken&Bæck. All rights reserved.
 //
 
 /// Builds a session and processes a prekey bundle, so that we can send messages to a given SignalAddress.

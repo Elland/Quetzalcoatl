@@ -3,7 +3,6 @@
 //  SQLiteDemo
 //
 //  Created by Igor Ranieri on 20.04.18.
-//  Copyright © 2018 Bakken&Bæck. All rights reserved.
 //
 
 import EtherealCereal
@@ -11,36 +10,13 @@ import SignalServiceSwift
 import Teapot
 import UIKit
 
-extension String {
-    enum TruncationPosition {
-        case head
-        case middle
-        case tail
-    }
-
-    func truncated(limit: Int, position: TruncationPosition = .tail, leader: String = "…") -> String {
-        guard self.count > limit else { return self }
-
-        switch position {
-        case .head:
-            return leader + self.suffix(limit)
-        case .middle:
-            let headCharactersCount = Int(ceil(Float(limit - leader.count) / 2.0))
-
-            let tailCharactersCount = Int(floor(Float(limit - leader.count) / 2.0))
-
-            return "\(self.prefix(headCharactersCount))\(leader)\(self.suffix(tailCharactersCount))"
-        case .tail:
-            return self.prefix(limit) + leader
-        }
-    }
-}
-
 class ChatsViewController: UIViewController {
-    let user: User
+    var user: Profile {
+        return Profile.current!
+    }
 
-    let igorPhoneContact = SignalAddress(name: "0x94b7382e8cbd02fc7bfd2e233e42b778ac2ce224", deviceId: 1)
-    let ellenContact = SignalAddress(name: "0xc0086796cbba5b4d97cc58d175b37c758975aef1", deviceId: 1)
+    let igorContact = SignalAddress(name: "0x94b7382e8cbd02fc7bfd2e233e42b778ac2ce224", deviceId: 1)
+    let karinaContact = SignalAddress(name: "0xcc4886677b6f60e346fe48968189c1b1fe9f3b33", deviceId: 1)
 
     lazy var dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
@@ -48,6 +24,8 @@ class ChatsViewController: UIViewController {
 
         return dateFormatter
     }()
+
+    let idClient = IDAPIClient()
 
     let teapot = Teapot(baseURL: URL(string: "https://token-chat-service-development.herokuapp.com")!)
 
@@ -74,7 +52,7 @@ class ChatsViewController: UIViewController {
 
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         if let user = self.persistenceStore.retrieveUser() {
-            self.user = user
+            Profile.current = user
 
             super.init(nibName: nil, bundle: nil)
 
@@ -83,7 +61,13 @@ class ChatsViewController: UIViewController {
             self.chats = self.signalClient.store.retrieveAllChats()
 
         } else {
-            self.user = User(privateKey: "0989d7b7ccfe3baf39ed441d001df834173e0729916210d14f60068d1d22c595")
+            // cheating for testing
+            // should be generated on registration instead
+            let igor = "0989d7b7ccfe3baf39ed441d001df834173e0729916210d14f60068d1d22c595"
+            let karina = "1989d7b7ccfe3baf39ed441d001df834173e0729916210d14f60068d1d22c595"
+            let sim = "2989d7b7ccfe3baf39ed441d001df834173e0729916210d14f60068d1d22c595"
+
+            Profile.current = Profile(password: UUID().uuidString, privateKey: igor)
 
             super.init(nibName: nil, bundle: nil)
 
@@ -100,18 +84,20 @@ class ChatsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let createChatButton = UIBarButtonItem(title: "Create chat", style: .plain, target: self, action: #selector(self.didTapCreateChatButton(_:)))
-        self.navigationItem.rightBarButtonItem = createChatButton
-
         self.tableView.register(ChatCell.self)
 
         self.view.addSubview(self.tableView)
         self.tableView.fillSuperview()
+
     }
 
-    func register(user: User) {
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+    }
+
+    func register(user: Profile) {
         self.fetchTimestamp { timestamp in
-            let payload = self.signalClient.generateUserBootstrap(username: user.toshiAddress, password: user.password)
+            let payload = self.signalClient.generateUserBootstrap(username: user.id, password: user.password)
             let path = "/v1/accounts/bootstrap"
 
             guard let data = try? JSONSerialization.data(withJSONObject: payload, options: []) else {
@@ -134,6 +120,10 @@ class ChatsViewController: UIViewController {
                     guard response.statusCode == 204 else {
                         fatalError()
                     }
+
+                    self.idClient.registerUser(with: user.cereal, completion: { status in
+                        NSLog("\(status.rawValue)")
+                    })
 
                     self.signalClient.startSocket()
                     self.signalClient.shouldKeepSocketAlive = true
@@ -169,8 +159,8 @@ class ChatsViewController: UIViewController {
         // Group message test
         //        self.signalClient.sendGroupMessage("", type: .new, to: [self.testContact, self.otherContact, self.ellenContact, self.user.address])
         //        // 1:1 chat test.
-        let chat = self.signalClient.store.fetchOrCreateChat(with: self.igorPhoneContact.name)
-        self.didRequestSendRandomMessage(in: chat)
+        let chat = self.signalClient.store.fetchOrCreateChat(with: self.igorContact.name)
+        self.didRequestSendMessage(text: "", in: chat)
     }
 }
 
@@ -244,6 +234,11 @@ extension ChatsViewController: UITableViewDelegate {
 }
 
 extension ChatsViewController: MessagesViewControllerDelegate {
+    func didRequestNewIdentity(for address: SignalAddress, deleting message: SignalMessage) {
+        self.signalClient.requestNewIdentity(for: address)
+        self.signalClient.deleteMessage(message)
+    }
+
     static func randomMessage() -> (String, [UIImage]) {
         let messages: [(String, [UIImage])] = [
             (SofaMessage(body: "This is testing message from our SignalClient.").content, []),
@@ -258,14 +253,14 @@ extension ChatsViewController: MessagesViewControllerDelegate {
         return messages[index]
     }
 
-    func didRequestSendRandomMessage(in chat: SignalChat) {
-        let (body, images) = ChatsViewController.randomMessage()
+    func didRequestSendMessage(text: String, in chat: SignalChat) {
+        let (_, images) = ChatsViewController.randomMessage()
         let attachments = images.compactMap { img in img.pngData() }
 
         if chat.isGroupChat {
-            self.signalClient.sendGroupMessage(body, type: .deliver, to: chat.recipients!, attachments: attachments)
+            self.signalClient.sendGroupMessage(text, type: .deliver, to: chat.recipients!, attachments: attachments)
         } else {
-            self.signalClient.sendMessage(body, to: chat.recipients!.first!, in: chat, attachments: attachments)
+            self.signalClient.sendMessage(text, to: chat.recipients!.first!, in: chat, attachments: attachments)
         }
     }
 }
@@ -276,24 +271,41 @@ extension ChatsViewController: SignalRecipientsDisplayDelegate {
     }
 
     func image(for address: String) -> UIImage? {
-        return nil
+        return ContactManager.image(for: address)
     }
 }
 
 class ContactManager {
+    private static let shared = ContactManager()
+
+    private let idClient: IDAPIClient
+
+    init() {
+        self.idClient = IDAPIClient()
+    }
+
     static func displayName(for address: String) -> String {
-        if address == "0x94b7382e8cbd02fc7bfd2e233e42b778ac2ce224" {
-            return "Igor iPhone X"
-        } else if address == "0xcc4886677b6f60e346fe48968189c1b1fe9f3b33" {
-            return "Simulator X"
-        } else if address == "0xc0086796cbba5b4d97cc58d175b37c758975aef1" {
-            return "Ellen"
-        } else {
-            return address.truncated(limit: 8, leader: "")
+        var name: String!
+
+        let semaphore = DispatchSemaphore(value: 0)
+
+        self.shared.idClient.findUserWithId(address) { profile in
+            name = profile.nameOrUsername
+            semaphore.signal()
         }
+
+        _ = semaphore.wait(timeout: .distantFuture)
+
+        return name
     }
 
     static func image(for address: String) -> UIImage? {
-        return nil
+        if address == "0x94b7382e8cbd02fc7bfd2e233e42b778ac2ce224" {
+            return UIImage(named: "igor2")
+        } else if address == "0xcc4886677b6f60e346fe48968189c1b1fe9f3b33" {
+            return UIImage(named: "karina")
+        } else {
+            return UIImage(named: "igor")
+        }
     }
 }

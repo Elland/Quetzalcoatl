@@ -3,7 +3,6 @@
 //  SignalServiceSwift
 //
 //  Created by Igor Ranieri on 20.04.18.
-//  Copyright © 2018 Bakken&Bæck. All rights reserved.
 //
 
 // MARK: - Adding some helper methods to our SignalContext, for better swift compatibility.

@@ -3,7 +3,6 @@
 //  SignalWrapper
 //
 //  Created by Igor Ranieri on 06.04.18.
-//  Copyright © 2018 Bakken&Bæck. All rights reserved.
 //
 
 public extension Data {

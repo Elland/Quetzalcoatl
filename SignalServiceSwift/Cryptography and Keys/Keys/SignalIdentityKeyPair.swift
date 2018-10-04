@@ -3,7 +3,6 @@
 //  SignalWrapper
 //
 //  Created by Igor Ranieri on 20.03.18.
-//  Copyright © 2018 Bakken&Bæck. All rights reserved.
 //
 
 /// Our ratchet identity key pair. Used to validate that we are who we say we are with the signal server.

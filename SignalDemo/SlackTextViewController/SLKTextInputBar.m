@@ -6,7 +6,7 @@
 //  Licence: MIT-Licence
 //
 
-#import "SLKTextInputbar.h"
+#import "SLKTextInputBar.h"
 #import "SLKTextView.h"
 #import "SLKInputAccessoryView.h"
 
@@ -17,7 +17,7 @@
 
 NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMoveNotification";
 
-@interface SLKTextInputbar ()
+@interface SLKTextInputBar ()
 
 @property (nonatomic, strong) NSLayoutConstraint *textViewBottomMarginC;
 @property (nonatomic, strong) NSLayoutConstraint *contentViewHC;
@@ -42,7 +42,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
 
 @end
 
-@implementation SLKTextInputbar
+@implementation SLKTextInputBar
 @synthesize textView = _textView;
 @synthesize contentView = _contentView;
 @synthesize inputAccessoryView = _inputAccessoryView;

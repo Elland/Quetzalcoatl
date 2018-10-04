@@ -3,7 +3,6 @@
 //  SignalServiceSwift
 //
 //  Created by Igor Ranieri on 25.04.18.
-//  Copyright © 2018 Bakken&Bæck. All rights reserved.
 //
 
 protocol SignalMessageManagerDelegate {
@@ -39,7 +38,7 @@ class SignalMessageManager {
     func sendMessage(_ message: OutgoingSignalMessage, to recipient: SignalAddress, in chat: SignalChat, retryAttempts: UInt = 3, completion: @escaping (_ success: Bool) -> Void) {
         // no need to send a message to ourselves
         guard recipient.name != self.sender.username else {
-            // self.handleReceiptSentToSelf(message, in: chat)
+            completion(false)
 
             return
         }
@@ -49,6 +48,10 @@ class SignalMessageManager {
             NSLog("Error. Could not send messages. Error encrypting.")
 
             message.messageState = .unsent
+            
+            let infoMessage = InfoSignalMessage(senderId: message.recipientId, chatId: chat.uniqueId, messageType: .verificationStateChange, customMessage: "COULD_NOT_VERIFY_SIGNATURE", additionalInfo: nil, store: self.store)
+            try! self.store.save(infoMessage)
+
             completion(false)
 
             return
@@ -56,7 +59,7 @@ class SignalMessageManager {
 
         self.networkClient.sendMessage(messagesDict, from: self.sender, to: recipient.name) { success, params, statusCode in
             if success {
-                completion(success)
+                 completion(success)
             } else {
                 defer {
                     message.messageState = .unsent
@@ -199,7 +202,7 @@ class SignalMessageManager {
             chat = self.store.fetchOrCreateChat(with: envelope.source)
         }
 
-        let incomingMessage = IncomingSignalMessage(body: body, chatId: chat.uniqueId, senderId: envelope.source, timestamp: timestamp, store: self.store)
+        let incomingMessage = IncomingSignalMessage(body: body, senderId: envelope.source, chatId: chat.uniqueId, timestamp: timestamp, store: self.store)
 
         defer {
             try? self.store.save(incomingMessage)
@@ -235,9 +238,9 @@ class SignalMessageManager {
 
             do {
                 try self.store.save(newGroupChat)
-
+                
                 // create info message informing of update
-                let infoMessage = InfoSignalMessage(senderId: envelope.source, chatId: newGroupChat.uniqueId, messageType: .groupUpdate, customMessage: updateInfo.customMessage, additionalInfo: updateInfo.additionalInfo, store: self.store)
+                let infoMessage = InfoSignalMessage(senderId: self.sender.username, chatId: newGroupChat.uniqueId, messageType: .groupUpdate, customMessage: updateInfo.customMessage, additionalInfo: updateInfo.additionalInfo, store: self.store)
 
                 try self.store.save(infoMessage)
             } catch (let error) {
@@ -259,7 +262,7 @@ class SignalMessageManager {
                 let localizedGroupInfoString = NSLocalizedString("GROUP_MEMBER_LEFT", comment: "Displayed when a member leaves a group")
                 let updateGroupInfoMessage = String(format: localizedGroupInfoString, envelope.source)
 
-                let infoMessage = InfoSignalMessage(senderId: envelope.source, chatId: oldGroupChat.uniqueId, messageType: .groupQuit, customMessage: updateGroupInfoMessage, additionalInfo: oldGroupChat.contactsDelegate?.displayName(for: envelope.source), store: self.store)
+                let infoMessage = InfoSignalMessage(senderId: self.sender.username, chatId: oldGroupChat.uniqueId, messageType: .groupQuit, customMessage: updateGroupInfoMessage, additionalInfo: oldGroupChat.contactsDelegate?.displayName(for: envelope.source), store: self.store)
                 try self.store.save(infoMessage)
             } catch (let error) {
                 NSLog("Could not save group chat. %@", error.localizedDescription)
@@ -292,7 +295,7 @@ class SignalMessageManager {
         let updateInfo = self.updateInfo(groupChat: groupChat, dataMessage: dataMessage)
 
         // create info message informing of update
-        let infoMessage = OutgoingSignalMessage(recipientId: envelope.source, chatId: groupChat.uniqueId, body: updateInfo.customMessage, groupMessageType: .update, store: self.store)
+        let infoMessage = OutgoingSignalMessage(recipientId: envelope.source, senderId: envelope.source, chatId: groupChat.uniqueId, body: updateInfo.customMessage, groupMessageType: .update, store: self.store)
 
         // Only send it to the requesting party.
         let recipient = SignalAddress(name: envelope.source, deviceId: Int32(envelope.sourceDevice))
@@ -409,6 +412,7 @@ class SignalMessageManager {
             }
 
         } catch (let error) {
+            // TODO: handle this better.
             NSLog("Could not decrypt message: %@", error.localizedDescription)
             return false
         }

@@ -3,7 +3,6 @@
 //  SignalServiceSwift
 //
 //  Created by Igor Ranieri on 17.04.18.
-//  Copyright © 2018 Bakken&Bæck. All rights reserved.
 //
 
 public protocol PersistenceStore: SignalLibraryStoreDelegate {
@@ -12,6 +11,7 @@ public protocol PersistenceStore: SignalLibraryStoreDelegate {
 
     func updateMessage(_ message: SignalMessage)
     func storeMessage(_  message: SignalMessage)
+    func deleteMessage(_ message: SignalMessage)
 
     /* Chats */
     func retrieveAllChats() -> [SignalChat]
@@ -226,7 +226,7 @@ public class SignalServiceStore {
     }
 
     func chatContainsMessage(_ chat: SignalChat, _ message: SignalMessage) -> Bool {
-        let messages = self.persistenceStore.retrieveMessages(with: NSPredicate(format: "%K == %@ && %K == %@", "id", message.uniqueId, "chatId", message.chatId), sortDescriptors: nil)
+        let messages = self.persistenceStore.retrieveMessages(with: NSPredicate(format: "%K == %lld && %K == %@", "timestamp", message.timestamp, "chatId", message.chatId), sortDescriptors: nil)
 
         return !messages.isEmpty
     }
@@ -275,6 +275,27 @@ public class SignalServiceStore {
             } else {
                 NSLog("Error: No chat for message: \(message).")
             }
+        }
+    }
+
+    func delete(_ message: SignalMessage) throws {
+        guard let chat = self.chat(chatId: message.chatId), message.isVisible else {
+            NSLog("Message type not visible in chat.")
+            return
+        }
+
+        DispatchQueue.main.async {
+            self.messageDelegate?.signalServiceStoreWillChangeMessages()
+        }
+
+        let index = chat.visibleMessages.index(of: message)!
+        let indexPath = IndexPath(item: index, section: 0)
+
+        self.persistenceStore.deleteMessage(message)
+
+        DispatchQueue.main.async {
+            self.messageDelegate?.signalServiceStoreDidChangeMessage(message, at: indexPath, for: .delete)
+            self.messageDelegate?.signalServiceStoreDidChangeMessages()
         }
     }
 

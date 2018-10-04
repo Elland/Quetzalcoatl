@@ -3,7 +3,6 @@
 //  SQLiteDemo
 //
 //  Created by Igor Ranieri on 20.04.18.
-//  Copyright © 2018 Bakken&Bæck. All rights reserved.
 //
 
 import SignalServiceSwift
@@ -20,7 +19,7 @@ extension UIColor {
     }
 }
 
-extension CGFloat {
+public extension CGFloat {
     /// The height of a single pixel on the screen.
     static var lineHeight: CGFloat {
         return 1 / UIScreen.main.scale
@@ -28,7 +27,8 @@ extension CGFloat {
 }
 
 protocol MessagesViewControllerDelegate {
-    func didRequestSendRandomMessage(in chat: SignalChat)
+    func didRequestSendMessage(text: String, in chat: SignalChat)
+    func didRequestNewIdentity(for address: SignalAddress, deleting message: SignalMessage)
 }
 
 class MessagesViewController: UIViewController {
@@ -40,34 +40,25 @@ class MessagesViewController: UIViewController {
         return self.chat.visibleMessages
     }()
 
-    let refreshControl = UIRefreshControl()
+//    let refreshControl = UIRefreshControl()
+
+    lazy var chatInputViewController: ChatInputViewController = {
+        let chatInputVC = ChatInputViewController(usernames: ["elland", "ellen", "igor"], delegate: self)
+        chatInputVC.registerPrefixes(forAutoCompletion: ["@"])
+
+        return chatInputVC
+    }()
 
     var delegate: MessagesViewControllerDelegate?
 
     var textBarHeightConstraint: NSLayoutConstraint!
     var textBarBottomConstraint: NSLayoutConstraint!
 
-    lazy var textInputBar: SLKTextInputbar = {
-        let view = SLKTextInputbar(textViewClass: SLKTextView.self)
-        view.translatesAutoresizingMaskIntoConstraints = false
-//        view.textView.delegate = self
+    lazy var tableView: ChatTableView = {
+        let view = ChatTableView(frame: .zero, style: .plain)
 
-        return view
-    }()
-
-    lazy var tableView: UITableView = {
-        let view = UITableView(frame: .zero, style: .plain)
-
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .white
-        view.estimatedRowHeight = 64.0
         view.dataSource = self
         view.delegate = self
-        view.separatorStyle = .none
-        view.keyboardDismissMode = .interactive
-        view.contentInsetAdjustmentBehavior = .always
-
-        view.addSubview(self.refreshControl)
 
         view.register(UITableViewCell.self)
         view.register(MessagesTextCell.self)
@@ -86,6 +77,8 @@ class MessagesViewController: UIViewController {
     init(chat: SignalChat) {
         self.chat = chat
         super.init(nibName: nil, bundle: nil)
+
+        self.addChild(self.chatInputViewController)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -97,8 +90,6 @@ class MessagesViewController: UIViewController {
 
         self.view.backgroundColor = .white
         self.addSubviewsAndConstraints()
-
-        NotificationCenter.default.addObserver(self, selector: #selector(self.didChangeTextViewText(_:)), name: UITextView.textDidChangeNotification, object: nil)
 
         NotificationCenter.default.addObserver(self, selector: #selector(self.willShowOrHideKeyboard(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.willShowOrHideKeyboard(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -123,7 +114,7 @@ class MessagesViewController: UIViewController {
 
         if self.shouldScrollToBottom {
             self.shouldScrollToBottom = false
-            self.scrollTableViewToBottom(animated: true)
+            self.scrollTableViewToBottom(animated: false)
         }
     }
 
@@ -131,39 +122,32 @@ class MessagesViewController: UIViewController {
         guard !self.messages.isEmpty else { return }
 
         let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
-        self.tableView.scrollToRow(at: indexPath, at: .none, animated: animated)
+        self.tableView.scrollToRow(at: indexPath, at: .top, animated: animated)
     }
 
     private func addSubviewsAndConstraints() {
         self.view.addSubview(self.tableView)
-        self.view.addSubview(self.textInputBar)
+        self.view.addSubview(self.chatInputViewController.view)
 
         self.navigationItem.title = self.chat.displayName
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Send random", style: .plain, target: self, action: #selector(self.sendRandomMessage(_:)))
 
         NSLayoutConstraint.activate([
             self.tableView.topAnchor.constraint(equalTo: self.view.topAnchor),
-            self.tableView.bottomAnchor.constraint(equalTo: self.textInputBar.topAnchor),
+            self.tableView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor),
 
-            self.textInputBar.leftAnchor.constraint(equalTo: self.view.leftAnchor),
-            self.textInputBar.rightAnchor.constraint(equalTo: self.view.rightAnchor),
+//            self.chatInputViewController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor),
+//            self.chatInputViewController.view.rightAnchor.constraint(equalTo: self.view.rightAnchor),
         ])
 
-        self.textBarBottomConstraint = self.textInputBar.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor)
-        self.textBarBottomConstraint.isActive = true
-
-        self.textBarHeightConstraint = self.textInputBar.heightAnchor.constraint(greaterThanOrEqualToConstant: self.textInputBar.appropriateHeight)
-        self.textBarHeightConstraint.isActive = true
+        self.textBarBottomConstraint = self.chatInputViewController.textInputbar.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor)
+//        self.textBarBottomConstraint.isActive = true
 
         self.tableView.left(to: self.view)
         self.tableView.right(to: self.view)
 
         self.view.layoutIfNeeded()
-    }
 
-    @objc func sendRandomMessage(_ sender: Any) {
-        self.shouldScrollToBottom = true
-        self.delegate?.didRequestSendRandomMessage(in: self.chat)
+        self.tableView.contentInset.bottom = self.chatInputViewController.textInputbar.frame.height
     }
 
     private func message(at indexPath: IndexPath) -> SignalMessage {
@@ -172,7 +156,28 @@ class MessagesViewController: UIViewController {
 }
 
 extension MessagesViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let message = self.message(at: indexPath)
+        if message is InfoSignalMessage {
+            let alert = UIAlertController(title: "Accept new identity?", message: nil, preferredStyle: .actionSheet)
+            let accept = UIAlertAction(title: "Accept", style: .default) { _ in
+                guard let address = self.chat.recipients?.first(where: { address -> Bool in
+                    address.name == message.senderId
+                }) else  {
+                    fatalError("Could not restore identity for recipient")
+                }
 
+                self.delegate?.didRequestNewIdentity(for: address, deleting: message)
+            }
+            let cancel = UIAlertAction(title: "Cancel", style: .cancel) { (_) in
+
+            }
+            alert.addAction(accept)
+            alert.addAction(cancel)
+
+            self.present(alert, animated: true)
+        }
+    }
 }
 
 extension MessagesViewController: UITableViewDataSource {
@@ -209,16 +214,19 @@ extension MessagesViewController: UITableViewDataSource {
         } else {
             let cell = self.tableView.dequeue(MessagesTextCell.self, for: indexPath)
             cell.isOutgoingMessage = message is OutgoingSignalMessage
-            cell.messageBody = SofaMessage(content: message.body).body
+            cell.messageBody = message.body // SofaMessage(content: message.body).body
+            cell.avatar = ContactManager.image(for: message.senderId)
 
-            //cell.sentState = (message as? OutgoingSignalMessage)?.messageState ?? .none
-            //cell.text = self.dateFormatter.string(from: Date(milisecondTimeIntervalSinceEpoch: message.timestamp))
+//            cell.sentState = (message as? OutgoingSignalMessage)?.messageState ?? .none
+//            cell.dateStrng = self.dateFormatter.string(from: Date(milisecondTimeIntervalSinceEpoch: message.timestamp))
 
             if let attachment = message.attachment, let image = UIImage(data: attachment) {
                 cell.messageImage = image
             } else {
                 cell.messageImage = nil
             }
+
+//            cell.transform = CGAffineTransform(rotationAngle: .pi)
 
             return cell
         }
@@ -228,6 +236,7 @@ extension MessagesViewController: UITableViewDataSource {
 extension MessagesViewController: SignalServiceStoreMessageDelegate {
     func signalServiceStoreWillChangeMessages() {
         self.tableView.beginUpdates()
+        self.shouldScrollToBottom = true
     }
 
     func signalServiceStoreDidChangeMessage(_ message: SignalMessage, at indexPath: IndexPath, for changeType: SignalServiceStore.ChangeType) {
@@ -239,7 +248,8 @@ extension MessagesViewController: SignalServiceStoreMessageDelegate {
             self.messages.append(message)
             self.tableView.insertRows(at: [indexPath], with: .middle)
         case .delete:
-            self.tableView.deleteRows(at: [indexPath], with: .right)
+            self.messages.remove(at: indexPath.row)
+            self.tableView.deleteRows(at: [indexPath], with: .fade)
         case .update:
             self.tableView.reloadRows(at: [indexPath], with: .fade)
         }
@@ -248,24 +258,31 @@ extension MessagesViewController: SignalServiceStoreMessageDelegate {
     func signalServiceStoreDidChangeMessages() {
         self.tableView.endUpdates()
 
-        if self.shouldScrollToBottom {
+        if self.shouldScrollToBottom  {
             self.shouldScrollToBottom = false
             self.scrollTableViewToBottom(animated: true)
         }
     }
 }
 
-extension MessagesViewController {
+extension MessagesViewController: ChatInputViewControllerDelegate {
+    func didSendMessage(_ text: String) {
+        guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+
+        self.shouldScrollToBottom = true
+        self.delegate?.didRequestSendMessage(text: text, in: self.chat)
+    }
+
     @objc func willShowOrHideKeyboard(_ notification: NSNotification) {
-        guard let userInfo = notification.userInfo else { return }
+        guard let rect = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { fatalError() }
 
-        let endFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as! CGRect
-        let screenHeight = UIScreen.main.bounds.height
-
-        if notification.name == UIResponder.keyboardWillShowNotification {
-            self.textBarBottomConstraint.constant = -(screenHeight - self.view.safeAreaInsets.bottom - endFrame.origin.y)
-        } else {
+        if notification.name == UIResponder.keyboardWillHideNotification {
             self.textBarBottomConstraint.constant = 0
+            self.tableView.contentInset.bottom = self.chatInputViewController.textInputbar.frame.height
+        } else {
+            let diff = UIScreen.main.bounds.height - rect.origin.y
+            self.tableView.contentInset.bottom = diff + self.chatInputViewController.textInputbar.frame.height
+            self.scrollTableViewToBottom(animated: true)
         }
 
         self.view.layoutIfNeeded()
@@ -273,39 +290,5 @@ extension MessagesViewController {
 
     @objc func didShowOrHideKeyboard(_ notification: NSNotification) {
 
-    }
-
-    @objc func didChangeTextViewText(_ notification: NSNotification) {
-        guard let view = notification.object as? SLKTextView, view  == self.textInputBar.textView else { return }
-
-        // Animated only if the view already appeared.
-        self.textDidUpdate()
-
-        self.processTextForAutoCompletion()
-    }
-
-    func textDidUpdate() {
-        let inputBarHeight = self.textInputBar.appropriateHeight
-
-        defer {
-            self.textInputBar.rightButton.isEnabled = self.canSendText()
-            self.view.layoutIfNeeded()
-        }
-
-        guard self.textBarHeightConstraint.constant != inputBarHeight else {
-            return
-        }
-
-        //let inputBarHeightDelta = inputBarHeight - self.textBarHeightConstraint.constant
-        //let newOffset = CGPoint(x: 0, y: self.tableView.contentOffset.y + inputBarHeightDelta)
-        self.textBarHeightConstraint.constant = inputBarHeight
-    }
-
-    func processTextForAutoCompletion() {
-
-    }
-
-    func canSendText() -> Bool {
-        return !self.textInputBar.textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 }

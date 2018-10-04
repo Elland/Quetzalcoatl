@@ -3,7 +3,6 @@
 //  SignalServiceSwift
 //
 //  Created by Igor Ranieri on 17.04.18.
-//  Copyright © 2018 Bakken&Bæck. All rights reserved.
 //
 
 public class SignalChat: Equatable, Codable {
@@ -111,7 +110,9 @@ public class SignalChat: Equatable, Codable {
     public var isMuted: Bool = false
 
     public var visibleMessages: [SignalMessage] {
-        return self.messages.filter({ message -> Bool in message.isVisible })
+        let visibles = self.messages.filter({ message -> Bool in message.isVisible })
+
+        return visibles
     }
 
     public lazy var messages: [SignalMessage] = {

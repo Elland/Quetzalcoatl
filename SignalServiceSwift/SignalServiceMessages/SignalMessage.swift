@@ -3,7 +3,6 @@
 //  SignalServiceSwift
 //
 //  Created by Igor Ranieri on 18.04.18.
-//  Copyright © 2018 Bakken&Bæck. All rights reserved.
 //
 
 /// The base signal message class.
@@ -17,7 +16,8 @@ public class SignalMessage: Codable, Equatable, Hashable {
             chatId,
             uniqueId,
             timestamp,
-            attachmentPointerIds
+            attachmentPointerIds,
+            senderId
     }
 
     // var store: SignalServiceStore? = nil
@@ -27,6 +27,9 @@ public class SignalMessage: Codable, Equatable, Hashable {
 
     // The thread in which our message was sent/received.
     public var chatId: String
+
+    // Who created the message
+    public var senderId: String
 
     // Unique identifier, for the database.
     public var uniqueId: String = UUID().uuidString
@@ -55,11 +58,12 @@ public class SignalMessage: Codable, Equatable, Hashable {
         return !self.body.isEmpty || self is InfoSignalMessage
     }
 
-    public init(body: String, chatId: String, store: SignalServiceStore?) {
+    public init(body: String, senderId: String, chatId: String, store: SignalServiceStore?) {
         self.body = body
         self.chatId = chatId
         self.attachmentPointerIds = []
         self.store = store
+        self.senderId = senderId
     }
 
     public static func == (lhs: SignalMessage, rhs: SignalMessage) -> Bool {

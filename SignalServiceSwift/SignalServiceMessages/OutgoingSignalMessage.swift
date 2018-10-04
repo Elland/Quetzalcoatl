@@ -3,13 +3,12 @@
 //  SignalServiceSwift
 //
 //  Created by Igor Ranieri on 18.04.18.
-//  Copyright © 2018 Bakken&Bæck. All rights reserved.
 //
 
 /// Request group information, such as member list, name, avatar… Should not be stored.
 public class SyncGroupRequestSignalMessage: OutgoingSignalMessage {
     public init(for chat: SignalChat, store: SignalServiceStore) {
-        super.init(recipientId: chat.uniqueId, chatId: chat.uniqueId, body: "", store: store)
+        super.init(recipientId: chat.uniqueId, senderId: "", chatId: chat.uniqueId, body: "", store: store)
     }
 
     public required init(from decoder: Decoder) throws {
@@ -39,7 +38,7 @@ public class ReadReceiptSignalMessage: OutgoingSignalMessage {
     public init(message: IncomingSignalMessage, store: SignalServiceStore) {
         self.message = message
 
-        super.init(recipientId: message.senderId, chatId: message.chatId, body: "", store: store)
+        super.init(recipientId: message.senderId, senderId: "", chatId: message.chatId, body: "", store: store)
     }
 
     public required init(from decoder: Decoder) throws {
@@ -65,7 +64,7 @@ public class TranscriptSignalMessage: OutgoingSignalMessage {
     public init(message: OutgoingSignalMessage, store: SignalServiceStore) {
         self.message = message
 
-        super.init(recipientId: message.recipientId, chatId: message.chatId, body: message.body, store: store)
+        super.init(recipientId: message.recipientId, senderId: message.senderId, chatId: message.chatId, body: message.body, store: store)
     }
 
     public required init(from decoder: Decoder) throws {
@@ -133,7 +132,8 @@ public class OutgoingSignalMessage: SignalMessage {
             chatId,
             uniqueId,
             timestamp,
-            attachmentPointerIds
+            attachmentPointerIds,
+            senderId
     }
 
     public var didSentSyncTranscript = false
@@ -142,11 +142,11 @@ public class OutgoingSignalMessage: SignalMessage {
     public var messageState: MessageState = .none
     public var recipientId: String
 
-    public init(recipientId: String, chatId: String, body: String, groupMessageType: GroupMetaMessageType = .none, store: SignalServiceStore?) {
+    public init(recipientId: String, senderId: String, chatId: String, body: String, groupMessageType: GroupMetaMessageType = .none, store: SignalServiceStore?) {
         self.recipientId = recipientId
         self.groupMetaMessageType = groupMessageType
 
-        super.init(body: body, chatId: chatId, store: store)
+        super.init(body: body, senderId: senderId, chatId: chatId, store: store)
     }
 
     public required init(from decoder: Decoder) throws {

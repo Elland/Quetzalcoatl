@@ -3,7 +3,6 @@
 //  SignalWrapper
 //
 //  Created by Igor Ranieri on 22.03.18.
-//  Copyright © 2018 Bakken&Bæck. All rights reserved.
 //
 
 /// Encrypts and decrypts messages.

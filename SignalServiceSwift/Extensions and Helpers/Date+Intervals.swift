@@ -3,7 +3,6 @@
 //  SignalServiceSwift
 //
 //  Created by Igor Ranieri on 07.05.18.
-//  Copyright © 2018 Bakken&Bæck. All rights reserved.
 //
 
 import Foundation

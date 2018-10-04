@@ -17,6 +17,10 @@
 		9F27B9EF2090B40C0032C7DD /* SignalLibraryStoreProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F27B9EE2090B40C0032C7DD /* SignalLibraryStoreProtocol.swift */; };
 		9F27B9F12090C61F0032C7DD /* InfoSignalMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F27B9F02090C61F0032C7DD /* InfoSignalMessage.swift */; };
 		9F33523E20862B5500E0F145 /* SignalClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F33523D20862B5500E0F145 /* SignalClient.swift */; };
+		9F5CF5C52163840400FAAFD4 /* String+Truncation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5CF5C42163840400FAAFD4 /* String+Truncation.swift */; };
+		9F5CF5C7216384D600FAAFD4 /* RootNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5CF5C6216384D600FAAFD4 /* RootNavigationController.swift */; };
+		9F5CF5C9216385F200FAAFD4 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5CF5C8216385F200FAAFD4 /* Theme.swift */; };
+		9F5CF5CB2163A15600FAAFD4 /* ChatTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5CF5CA2163A15600FAAFD4 /* ChatTableView.swift */; };
 		9F62AFF2208A1AE40033EA04 /* Starscream.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9FA8EF052087963700D0CBB6 /* Starscream.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9F62AFF3208A1AE40033EA04 /* CommonCrypto.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9FFD1DD42086305B00FA4626 /* CommonCrypto.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9F62AFF4208A1AE40033EA04 /* SwiftProtobuf.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9FFD1DD52086305B00FA4626 /* SwiftProtobuf.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -31,16 +35,25 @@
 		9F723093208F2FD500F568F7 /* Date+milisecondTimestamp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F723092208F2FD500F568F7 /* Date+milisecondTimestamp.swift */; };
 		9F723096208F303200F568F7 /* NSDate+Chrono.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F723094208F303200F568F7 /* NSDate+Chrono.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9F723097208F303200F568F7 /* NSDate+Chrono.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9F723095208F303200F568F7 /* NSDate+Chrono.mm */; };
+		9F89637221661DBE00CC639A /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F89636F21661D1700CC639A /* TabBarController.swift */; };
+		9F89637421661F6100CC639A /* SettingsNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F89637321661F6100CC639A /* SettingsNavigationController.swift */; };
 		9F8F25192091D3A10020FF00 /* SignalRecipientsDisplayDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F8F25182091D3A10020FF00 /* SignalRecipientsDisplayDelegate.swift */; };
 		9F8F251B209219680020FF00 /* SignalServiceAttachmentsProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F8F251A209219680020FF00 /* SignalServiceAttachmentsProcessor.swift */; };
 		9F8F251D209348260020FF00 /* SignalServiceAttachmentPointer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F8F251C209348260020FF00 /* SignalServiceAttachmentPointer.swift */; };
 		9FA5FD7721621E3B0046F0A7 /* Cells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FD7521621E2A0046F0A7 /* Cells.swift */; };
-		9FA5FD7C21621F130046F0A7 /* SLKTextView+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FD7A21621F120046F0A7 /* SLKTextView+SLKAdditions.m */; };
-		9FA5FD8321621F6A0046F0A7 /* UIView+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FD8121621F6A0046F0A7 /* UIView+SLKAdditions.m */; };
-		9FA5FD84216223CA0046F0A7 /* SLKInputAccessoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FD7E21621F520046F0A7 /* SLKInputAccessoryView.m */; };
-		9FA5FD852162243F0046F0A7 /* SLKTextInputbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FD6C21621DD70046F0A7 /* SLKTextInputbar.m */; };
-		9FA5FD862162244E0046F0A7 /* SLKTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FD7221621E0C0046F0A7 /* SLKTextView.m */; };
-		9FA8AF44216219EB0067EAE6 /* MessagesViewController+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FA8AF42216219C50067EAE6 /* MessagesViewController+Keyboard.swift */; };
+		9FA5FD9E21623A410046F0A7 /* UIResponder+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FD8821623A400046F0A7 /* UIResponder+SLKAdditions.m */; };
+		9FA5FD9F21623A410046F0A7 /* SLKInputAccessoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FD8921623A400046F0A7 /* SLKInputAccessoryView.m */; };
+		9FA5FDA021623A410046F0A7 /* UIView+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FD8C21623A400046F0A7 /* UIView+SLKAdditions.m */; };
+		9FA5FDA121623A410046F0A7 /* SLKTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FD8D21623A400046F0A7 /* SLKTextView.m */; };
+		9FA5FDA221623A410046F0A7 /* SLKTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FD8E21623A400046F0A7 /* SLKTextViewController.m */; };
+		9FA5FDA321623A410046F0A7 /* SLKTextInput+Implementation.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FD9021623A400046F0A7 /* SLKTextInput+Implementation.m */; };
+		9FA5FDA421623A410046F0A7 /* SLKTextView+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FD9221623A400046F0A7 /* SLKTextView+SLKAdditions.m */; };
+		9FA5FDA521623A410046F0A7 /* SLKTypingIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FD9921623A400046F0A7 /* SLKTypingIndicatorView.m */; };
+		9FA5FDA621623A410046F0A7 /* SLKTextInputBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FD9C21623A400046F0A7 /* SLKTextInputBar.m */; };
+		9FA5FDA721623A410046F0A7 /* UIScrollView+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FD9D21623A400046F0A7 /* UIScrollView+SLKAdditions.m */; };
+		9FA5FDA921623A520046F0A7 /* ChatInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FDA821623A520046F0A7 /* ChatInputViewController.swift */; };
+		9FA5FDAD21623C440046F0A7 /* AutoCompleteTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FDAB21623C440046F0A7 /* AutoCompleteTableViewCell.m */; };
+		9FA5FDAF21624CAB0046F0A7 /* PassthroughView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FDAE21624CAB0046F0A7 /* PassthroughView.swift */; };
 		9FA8EEF920878F8A00D0CBB6 /* CommonCrypto.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FFD1DD42086305B00FA4626 /* CommonCrypto.framework */; };
 		9FA8EEFA20878F8A00D0CBB6 /* SwiftProtobuf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FFD1DD52086305B00FA4626 /* SwiftProtobuf.framework */; };
 		9FA8EEFB20878F8A00D0CBB6 /* Teapot.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FFD1DD32086305B00FA4626 /* Teapot.framework */; };
@@ -51,6 +64,8 @@
 		9FA8EF062087963700D0CBB6 /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FA8EF052087963700D0CBB6 /* Starscream.framework */; };
 		9FA8EF072087963B00D0CBB6 /* Starscream.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9FA8EF052087963700D0CBB6 /* Starscream.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9FA8EF082087963D00D0CBB6 /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FA8EF052087963700D0CBB6 /* Starscream.framework */; };
+		9FAA850B2165F642007C17DE /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FAA850A2165F642007C17DE /* Profile.swift */; };
+		9FAA850C2165F7D6007C17DE /* IDAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FAA85082165F375007C17DE /* IDAPIClient.swift */; };
 		9FCCD5BF2088D6A200F2D9F3 /* SignalLibraryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FCCD5BE2088D6A200F2D9F3 /* SignalLibraryStore.swift */; };
 		9FCCD5D32089E0AC00F2D9F3 /* SignalContext+Optionals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FCCD5D22089E0AC00F2D9F3 /* SignalContext+Optionals.swift */; };
 		9FCDD50820A1E21A006835DC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9FCDD50620A1E21A006835DC /* Localizable.strings */; };
@@ -212,29 +227,50 @@
 		9F27B9EE2090B40C0032C7DD /* SignalLibraryStoreProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalLibraryStoreProtocol.swift; sourceTree = "<group>"; };
 		9F27B9F02090C61F0032C7DD /* InfoSignalMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoSignalMessage.swift; sourceTree = "<group>"; };
 		9F33523D20862B5500E0F145 /* SignalClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignalClient.swift; sourceTree = "<group>"; };
+		9F5CF5C42163840400FAAFD4 /* String+Truncation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Truncation.swift"; sourceTree = "<group>"; };
+		9F5CF5C6216384D600FAAFD4 /* RootNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootNavigationController.swift; sourceTree = "<group>"; };
+		9F5CF5C8216385F200FAAFD4 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		9F5CF5CA2163A15600FAAFD4 /* ChatTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTableView.swift; sourceTree = "<group>"; };
 		9F6EA595209098A30093290F /* SignalMessageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalMessageManager.swift; sourceTree = "<group>"; };
 		9F723092208F2FD500F568F7 /* Date+milisecondTimestamp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+milisecondTimestamp.swift"; sourceTree = "<group>"; };
 		9F723094208F303200F568F7 /* NSDate+Chrono.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Chrono.h"; sourceTree = "<group>"; };
 		9F723095208F303200F568F7 /* NSDate+Chrono.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSDate+Chrono.mm"; sourceTree = "<group>"; };
+		9F89636F21661D1700CC639A /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		9F89637321661F6100CC639A /* SettingsNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsNavigationController.swift; sourceTree = "<group>"; };
 		9F8F25182091D3A10020FF00 /* SignalRecipientsDisplayDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalRecipientsDisplayDelegate.swift; sourceTree = "<group>"; };
 		9F8F251A209219680020FF00 /* SignalServiceAttachmentsProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalServiceAttachmentsProcessor.swift; sourceTree = "<group>"; };
 		9F8F251C209348260020FF00 /* SignalServiceAttachmentPointer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalServiceAttachmentPointer.swift; sourceTree = "<group>"; };
-		9FA5FD6C21621DD70046F0A7 /* SLKTextInputbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLKTextInputbar.m; sourceTree = "<group>"; };
-		9FA5FD6D21621DD80046F0A7 /* SLKTextInputbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKTextInputbar.h; sourceTree = "<group>"; };
-		9FA5FD7121621E0C0046F0A7 /* SLKTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKTextView.h; sourceTree = "<group>"; };
-		9FA5FD7221621E0C0046F0A7 /* SLKTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLKTextView.m; sourceTree = "<group>"; };
 		9FA5FD7521621E2A0046F0A7 /* Cells.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cells.swift; sourceTree = "<group>"; };
-		9FA5FD7821621EEE0046F0A7 /* SLKTextInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKTextInput.h; sourceTree = "<group>"; };
-		9FA5FD7921621F120046F0A7 /* Signal-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Signal-Bridging-Header.h"; sourceTree = "<group>"; };
-		9FA5FD7A21621F120046F0A7 /* SLKTextView+SLKAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLKTextView+SLKAdditions.m"; sourceTree = "<group>"; };
-		9FA5FD7B21621F130046F0A7 /* SLKTextView+SLKAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SLKTextView+SLKAdditions.h"; sourceTree = "<group>"; };
-		9FA5FD7D21621F370046F0A7 /* SLKUIConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKUIConstants.h; sourceTree = "<group>"; };
-		9FA5FD7E21621F520046F0A7 /* SLKInputAccessoryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLKInputAccessoryView.m; sourceTree = "<group>"; };
-		9FA5FD7F21621F520046F0A7 /* SLKInputAccessoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKInputAccessoryView.h; sourceTree = "<group>"; };
-		9FA5FD8121621F6A0046F0A7 /* UIView+SLKAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+SLKAdditions.m"; sourceTree = "<group>"; };
-		9FA5FD8221621F6A0046F0A7 /* UIView+SLKAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+SLKAdditions.h"; sourceTree = "<group>"; };
-		9FA8AF42216219C50067EAE6 /* MessagesViewController+Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MessagesViewController+Keyboard.swift"; sourceTree = "<group>"; };
+		9FA5FD8821623A400046F0A7 /* UIResponder+SLKAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIResponder+SLKAdditions.m"; sourceTree = "<group>"; };
+		9FA5FD8921623A400046F0A7 /* SLKInputAccessoryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLKInputAccessoryView.m; sourceTree = "<group>"; };
+		9FA5FD8A21623A400046F0A7 /* SLKUIConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKUIConstants.h; sourceTree = "<group>"; };
+		9FA5FD8B21623A400046F0A7 /* SLKTypingIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKTypingIndicatorView.h; sourceTree = "<group>"; };
+		9FA5FD8C21623A400046F0A7 /* UIView+SLKAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+SLKAdditions.m"; sourceTree = "<group>"; };
+		9FA5FD8D21623A400046F0A7 /* SLKTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLKTextView.m; sourceTree = "<group>"; };
+		9FA5FD8E21623A400046F0A7 /* SLKTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLKTextViewController.m; sourceTree = "<group>"; };
+		9FA5FD8F21623A400046F0A7 /* UIScrollView+SLKAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+SLKAdditions.h"; sourceTree = "<group>"; };
+		9FA5FD9021623A400046F0A7 /* SLKTextInput+Implementation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLKTextInput+Implementation.m"; sourceTree = "<group>"; };
+		9FA5FD9121623A400046F0A7 /* SLKTextInputBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKTextInputBar.h; sourceTree = "<group>"; };
+		9FA5FD9221623A400046F0A7 /* SLKTextView+SLKAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLKTextView+SLKAdditions.m"; sourceTree = "<group>"; };
+		9FA5FD9321623A400046F0A7 /* UIResponder+SLKAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIResponder+SLKAdditions.h"; sourceTree = "<group>"; };
+		9FA5FD9421623A400046F0A7 /* SLKTextInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKTextInput.h; sourceTree = "<group>"; };
+		9FA5FD9521623A400046F0A7 /* SLKInputAccessoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKInputAccessoryView.h; sourceTree = "<group>"; };
+		9FA5FD9621623A400046F0A7 /* SLKTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKTextViewController.h; sourceTree = "<group>"; };
+		9FA5FD9721623A400046F0A7 /* SLKTypingIndicatorProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKTypingIndicatorProtocol.h; sourceTree = "<group>"; };
+		9FA5FD9821623A400046F0A7 /* SLKTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKTextView.h; sourceTree = "<group>"; };
+		9FA5FD9921623A400046F0A7 /* SLKTypingIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLKTypingIndicatorView.m; sourceTree = "<group>"; };
+		9FA5FD9A21623A400046F0A7 /* UIView+SLKAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+SLKAdditions.h"; sourceTree = "<group>"; };
+		9FA5FD9B21623A400046F0A7 /* SLKTextView+SLKAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SLKTextView+SLKAdditions.h"; sourceTree = "<group>"; };
+		9FA5FD9C21623A400046F0A7 /* SLKTextInputBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLKTextInputBar.m; sourceTree = "<group>"; };
+		9FA5FD9D21623A400046F0A7 /* UIScrollView+SLKAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+SLKAdditions.m"; sourceTree = "<group>"; };
+		9FA5FDA821623A520046F0A7 /* ChatInputViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatInputViewController.swift; sourceTree = "<group>"; };
+		9FA5FDAA21623B290046F0A7 /* Signal-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Signal-Bridging-Header.h"; sourceTree = "<group>"; };
+		9FA5FDAB21623C440046F0A7 /* AutoCompleteTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AutoCompleteTableViewCell.m; sourceTree = "<group>"; };
+		9FA5FDAC21623C440046F0A7 /* AutoCompleteTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoCompleteTableViewCell.h; sourceTree = "<group>"; };
+		9FA5FDAE21624CAB0046F0A7 /* PassthroughView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassthroughView.swift; sourceTree = "<group>"; };
 		9FA8EF052087963700D0CBB6 /* Starscream.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Starscream.framework; path = Carthage/Build/iOS/Starscream.framework; sourceTree = SOURCE_ROOT; };
+		9FAA85082165F375007C17DE /* IDAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDAPIClient.swift; sourceTree = "<group>"; };
+		9FAA850A2165F642007C17DE /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		9FCCD5BE2088D6A200F2D9F3 /* SignalLibraryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalLibraryStore.swift; sourceTree = "<group>"; };
 		9FCCD5D22089E0AC00F2D9F3 /* SignalContext+Optionals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SignalContext+Optionals.swift"; sourceTree = "<group>"; };
 		9FCDD50720A1E21A006835DC /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -422,24 +458,37 @@
 			path = Cells;
 			sourceTree = "<group>";
 		};
-		9FA5FD7021621DF50046F0A7 /* TextInput */ = {
+		9FA5FD8721623A400046F0A7 /* SlackTextViewController */ = {
 			isa = PBXGroup;
 			children = (
-				9FA5FD7D21621F370046F0A7 /* SLKUIConstants.h */,
-				9FA5FD7821621EEE0046F0A7 /* SLKTextInput.h */,
-				9FA5FD7121621E0C0046F0A7 /* SLKTextView.h */,
-				9FA5FD7221621E0C0046F0A7 /* SLKTextView.m */,
-				9FA5FD6D21621DD80046F0A7 /* SLKTextInputbar.h */,
-				9FA5FD6C21621DD70046F0A7 /* SLKTextInputbar.m */,
-				9FA5FD7B21621F130046F0A7 /* SLKTextView+SLKAdditions.h */,
-				9FA5FD7A21621F120046F0A7 /* SLKTextView+SLKAdditions.m */,
-				9FA5FD8221621F6A0046F0A7 /* UIView+SLKAdditions.h */,
-				9FA5FD8121621F6A0046F0A7 /* UIView+SLKAdditions.m */,
-				9FA5FD7F21621F520046F0A7 /* SLKInputAccessoryView.h */,
-				9FA5FD7E21621F520046F0A7 /* SLKInputAccessoryView.m */,
-				9FA5FD7921621F120046F0A7 /* Signal-Bridging-Header.h */,
+				9FA5FD8821623A400046F0A7 /* UIResponder+SLKAdditions.m */,
+				9FA5FD8921623A400046F0A7 /* SLKInputAccessoryView.m */,
+				9FA5FD8A21623A400046F0A7 /* SLKUIConstants.h */,
+				9FA5FD8B21623A400046F0A7 /* SLKTypingIndicatorView.h */,
+				9FA5FD8C21623A400046F0A7 /* UIView+SLKAdditions.m */,
+				9FA5FD8D21623A400046F0A7 /* SLKTextView.m */,
+				9FA5FD8E21623A400046F0A7 /* SLKTextViewController.m */,
+				9FA5FD8F21623A400046F0A7 /* UIScrollView+SLKAdditions.h */,
+				9FA5FD9021623A400046F0A7 /* SLKTextInput+Implementation.m */,
+				9FA5FD9121623A400046F0A7 /* SLKTextInputBar.h */,
+				9FA5FD9221623A400046F0A7 /* SLKTextView+SLKAdditions.m */,
+				9FA5FD9321623A400046F0A7 /* UIResponder+SLKAdditions.h */,
+				9FA5FD9421623A400046F0A7 /* SLKTextInput.h */,
+				9FA5FD9521623A400046F0A7 /* SLKInputAccessoryView.h */,
+				9FA5FD9621623A400046F0A7 /* SLKTextViewController.h */,
+				9FA5FD9721623A400046F0A7 /* SLKTypingIndicatorProtocol.h */,
+				9FA5FD9821623A400046F0A7 /* SLKTextView.h */,
+				9FA5FD9921623A400046F0A7 /* SLKTypingIndicatorView.m */,
+				9FA5FD9A21623A400046F0A7 /* UIView+SLKAdditions.h */,
+				9FA5FD9B21623A400046F0A7 /* SLKTextView+SLKAdditions.h */,
+				9FA5FD9C21623A400046F0A7 /* SLKTextInputBar.m */,
+				9FA5FD9D21623A400046F0A7 /* UIScrollView+SLKAdditions.m */,
+				9FA5FDAC21623C440046F0A7 /* AutoCompleteTableViewCell.h */,
+				9FA5FDAB21623C440046F0A7 /* AutoCompleteTableViewCell.m */,
+				9FA5FDAA21623B290046F0A7 /* Signal-Bridging-Header.h */,
+				9FA5FDAE21624CAB0046F0A7 /* PassthroughView.swift */,
 			);
-			path = TextInput;
+			path = SlackTextViewController;
 			sourceTree = "<group>";
 		};
 		9FA8EEF820878F8A00D0CBB6 /* Frameworks */ = {
@@ -458,13 +507,21 @@
 				9FF2E498208A201F001C666C /* SQLite.framework */,
 				9FF2E499208A2020001C666C /* Teapot.framework */,
 				9FE925E0208A08F6008ABCE4 /* AppDelegate.swift */,
+				9F5CF5C8216385F200FAAFD4 /* Theme.swift */,
+				9F5CF5C6216384D600FAAFD4 /* RootNavigationController.swift */,
+				9F89636F21661D1700CC639A /* TabBarController.swift */,
+				9F89637321661F6100CC639A /* SettingsNavigationController.swift */,
 				9FE925E2208A08F6008ABCE4 /* ChatsViewController.swift */,
 				9FA5FD7521621E2A0046F0A7 /* Cells.swift */,
 				9FE92607208A0BAD008ABCE4 /* User.swift */,
 				9FE925E4208A08F6008ABCE4 /* MessagesViewController.swift */,
-				9FA8AF42216219C50067EAE6 /* MessagesViewController+Keyboard.swift */,
 				9FE925F2208A0992008ABCE4 /* UserBootstrapParams.swift */,
-				9FA5FD7021621DF50046F0A7 /* TextInput */,
+				9FA5FDA821623A520046F0A7 /* ChatInputViewController.swift */,
+				9F5CF5C42163840400FAAFD4 /* String+Truncation.swift */,
+				9F5CF5CA2163A15600FAAFD4 /* ChatTableView.swift */,
+				9FAA85082165F375007C17DE /* IDAPIClient.swift */,
+				9FAA850A2165F642007C17DE /* Profile.swift */,
+				9FA5FD8721623A400046F0A7 /* SlackTextViewController */,
 				9F0A19AF20A09F7E0051B268 /* Cells */,
 				9FE925F8208A09B1008ABCE4 /* Sofa */,
 				9FE925F4208A099A008ABCE4 /* FilePersistenceStore.swift */,
@@ -705,9 +762,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 9FE925EF208A08F8008ABCE4 /* Build configuration list for PBXNativeTarget "Signal" */;
 			buildPhases = (
-				9FE925DA208A08F6008ABCE4 /* Sources */,
 				9FE925DB208A08F6008ABCE4 /* Frameworks */,
 				9FE925DC208A08F6008ABCE4 /* Resources */,
+				9FE925DA208A08F6008ABCE4 /* Sources */,
 				9FE92601208A09DF008ABCE4 /* Copy Frameworks */,
 				9F72308B208F2B6800F568F7 /* Load Reveal is available */,
 			);
@@ -766,7 +823,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 0930;
 				LastUpgradeCheck = 0940;
-				ORGANIZATIONNAME = "Bakken&Bæck";
+				ORGANIZATIONNAME = elland.me;
 				TargetAttributes = {
 					9FE925DD208A08F6008ABCE4 = {
 						CreatedOnToolsVersion = 9.3;
@@ -852,22 +909,37 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9F5CF5C9216385F200FAAFD4 /* Theme.swift in Sources */,
+				9FA5FDA221623A410046F0A7 /* SLKTextViewController.m in Sources */,
+				9FAA850B2165F642007C17DE /* Profile.swift in Sources */,
 				9FE925F6208A099B008ABCE4 /* FilePersistenceStore.swift in Sources */,
+				9FA5FD9E21623A410046F0A7 /* UIResponder+SLKAdditions.m in Sources */,
 				9FE925E5208A08F6008ABCE4 /* MessagesViewController.swift in Sources */,
-				9FA5FD862162244E0046F0A7 /* SLKTextView.m in Sources */,
+				9F5CF5CB2163A15600FAAFD4 /* ChatTableView.swift in Sources */,
+				9FA5FDA621623A410046F0A7 /* SLKTextInputBar.m in Sources */,
+				9FAA850C2165F7D6007C17DE /* IDAPIClient.swift in Sources */,
+				9F5CF5C52163840400FAAFD4 /* String+Truncation.swift in Sources */,
 				9FE925F3208A0992008ABCE4 /* UserBootstrapParams.swift in Sources */,
-				9FA5FD84216223CA0046F0A7 /* SLKInputAccessoryView.m in Sources */,
-				9FA5FD852162243F0046F0A7 /* SLKTextInputbar.m in Sources */,
+				9FA5FDA721623A410046F0A7 /* UIScrollView+SLKAdditions.m in Sources */,
+				9F89637421661F6100CC639A /* SettingsNavigationController.swift in Sources */,
 				9FE92608208A0BAD008ABCE4 /* User.swift in Sources */,
 				9F0A19B920A09F7E0051B268 /* StatusCell.swift in Sources */,
+				9FA5FDAF21624CAB0046F0A7 /* PassthroughView.swift in Sources */,
+				9F89637221661DBE00CC639A /* TabBarController.swift in Sources */,
 				9FE925E3208A08F6008ABCE4 /* ChatsViewController.swift in Sources */,
+				9FA5FD9F21623A410046F0A7 /* SLKInputAccessoryView.m in Sources */,
+				9FA5FDA121623A410046F0A7 /* SLKTextView.m in Sources */,
 				9F0A19B620A09F7E0051B268 /* MessagesTextCell.swift in Sources */,
+				9FA5FDA921623A520046F0A7 /* ChatInputViewController.swift in Sources */,
+				9FA5FDA321623A410046F0A7 /* SLKTextInput+Implementation.m in Sources */,
+				9FA5FDA521623A410046F0A7 /* SLKTypingIndicatorView.m in Sources */,
+				9FA5FDA021623A410046F0A7 /* UIView+SLKAdditions.m in Sources */,
 				9FE925E1208A08F6008ABCE4 /* AppDelegate.swift in Sources */,
-				9FA5FD8321621F6A0046F0A7 /* UIView+SLKAdditions.m in Sources */,
 				9FA5FD7721621E3B0046F0A7 /* Cells.swift in Sources */,
+				9F5CF5C7216384D600FAAFD4 /* RootNavigationController.swift in Sources */,
 				9FE925FA208A09B1008ABCE4 /* SofaMessage.swift in Sources */,
-				9FA8AF44216219EB0067EAE6 /* MessagesViewController+Keyboard.swift in Sources */,
-				9FA5FD7C21621F130046F0A7 /* SLKTextView+SLKAdditions.m in Sources */,
+				9FA5FDA421623A410046F0A7 /* SLKTextView+SLKAdditions.m in Sources */,
+				9FA5FDAD21623C440046F0A7 /* AutoCompleteTableViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -980,7 +1052,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.bakkenbaeck.SignalDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "SignalDemo/TextInput/Signal-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "SignalDemo/SlackTextViewController/Signal-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1006,7 +1078,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.bakkenbaeck.SignalDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "SignalDemo/TextInput/Signal-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "SignalDemo/SlackTextViewController/Signal-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
 			};

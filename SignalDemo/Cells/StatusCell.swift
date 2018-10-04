@@ -37,8 +37,8 @@ final class StatusCell: UITableViewCell {
 
     private func setTextLabelStyle() {
         self.textLabel?.textAlignment = .center
-        self.textLabel?.textColor = .darkText
-        self.textLabel?.font = .systemFont(ofSize: 16)
+        self.textLabel?.textColor = .gray
+        self.textLabel?.font = .systemFont(ofSize: 14)
 
         self.textLabel?.adjustsFontForContentSizeCategory = true
     }

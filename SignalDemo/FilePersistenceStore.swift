@@ -3,7 +3,6 @@
 //  Demo
 //
 //  Created by Igor Ranieri on 19.04.18.
-//  Copyright © 2018 Bakken&Bæck. All rights reserved.
 //
 
 import Foundation
@@ -50,6 +49,7 @@ extension SignalMessage {
         let chatId = try row.get(SignalMessageKeys.chatIdField)
         let timestamp = try row.get(SignalMessageKeys.timestampField)
         let attachmentIdsString = try row.get(SignalMessageKeys.attachmentIdsField)
+        let senderId = try row.get(SignalMessageKeys.senderIdField)
 
         let message: SignalMessage
 
@@ -58,18 +58,15 @@ extension SignalMessage {
             guard  let messageTypeRaw = try row.get(SignalMessageKeys.messageTypeField)  else { fatalError() }
 
             let messageType = InfoSignalMessage.MessageType(rawValue: Int(messageTypeRaw))
-            let senderId = try row.get(SignalMessageKeys.senderIdField)
             let additionalInfo = try row.get(SignalMessageKeys.additionalInfoField)
             let customMessage = try row.get(SignalMessageKeys.customMessageField)
 
-            message = InfoSignalMessage.init(senderId: senderId!, chatId: chatId, messageType: messageType!, customMessage: customMessage!, additionalInfo: additionalInfo, store: nil)
+            message = InfoSignalMessage(senderId: senderId ,chatId: chatId, messageType: messageType!, customMessage: customMessage!, additionalInfo: additionalInfo, store: nil)
         case .incoming:
-            let senderId = try row.get(SignalMessageKeys.senderIdField)
-
             let isRead = try row.get(SignalMessageKeys.isReadField)
             let isSent = try row.get(SignalMessageKeys.isSentField)
 
-            let incoming = IncomingSignalMessage(body: body, chatId: chatId, senderId: senderId!, timestamp: UInt64(timestamp)!, store: nil)
+            let incoming = IncomingSignalMessage(body: body, senderId: senderId, chatId: chatId, timestamp: UInt64(timestamp)!, store: nil)
             incoming.isRead = isRead!
             incoming.isSent = isSent!
 
@@ -84,7 +81,7 @@ extension SignalMessage {
             let groupMessageType = OutgoingSignalMessage.GroupMetaMessageType(rawValue: Int(groupMessageTypeRaw))
             let recipientId = try row.get(SignalMessageKeys.recipientIdField)
 
-            let outgoing = OutgoingSignalMessage(recipientId: recipientId!, chatId: chatId, body: body, groupMessageType: groupMessageType!, store: nil)
+            let outgoing = OutgoingSignalMessage(recipientId: recipientId!, senderId: senderId, chatId: chatId, body: body, groupMessageType: groupMessageType!, store: nil)
             outgoing.messageState = messageState!
 
             message = outgoing
@@ -143,7 +140,7 @@ struct SignalMessageKeys {
     static let additionalInfoField = Expression<String?>("additionalInfo")
 
     /* Info & Incoming both have a sender */
-    static let senderIdField = Expression<String?>("senderId")
+    static let senderIdField = Expression<String>("senderId")
 
     /* Every message */
     static let uniqueIdField = Expression<String>("id")
@@ -187,9 +184,12 @@ struct SignalChatKeys {
 }
 
 struct UserKeys {
-    static let uniqueIdField = Expression<String>("id")
     static let passwordField = Expression<String>("password")
     static let privateKeyField = Expression<String>("privateKey")
+    static let usernameField = Expression<String>("username")
+    static let nameField = Expression<String?>("name")
+    static let avatarField = Expression<String?>("avatar")
+    static let descriptionField = Expression<String?>("description")
 }
 
 class FilePersistenceStore {
@@ -284,15 +284,23 @@ class FilePersistenceStore {
         _ = try? self.dbConnection.run(self.userTable.create  { t in
             t.column(UserKeys.passwordField)
             t.column(UserKeys.privateKeyField)
+            t.column(UserKeys.usernameField)
+            t.column(UserKeys.nameField)
+            t.column(UserKeys.avatarField)
+            t.column(UserKeys.descriptionField)
         })
 
         NSLog("Did finish database setup.")
     }
 
-    func storeUser(_ user: User) {
+    func storeUser(_ user: Profile) {
         let insert = self.userTable.insert(
             UserKeys.passwordField <- user.password,
-            UserKeys.privateKeyField <- user.privateKey
+            UserKeys.privateKeyField <- user.cereal.privateKey,
+            UserKeys.usernameField <- user.username,
+            UserKeys.nameField <- user.name,
+            UserKeys.avatarField <- user.avatar,
+            UserKeys.descriptionField <- user.description
         )
 
         do {
@@ -309,13 +317,18 @@ class FilePersistenceStore {
         }
     }
 
-    func retrieveUser() -> User? {
+    func retrieveUser() -> Profile? {
         guard let userRow = try! self.dbConnection.pluck(self.userTable) else { return nil }
 
         let password = try! userRow.get(UserKeys.passwordField)
         let privateKey = try! userRow.get(UserKeys.privateKeyField)
+        
+        let username = try! userRow.get(UserKeys.usernameField)
+        let name = try! userRow.get(UserKeys.nameField)
+        let avatar = try! userRow.get(UserKeys.avatarField)
+        let description = try! userRow.get(UserKeys.descriptionField)
 
-        return User(privateKey: privateKey, password: password)
+        return Profile(password: password, privateKey: privateKey, username: username, name: name, avatar: avatar, description: description)
     }
 
     private func insert(_ insert: Insert) {
@@ -427,7 +440,7 @@ class FilePersistenceStore {
             SignalMessageKeys.messageKindField <- SignalMessageKind(message).rawValue,
 
             // incoming or info
-            SignalMessageKeys.senderIdField <- (message as? IncomingSignalMessage)?.senderId,
+            SignalMessageKeys.senderIdField <- message.senderId,
 
             // info
             SignalMessageKeys.additionalInfoField <- (message as? InfoSignalMessage)?.additionalInfo,
@@ -535,7 +548,16 @@ extension FilePersistenceStore: PersistenceStore {
     func storeMessage(_ message: SignalMessage) {
         let insert: Insert = self.buildMessageOperation(message)
 
-       self.insert(insert)
+        self.insert(insert)
+    }
+
+    func deleteMessage(_ message: SignalMessage){
+        let delete = self.messagesTable.filter(SignalMessageKeys.uniqueIdField == message.uniqueId)
+        do {
+            try self.dbConnection.run(delete.delete())
+        } catch (let error) {
+            NSLog("Failed to delete data in the db: %@", error.localizedDescription)
+        }
     }
 
     func updateChat(_ chat: SignalChat) {

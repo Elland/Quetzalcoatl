@@ -3,7 +3,6 @@
 //  SignalWrapper
 //
 //  Created by Igor Ranieri on 21.03.18.
-//  Copyright © 2018 Bakken&Bæck. All rights reserved.
 //
 
 /// Our key helper, responsible for generating random data, private keys, signed prekeys and identity key pairs.
