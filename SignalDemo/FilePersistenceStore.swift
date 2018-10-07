@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import SignalServiceSwift
+import Quetzalcoatl
 import SQLite
 
 extension SignalServiceAttachmentPointer {

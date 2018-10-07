@@ -6,7 +6,7 @@
 //
 
 import EtherealCereal
-import SignalServiceSwift
+import Quetzalcoatl
 import Teapot
 import UIKit
 
@@ -29,11 +29,11 @@ class ChatsViewController: UIViewController {
 
     let teapot = Teapot(baseURL: URL(string: "https://token-chat-service-development.herokuapp.com")!)
 
-    lazy var signalClient: SignalClient = {
-        let client = SignalClient(baseURL: self.teapot.baseURL, recipientsDelegate: self, persistenceStore: self.persistenceStore)
-        client.store.chatDelegate = self
+    lazy var quetzalcoatl: Quetzalcoatl = {
+        let quetzalcoatl = Quetzalcoatl(baseURL: self.teapot.baseURL, recipientsDelegate: self, persistenceStore: self.persistenceStore)
+        quetzalcoatl.store.chatDelegate = self
 
-        return client
+        return quetzalcoatl
     }()
 
     var persistenceStore = FilePersistenceStore()
@@ -56,9 +56,9 @@ class ChatsViewController: UIViewController {
 
             super.init(nibName: nil, bundle: nil)
 
-            self.signalClient.startSocket()
-            self.signalClient.shouldKeepSocketAlive = true
-            self.chats = self.signalClient.store.retrieveAllChats()
+            self.quetzalcoatl.startSocket()
+            self.quetzalcoatl.shouldKeepSocketAlive = true
+            self.chats = self.quetzalcoatl.store.retrieveAllChats()
 
         } else {
             // cheating for testing
@@ -74,7 +74,7 @@ class ChatsViewController: UIViewController {
             self.register(user: self.user)
         }
 
-        self.signalClient.store.chatDelegate = self
+        self.quetzalcoatl.store.chatDelegate = self
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -97,7 +97,7 @@ class ChatsViewController: UIViewController {
 
     func register(user: Profile) {
         self.fetchTimestamp { timestamp in
-            let payload = self.signalClient.generateUserBootstrap(username: user.id, password: user.password)
+            let payload = self.quetzalcoatl.generateUserBootstrap(username: user.id, password: user.password)
             let path = "/v1/accounts/bootstrap"
 
             guard let data = try? JSONSerialization.data(withJSONObject: payload, options: []) else {
@@ -125,10 +125,10 @@ class ChatsViewController: UIViewController {
                         NSLog("\(status.rawValue)")
                     })
 
-                    self.signalClient.startSocket()
-                    self.signalClient.shouldKeepSocketAlive = true
+                    self.quetzalcoatl.startSocket()
+                    self.quetzalcoatl.shouldKeepSocketAlive = true
                     self.persistenceStore.storeUser(user)
-                    self.chats = self.signalClient.store.retrieveAllChats()
+                    self.chats = self.quetzalcoatl.store.retrieveAllChats()
 
                 case .failure(_, _, let error):
                     NSLog(error.localizedDescription)
@@ -157,9 +157,9 @@ class ChatsViewController: UIViewController {
 
     @IBAction func didTapCreateChatButton(_ sender: Any) {
         // Group message test
-        //        self.signalClient.sendGroupMessage("", type: .new, to: [self.testContact, self.otherContact, self.ellenContact, self.user.address])
+        //        self.quetzalcoatl.sendGroupMessage("", type: .new, to: [self.testContact, self.otherContact, self.ellenContact, self.user.address])
         //        // 1:1 chat test.
-        let chat = self.signalClient.store.fetchOrCreateChat(with: self.igorContact.name)
+        let chat = self.quetzalcoatl.store.fetchOrCreateChat(with: self.igorContact.name)
         self.didRequestSendMessage(text: "", in: chat)
     }
 }
@@ -224,7 +224,7 @@ extension ChatsViewController: UITableViewDelegate {
         let destination = MessagesViewController(chat: chat)
         destination.delegate = self
 
-        self.signalClient.store.messageDelegate = destination
+        self.quetzalcoatl.store.messageDelegate = destination
         self.navigationController?.pushViewController(destination, animated: true)
     }
 
@@ -235,13 +235,13 @@ extension ChatsViewController: UITableViewDelegate {
 
 extension ChatsViewController: MessagesViewControllerDelegate {
     func didRequestNewIdentity(for address: SignalAddress, deleting message: SignalMessage) {
-        self.signalClient.requestNewIdentity(for: address)
-        self.signalClient.deleteMessage(message)
+        self.quetzalcoatl.requestNewIdentity(for: address)
+        self.quetzalcoatl.deleteMessage(message)
     }
 
     static func randomMessage() -> (String, [UIImage]) {
         let messages: [(String, [UIImage])] = [
-            (SofaMessage(body: "This is testing message from our SignalClient.").content, []),
+            (SofaMessage(body: "This is testing message from our Signal demo client.").content, []),
             (SofaMessage(body: "This is random message from SQLite demo.").content, []),
             (SofaMessage(body: "What's up, doc?.").content, [UIImage(named: "doc")!]),
             (SofaMessage(body: "This is Ceti Alpha 5!!!!!!!").content, [UIImage(named: "cetialpha5")!]),
@@ -258,9 +258,9 @@ extension ChatsViewController: MessagesViewControllerDelegate {
         let attachments = images.compactMap { img in img.pngData() }
 
         if chat.isGroupChat {
-            self.signalClient.sendGroupMessage(text, type: .deliver, to: chat.recipients!, attachments: attachments)
+            self.quetzalcoatl.sendGroupMessage(text, type: .deliver, to: chat.recipients!, attachments: attachments)
         } else {
-            self.signalClient.sendMessage(text, to: chat.recipients!.first!, in: chat, attachments: attachments)
+            self.quetzalcoatl.sendMessage(text, to: chat.recipients!.first!, in: chat, attachments: attachments)
         }
     }
 }

@@ -1,6 +1,6 @@
 //
 //  TabBarController.swift
-//  SignalServiceSwift
+//  Quetzalcoatl
 //
 //  Created by Igor Ranieri on 04.10.18.
 //

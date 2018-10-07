@@ -5,7 +5,7 @@
 //  Created by Igor Ranieri on 20.04.18.
 //
 
-import SignalServiceSwift
+import Quetzalcoatl
 import SweetUIKit
 import UIKit
 
