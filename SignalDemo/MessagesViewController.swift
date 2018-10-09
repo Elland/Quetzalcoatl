@@ -36,9 +36,9 @@ class MessagesViewController: UIViewController {
 
     var shouldScrollToBottom = false
 
-    lazy var messages: [SignalMessage] = {
+    var messages: [SignalMessage] {
         return self.chat.visibleMessages
-    }()
+    }
 
 //    let refreshControl = UIRefreshControl()
 
@@ -82,6 +82,17 @@ class MessagesViewController: UIViewController {
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override var inputAccessoryView: UIView? {
+        let view = UIView(frame: .zero)
+        view.backgroundColor = .white
+
+        return view
+    }
+
+    override var canBecomeFirstResponder: Bool {
+        return true
     }
 
     override func viewDidLoad() {
@@ -133,9 +144,6 @@ class MessagesViewController: UIViewController {
         NSLayoutConstraint.activate([
             self.tableView.topAnchor.constraint(equalTo: self.view.topAnchor),
             self.tableView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor),
-
-//            self.chatInputViewController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor),
-//            self.chatInputViewController.view.rightAnchor.constraint(equalTo: self.view.rightAnchor),
         ])
 
         self.tableView.left(to: self.view)
@@ -240,11 +248,8 @@ extension MessagesViewController: SignalServiceStoreMessageDelegate {
 
         switch changeType {
         case .insert:
-            (message as? IncomingSignalMessage)?.isRead = true
-            self.messages.append(message)
             self.tableView.insertRows(at: [indexPath], with: .middle)
         case .delete:
-            self.messages.remove(at: indexPath.row)
             self.tableView.deleteRows(at: [indexPath], with: .fade)
         case .update:
             self.tableView.reloadRows(at: [indexPath], with: .fade)

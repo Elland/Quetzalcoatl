@@ -75,10 +75,6 @@ public class SignalChat: Equatable, Codable {
 
     public var uniqueId: String = UUID().uuidString
 
-    public var numberOfMessages: Int {
-        return self.messages.count
-    }
-
     public var hasUnreadMessages: Bool {
         guard let incoming = self.messages.filter({ message -> Bool in
             message is IncomingSignalMessage
@@ -115,9 +111,9 @@ public class SignalChat: Equatable, Codable {
         return visibles
     }
 
-    public lazy var messages: [SignalMessage] = {
+    public var messages: [SignalMessage] {
         return self.store.messages(for: self, range: 0..<100)
-    }()
+    }
 
     public var isArchived: Bool {
         return (self.lastArchivalDate?.timeIntervalSinceNow ?? 0) > 0

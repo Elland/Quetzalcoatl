@@ -6,39 +6,41 @@
 //
 
 public protocol PersistenceStore: SignalLibraryStoreDelegate {
+    typealias PersistenceCompletionBlock = () -> Void
+
     /* Messages */
     func retrieveMessages(with predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]?) -> [SignalMessage]
 
-    func updateMessage(_ message: SignalMessage)
-    func storeMessage(_  message: SignalMessage)
-    func deleteMessage(_ message: SignalMessage)
+    func updateMessage(_ message: SignalMessage, _ completion: PersistenceCompletionBlock)
+    func storeMessage(_  message: SignalMessage, _ completion: PersistenceCompletionBlock)
+    func deleteMessage(_ message: SignalMessage, _ completion: PersistenceCompletionBlock)
 
     /* Chats */
     func retrieveAllChats() -> [SignalChat]
 
     func retrieveChats(with predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]?) -> [SignalChat]
 
-    func updateChat(_ chat: SignalChat)
-    func storeChat(_  chat: SignalChat)
+    func updateChat(_ chat: SignalChat, _ completion: PersistenceCompletionBlock)
+    func storeChat(_  chat: SignalChat, _ completion: PersistenceCompletionBlock)
 
     /* Recipients */
     func retrieveRecipients(with predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]?) -> [SignalAddress]
 
-    func updateRecipient(_ recipient: SignalAddress)
-    func storeRecipient(_  recipient: SignalAddress)
+    func updateRecipient(_ recipient: SignalAddress, _ completion: PersistenceCompletionBlock)
+    func storeRecipient(_  recipient: SignalAddress, _ completion: PersistenceCompletionBlock)
 
     /* Sender */
     func retrieveSender() -> SignalSender?
-    func storeSender(_  sender: SignalSender)
+    func storeSender(_  sender: SignalSender, _ completion: PersistenceCompletionBlock)
 
     /* Attachments */
     func retrieveAttachments(with predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]?) -> [SignalServiceAttachmentPointer]
 
-    func updateAttachment(_ attachment: SignalServiceAttachmentPointer)
-    func storeAttachment(_  attachment: SignalServiceAttachmentPointer)
+    func updateAttachment(_ attachment: SignalServiceAttachmentPointer, _ completion: PersistenceCompletionBlock)
+    func storeAttachment(_  attachment: SignalServiceAttachmentPointer, _ completion: PersistenceCompletionBlock)
 
     /* Delete all chats and messages */
-    func deleteAllChatsAndMessages()
+    func deleteAllChatsAndMessages(_ completion: PersistenceCompletionBlock)
 }
 
 public protocol SignalServiceStoreChatDelegate {
@@ -87,7 +89,7 @@ public class SignalServiceStore {
     }
 
     func storeSender(_ sender: SignalSender) {
-        self.persistenceStore.storeSender(sender)
+        self.persistenceStore.storeSender(sender) {}
     }
 
     func fetchOrCreateRecipient(name: String, deviceId: Int32) -> SignalAddress {
@@ -222,7 +224,7 @@ public class SignalServiceStore {
     }
 
     func save(_ recipient: SignalAddress) throws {
-        self.persistenceStore.storeRecipient(recipient)
+        self.persistenceStore.storeRecipient(recipient) {}
     }
 
     func chatContainsMessage(_ chat: SignalChat, _ message: SignalMessage) -> Bool {
@@ -236,41 +238,40 @@ public class SignalServiceStore {
         
         // update?
         if let chat = self.chat(chatId: message.chatId), self.chatContainsMessage(chat, message) {
-            self.persistenceStore.updateMessage(message)
-
-            guard let visibleIndex = chat.visibleMessages.index(of: message) else {
-                NSLog("Message type not visible in chat.")
-                return
-            }
-
-            let indexPath = IndexPath(item: visibleIndex, section: 0)
-
-            DispatchQueue.main.async {
-                self.messageDelegate?.signalServiceStoreWillChangeMessages()
-                self.messageDelegate?.signalServiceStoreDidChangeMessage(message, at: indexPath, for: .update)
-                self.messageDelegate?.signalServiceStoreDidChangeMessages()
-            }
-
-        } else {
-            // new message
-            if let chat = self.chat(chatId: message.chatId) {
-                self.persistenceStore.storeMessage(message)
-
-                guard message.isVisible else {
+            self.persistenceStore.updateMessage(message) {
+                guard let visibleIndex = chat.visibleMessages.index(of: message) else {
                     NSLog("Message type not visible in chat.")
                     return
                 }
 
+                let indexPath = IndexPath(item: visibleIndex, section: 0)
+
                 DispatchQueue.main.async {
                     self.messageDelegate?.signalServiceStoreWillChangeMessages()
-                }
-
-                let index = chat.visibleMessages.index(of: message)!
-                let indexPath = IndexPath(item: index, section: 0)
-
-                DispatchQueue.main.async {
-                    self.messageDelegate?.signalServiceStoreDidChangeMessage(message, at: indexPath, for: .insert)
+                    self.messageDelegate?.signalServiceStoreDidChangeMessage(message, at: indexPath, for: .update)
                     self.messageDelegate?.signalServiceStoreDidChangeMessages()
+                }
+            }
+        } else {
+            // new message
+            if let chat = self.chat(chatId: message.chatId) {
+                self.persistenceStore.storeMessage(message) {
+                    guard message.isVisible else {
+                        NSLog("Message type not visible in chat.")
+                        return
+                    }
+
+                    DispatchQueue.main.async {
+                        self.messageDelegate?.signalServiceStoreWillChangeMessages()
+                    }
+
+                    let index = chat.visibleMessages.index(of: message)!
+                    let indexPath = IndexPath(item: index, section: 0)
+
+                    DispatchQueue.main.async {
+                        self.messageDelegate?.signalServiceStoreDidChangeMessage(message, at: indexPath, for: .insert)
+                        self.messageDelegate?.signalServiceStoreDidChangeMessages()
+                    }
                 }
             } else {
                 NSLog("Error: No chat for message: \(message).")
@@ -291,11 +292,11 @@ public class SignalServiceStore {
         let index = chat.visibleMessages.index(of: message)!
         let indexPath = IndexPath(item: index, section: 0)
 
-        self.persistenceStore.deleteMessage(message)
-
-        DispatchQueue.main.async {
-            self.messageDelegate?.signalServiceStoreDidChangeMessage(message, at: indexPath, for: .delete)
-            self.messageDelegate?.signalServiceStoreDidChangeMessages()
+        self.persistenceStore.deleteMessage(message) {
+            DispatchQueue.main.async {
+                self.messageDelegate?.signalServiceStoreDidChangeMessage(message, at: indexPath, for: .delete)
+                self.messageDelegate?.signalServiceStoreDidChangeMessages()
+            }
         }
     }
 
@@ -306,32 +307,31 @@ public class SignalServiceStore {
 
         // insert
         if self.chat(chatId: chat.uniqueId) == nil {
-            self.persistenceStore.storeChat(chat)
-
-            let indexPath = IndexPath(item: 0, section: 0) // IndexPath(item: self.chats.index(of: chat)!, section: 0)
-            DispatchQueue.main.async {
-                self.chatDelegate?.signalServiceStoreDidChangeChat(chat, at: indexPath, for: .insert)
+            self.persistenceStore.storeChat(chat)  {
+                let indexPath = IndexPath(item: 0, section: 0)
+                DispatchQueue.main.async {
+                    self.chatDelegate?.signalServiceStoreDidChangeChat(chat, at: indexPath, for: .insert)
+                    self.chatDelegate?.signalServiceStoreDidChangeChats()
+                }
             }
         } else {
             // update
-            self.persistenceStore.updateChat(chat)
-            let indexPath = IndexPath(item: 0, section: 0) // IndexPath(item: self.chats.index(of: chat)!, section: 0)
+            self.persistenceStore.updateChat(chat) {
+                let indexPath = IndexPath(item: 0, section: 0)
 
-            DispatchQueue.main.async {
-                self.chatDelegate?.signalServiceStoreDidChangeChat(chat, at: indexPath, for: .update)
+                DispatchQueue.main.async {
+                    self.chatDelegate?.signalServiceStoreDidChangeChat(chat, at: indexPath, for: .update)
+                    self.chatDelegate?.signalServiceStoreDidChangeChats()
+                }
             }
-        }
-
-        DispatchQueue.main.async {
-            self.chatDelegate?.signalServiceStoreDidChangeChats()
         }
     }
 
     func save(attachmentPointer: SignalServiceAttachmentPointer) throws {
-        self.persistenceStore.storeAttachment(attachmentPointer)
+        self.persistenceStore.storeAttachment(attachmentPointer) { }
     }
 
     func deleteAllChatsAndMessages() {
-        self.persistenceStore.deleteAllChatsAndMessages()
+        self.persistenceStore.deleteAllChatsAndMessages() { }
     }
 }

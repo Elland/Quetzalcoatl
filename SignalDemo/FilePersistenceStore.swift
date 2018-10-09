@@ -539,32 +539,37 @@ extension FilePersistenceStore: PersistenceStore {
 
     /* Signal service types */
 
-    func updateMessage(_ message: SignalMessage) {
+    func updateMessage(_ message: SignalMessage, _ completion: () -> Void) {
         let update: Update = self.buildMessageOperation(message)
 
         self.update(update)
+        completion()
     }
 
-    func storeMessage(_ message: SignalMessage) {
+    func storeMessage(_ message: SignalMessage, _ completion: () -> Void) {
         let insert: Insert = self.buildMessageOperation(message)
 
         self.insert(insert)
+        completion()
     }
 
-    func deleteMessage(_ message: SignalMessage){
+    func deleteMessage(_ message: SignalMessage, _ completion: () -> Void) {
         let delete = self.messagesTable.filter(SignalMessageKeys.uniqueIdField == message.uniqueId)
         do {
             try self.dbConnection.run(delete.delete())
         } catch (let error) {
             NSLog("Failed to delete data in the db: %@", error.localizedDescription)
         }
+
+        completion()
     }
 
-    func updateChat(_ chat: SignalChat) {
+    func updateChat(_ chat: SignalChat, _ completion: () -> Void) {
         NSLog("update chat")
+        completion()
     }
 
-    func storeChat(_ chat: SignalChat) {
+    func storeChat(_ chat: SignalChat, _ completion: () -> Void) {
         let insert = self.chatsTable.insert(
             SignalChatKeys.uniqueIdField <- chat.uniqueId,
             SignalChatKeys.recipientIdentifierField <- chat.recipientIdentifier,
@@ -576,6 +581,8 @@ extension FilePersistenceStore: PersistenceStore {
         )
 
         self.insert(insert)
+
+        completion()
     }
 
     func retrieveAllChats() -> [SignalChat] {
@@ -603,17 +610,19 @@ extension FilePersistenceStore: PersistenceStore {
         return chats
     }
 
-    func updateRecipient(_ recipient: SignalAddress) {
+    func updateRecipient(_ recipient: SignalAddress, _ completion: () -> Void) {
         NSLog("update recipient")
+        completion()
     }
 
-    func storeRecipient(_ recipient: SignalAddress) {
+    func storeRecipient(_ recipient: SignalAddress, _ completion: () -> Void) {
         let insert = self.recipientsTable.insert(
             SignalRecipientKeys.nameField <- recipient.name,
             SignalRecipientKeys.deviceIdField <- Int64(recipient.deviceId)
         )
 
         self.insert(insert)
+        completion()
     }
 
     func retrieveSender() -> SignalSender? {
@@ -636,7 +645,7 @@ extension FilePersistenceStore: PersistenceStore {
         return nil
     }
 
-    func storeSender(_ sender: SignalSender) {
+    func storeSender(_ sender: SignalSender, _ completion: () -> Void) {
         let insert = self.senderTable.insert(
             SignalSenderKeys.usernameField <- sender.username,
             SignalSenderKeys.deviceIdField <- Int64(sender.deviceId),
@@ -645,7 +654,9 @@ extension FilePersistenceStore: PersistenceStore {
             SignalSenderKeys.remoteRegistrationIdField <- Int64(sender.remoteRegistrationId)
         )
 
+
         self.insert(insert)
+        completion()
     }
 
     func retrieveAttachments(with predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]?) -> [SignalServiceAttachmentPointer] {
@@ -664,20 +675,24 @@ extension FilePersistenceStore: PersistenceStore {
         return attachments
     }
 
-    func updateAttachment(_ attachment: SignalServiceAttachmentPointer) {
+    func updateAttachment(_ attachment: SignalServiceAttachmentPointer, _ completion: () -> Void) {
         let update: Update = self.buildAttachmentOperation(attachment)
 
         try! self.dbConnection.run(update)
+
+        completion()
     }
 
-    func storeAttachment(_ attachment: SignalServiceAttachmentPointer) {
+    func storeAttachment(_ attachment: SignalServiceAttachmentPointer, _ completion: () -> Void) {
         if (try! self.dbConnection.pluck(self.attachmentsTable.where(SignalAttachmentKeys.uniqueIdField == attachment.uniqueId)) != nil) {
-            self.updateAttachment(attachment)
+            self.updateAttachment(attachment, completion)
         } else  {
             let insert: Insert = self.buildAttachmentOperation(attachment)
 
             try! self.dbConnection.run(insert)
         }
+
+        completion()
     }
 
     func retrieveMessages(with predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]?) -> [SignalMessage] {
@@ -740,8 +755,9 @@ extension FilePersistenceStore: PersistenceStore {
         return recipients
     }
 
-    func deleteAllChatsAndMessages() {
+    func deleteAllChatsAndMessages(_ completion: () -> Void) {
         try! self.dbConnection.run(self.chatsTable.drop(ifExists: true))
         try! self.dbConnection.run(self.messagesTable.drop(ifExists: true))
+        completion()
     }
 }
