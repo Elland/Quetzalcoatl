@@ -18,7 +18,7 @@
 		9F27B9F12090C61F0032C7DD /* InfoSignalMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F27B9F02090C61F0032C7DD /* InfoSignalMessage.swift */; };
 		9F33523E20862B5500E0F145 /* QuetzalcoatlClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F33523D20862B5500E0F145 /* QuetzalcoatlClient.swift */; };
 		9F5CF5C52163840400FAAFD4 /* String+Truncation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5CF5C42163840400FAAFD4 /* String+Truncation.swift */; };
-		9F5CF5C7216384D600FAAFD4 /* RootNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5CF5C6216384D600FAAFD4 /* RootNavigationController.swift */; };
+		9F5CF5C7216384D600FAAFD4 /* ChatsNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5CF5C6216384D600FAAFD4 /* ChatsNavigationController.swift */; };
 		9F5CF5C9216385F200FAAFD4 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5CF5C8216385F200FAAFD4 /* Theme.swift */; };
 		9F5CF5CB2163A15600FAAFD4 /* ChatTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5CF5CA2163A15600FAAFD4 /* ChatTableView.swift */; };
 		9F62AFF2208A1AE40033EA04 /* Starscream.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9FA8EF052087963700D0CBB6 /* Starscream.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -193,7 +193,7 @@
 		9F27B9F02090C61F0032C7DD /* InfoSignalMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoSignalMessage.swift; sourceTree = "<group>"; };
 		9F33523D20862B5500E0F145 /* QuetzalcoatlClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuetzalcoatlClient.swift; sourceTree = "<group>"; };
 		9F5CF5C42163840400FAAFD4 /* String+Truncation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Truncation.swift"; sourceTree = "<group>"; };
-		9F5CF5C6216384D600FAAFD4 /* RootNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootNavigationController.swift; sourceTree = "<group>"; };
+		9F5CF5C6216384D600FAAFD4 /* ChatsNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsNavigationController.swift; sourceTree = "<group>"; };
 		9F5CF5C8216385F200FAAFD4 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		9F5CF5CA2163A15600FAAFD4 /* ChatTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTableView.swift; sourceTree = "<group>"; };
 		9F6EA595209098A30093290F /* SignalMessageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalMessageManager.swift; sourceTree = "<group>"; };
@@ -461,7 +461,7 @@
 				9FF2E499208A2020001C666C /* Teapot.framework */,
 				9FE925E0208A08F6008ABCE4 /* AppDelegate.swift */,
 				9F5CF5C8216385F200FAAFD4 /* Theme.swift */,
-				9F5CF5C6216384D600FAAFD4 /* RootNavigationController.swift */,
+				9F5CF5C6216384D600FAAFD4 /* ChatsNavigationController.swift */,
 				9F89636F21661D1700CC639A /* TabBarController.swift */,
 				9F89637321661F6100CC639A /* SettingsNavigationController.swift */,
 				9FE925E2208A08F6008ABCE4 /* ChatsViewController.swift */,
@@ -868,7 +868,7 @@
 				9FA5FDA021623A410046F0A7 /* UIView+SLKAdditions.m in Sources */,
 				9FE925E1208A08F6008ABCE4 /* AppDelegate.swift in Sources */,
 				9FA5FD7721621E3B0046F0A7 /* Cells.swift in Sources */,
-				9F5CF5C7216384D600FAAFD4 /* RootNavigationController.swift in Sources */,
+				9F5CF5C7216384D600FAAFD4 /* ChatsNavigationController.swift in Sources */,
 				9FE925FA208A09B1008ABCE4 /* SofaMessage.swift in Sources */,
 				9FA5FDA421623A410046F0A7 /* SLKTextView+SLKAdditions.m in Sources */,
 				9FA5FDAD21623C440046F0A7 /* AutoCompleteTableViewCell.m in Sources */,

@@ -7,5 +7,5 @@
 
 import UIKit
 
-class SettingsNavigationController: UINavigationController {
+class ChatsNavigationController: UINavigationController {
 }

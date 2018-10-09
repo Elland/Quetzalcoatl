@@ -84,11 +84,13 @@ class ChatsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        let createChatButton = UIBarButtonItem(title: "Create chat", style: .plain, target: self, action: #selector(self.didTapCreateChatButton(_:)))
+        self.navigationItem.rightBarButtonItem = createChatButton
+
         self.tableView.register(ChatCell.self)
 
         self.view.addSubview(self.tableView)
         self.tableView.fillSuperview()
-
     }
 
     override func viewDidAppear(_ animated: Bool) {

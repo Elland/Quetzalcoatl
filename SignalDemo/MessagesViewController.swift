@@ -51,9 +51,6 @@ class MessagesViewController: UIViewController {
 
     var delegate: MessagesViewControllerDelegate?
 
-    var textBarHeightConstraint: NSLayoutConstraint!
-    var textBarBottomConstraint: NSLayoutConstraint!
-
     lazy var tableView: ChatTableView = {
         let view = ChatTableView(frame: .zero, style: .plain)
 
@@ -77,8 +74,10 @@ class MessagesViewController: UIViewController {
     init(chat: SignalChat) {
         self.chat = chat
         super.init(nibName: nil, bundle: nil)
-
         self.addChild(self.chatInputViewController)
+
+        self.hidesBottomBarWhenPushed = true
+        self.chatInputViewController.hidesBottomBarWhenPushed = true
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -138,9 +137,6 @@ class MessagesViewController: UIViewController {
 //            self.chatInputViewController.view.leftAnchor.constraint(equalTo: self.view.leftAnchor),
 //            self.chatInputViewController.view.rightAnchor.constraint(equalTo: self.view.rightAnchor),
         ])
-
-        self.textBarBottomConstraint = self.chatInputViewController.textInputbar.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor)
-//        self.textBarBottomConstraint.isActive = true
 
         self.tableView.left(to: self.view)
         self.tableView.right(to: self.view)
@@ -277,7 +273,6 @@ extension MessagesViewController: ChatInputViewControllerDelegate {
         guard let rect = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { fatalError() }
 
         if notification.name == UIResponder.keyboardWillHideNotification {
-            self.textBarBottomConstraint.constant = 0
             self.tableView.contentInset.bottom = self.chatInputViewController.textInputbar.frame.height
         } else {
             let diff = UIScreen.main.bounds.height - rect.origin.y

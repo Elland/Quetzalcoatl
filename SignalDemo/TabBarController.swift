@@ -11,8 +11,8 @@ private let TabBarItemTitleOffset: CGFloat = -3.0
 
 class TabBarController: UITabBarController {
     
-    lazy var chatsController: ChatsViewController = {
-       return ChatsViewController(nibName: nil, bundle: nil)
+    lazy var chatsNavigationController: ChatsNavigationController = {
+        return ChatsNavigationController(rootViewController: ChatsViewController())
     }()
 
     lazy var settingsNavController: SettingsNavigationController = {
@@ -21,17 +21,13 @@ class TabBarController: UITabBarController {
 
     convenience init() {
         self.init(nibName: nil, bundle: nil)
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
 
         self.settingsNavController.tabBarItem = UITabBarItem(title: "Settings", image: UIImage(named: "settings")!, tag: 0)
         self.settingsNavController.tabBarItem.titlePositionAdjustment.vertical = TabBarItemTitleOffset
 
-        self.chatsController.tabBarItem = UITabBarItem(title: "Messages",image: UIImage(named: "messages")!, tag: 0)
-        self.chatsController.tabBarItem.titlePositionAdjustment.vertical = TabBarItemTitleOffset
+        self.chatsNavigationController.tabBarItem = UITabBarItem(title: "Messages",image: UIImage(named: "messages")!, tag: 0)
+        self.chatsNavigationController.tabBarItem.titlePositionAdjustment.vertical = TabBarItemTitleOffset
 
-        self.viewControllers = [self.chatsController, self.settingsNavController]
+        self.viewControllers = [self.chatsNavigationController, self.settingsNavController]
     }
 }
