@@ -9,11 +9,11 @@ import UIKit
 
 extension UIColor {
     static var tint: UIColor {
-        return #colorLiteral(red: 0.4320931733, green: 0.262832582, blue: 0.9611081481, alpha: 1)
+        return #colorLiteral(red: 0.5162177086, green: 0.08007196337, blue: 0.6534827352, alpha: 1)
     }
 
     static var outgoingBubble: UIColor {
-        return #colorLiteral(red: 0.4320931733, green: 0.262832582, blue: 0.9611081481, alpha: 1)
+        return .tint
     }
     static var incomingBubble: UIColor {
         return UIColor.init(white: 0.95, alpha: 1.0)

@@ -6,14 +6,24 @@
 	objectVersion = 50;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		9FB2D638216D090A008EE350 /* GenerateIcons */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 9FB2D639216D090B008EE350 /* Build configuration list for PBXAggregateTarget "GenerateIcons" */;
+			buildPhases = (
+				9FB2D63C216D092B008EE350 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = GenerateIcons;
+			productName = GenerateIcons;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		9F0A199820A06F030051B268 /* Date+Intervals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F0A199720A06F030051B268 /* Date+Intervals.swift */; };
 		9F0A19B620A09F7E0051B268 /* MessagesTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F0A19B120A09F7E0051B268 /* MessagesTextCell.swift */; };
 		9F0A19B920A09F7E0051B268 /* StatusCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F0A19B420A09F7E0051B268 /* StatusCell.swift */; };
-		9F0A19BB20A0A14D0051B268 /* TinyConstraints.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F0A19BA20A0A14D0051B268 /* TinyConstraints.framework */; };
-		9F0A19BD20A0A15B0051B268 /* TinyConstraints.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9F0A19BA20A0A14D0051B268 /* TinyConstraints.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		9F0A19C420A0A2B00051B268 /* SweetUIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F0A19C320A0A2AF0051B268 /* SweetUIKit.framework */; };
-		9F0A19C620A0A2B80051B268 /* SweetUIKit.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9F0A19C320A0A2AF0051B268 /* SweetUIKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9F27B9EF2090B40C0032C7DD /* SignalLibraryStoreProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F27B9EE2090B40C0032C7DD /* SignalLibraryStoreProtocol.swift */; };
 		9F27B9F12090C61F0032C7DD /* InfoSignalMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F27B9F02090C61F0032C7DD /* InfoSignalMessage.swift */; };
 		9F33523E20862B5500E0F145 /* QuetzalcoatlClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F33523D20862B5500E0F145 /* QuetzalcoatlClient.swift */; };
@@ -57,6 +67,21 @@
 		9FA8EF062087963700D0CBB6 /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FA8EF052087963700D0CBB6 /* Starscream.framework */; };
 		9FAA850B2165F642007C17DE /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FAA850A2165F642007C17DE /* Profile.swift */; };
 		9FAA850C2165F7D6007C17DE /* IDAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FAA85082165F375007C17DE /* IDAPIClient.swift */; };
+		9FB2D617216CD199008EE350 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB2D616216CD199008EE350 /* SettingsViewController.swift */; };
+		9FB2D619216CD352008EE350 /* SettingsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9FB2D618216CD352008EE350 /* SettingsViewController.storyboard */; };
+		9FB2D61F216CD765008EE350 /* AvatarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB2D61E216CD765008EE350 /* AvatarManager.swift */; };
+		9FB2D621216CD93B008EE350 /* Blockies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB2D620216CD93B008EE350 /* Blockies.swift */; };
+		9FB2D623216CD945008EE350 /* UIColor+HSL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB2D622216CD945008EE350 /* UIColor+HSL.swift */; };
+		9FB2D627216CFEA9008EE350 /* EtherealCereal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FB2D625216CFEA8008EE350 /* EtherealCereal.framework */; };
+		9FB2D628216CFEA9008EE350 /* SQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FB2D626216CFEA8008EE350 /* SQLite.framework */; };
+		9FB2D629216CFEAE008EE350 /* EtherealCereal.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9FB2D625216CFEA8008EE350 /* EtherealCereal.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9FB2D62A216CFEAE008EE350 /* SQLite.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9FB2D626216CFEA8008EE350 /* SQLite.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9FB2D62E216CFED2008EE350 /* SweetUIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FB2D62D216CFED2008EE350 /* SweetUIKit.framework */; };
+		9FB2D62F216CFED3008EE350 /* SweetUIKit.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9FB2D62D216CFED2008EE350 /* SweetUIKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9FB2D632216D0093008EE350 /* Teapot.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FB2D630216D0093008EE350 /* Teapot.framework */; };
+		9FB2D633216D0093008EE350 /* TinyConstraints.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FB2D631216D0093008EE350 /* TinyConstraints.framework */; };
+		9FB2D634216D0094008EE350 /* Teapot.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9FB2D630216D0093008EE350 /* Teapot.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9FB2D635216D0094008EE350 /* TinyConstraints.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9FB2D631216D0093008EE350 /* TinyConstraints.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9FCCD5BF2088D6A200F2D9F3 /* SignalLibraryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FCCD5BE2088D6A200F2D9F3 /* SignalLibraryStore.swift */; };
 		9FCCD5D32089E0AC00F2D9F3 /* SignalContext+Optionals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FCCD5D22089E0AC00F2D9F3 /* SignalContext+Optionals.swift */; };
 		9FCDD50820A1E21A006835DC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9FCDD50620A1E21A006835DC /* Localizable.strings */; };
@@ -70,12 +95,6 @@
 		9FE92608208A0BAD008ABCE4 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE92607208A0BAD008ABCE4 /* User.swift */; };
 		9FF2E496208A1F85001C666C /* Quetzalcoatl.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9FFB8B05208629B60067BCE9 /* Quetzalcoatl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9FF2E497208A1F87001C666C /* Quetzalcoatl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FFB8B05208629B60067BCE9 /* Quetzalcoatl.framework */; };
-		9FF2E49B208A2020001C666C /* SQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FF2E498208A201F001C666C /* SQLite.framework */; };
-		9FF2E49C208A2020001C666C /* Teapot.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FF2E499208A2020001C666C /* Teapot.framework */; };
-		9FF2E49D208A2020001C666C /* EtherealCereal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FF2E49A208A2020001C666C /* EtherealCereal.framework */; };
-		9FF2E49E208A2023001C666C /* EtherealCereal.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9FF2E49A208A2020001C666C /* EtherealCereal.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		9FF2E49F208A2023001C666C /* SQLite.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9FF2E498208A201F001C666C /* SQLite.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		9FF2E4A0208A2023001C666C /* Teapot.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9FF2E499208A2020001C666C /* Teapot.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9FF35706216A3752001AA7E3 /* include.h in Headers */ = {isa = PBXBuildFile; fileRef = 9FF35704216A3752001AA7E3 /* include.h */; };
 		9FF4F5C2208798C300EC4D5D /* SignalMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FF4F5C1208798C300EC4D5D /* SignalMessage.swift */; };
 		9FF4F5C4208798DD00EC4D5D /* IncomingSignalMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FF4F5C3208798DD00EC4D5D /* IncomingSignalMessage.swift */; };
@@ -169,14 +188,14 @@
 			dstSubfolderSpec = 10;
 			files = (
 				9FF2E496208A1F85001C666C /* Quetzalcoatl.framework in Copy Frameworks */,
-				9F0A19C620A0A2B80051B268 /* SweetUIKit.framework in Copy Frameworks */,
-				9F0A19BD20A0A15B0051B268 /* TinyConstraints.framework in Copy Frameworks */,
+				9FB2D634216D0094008EE350 /* Teapot.framework in Copy Frameworks */,
+				9FB2D635216D0094008EE350 /* TinyConstraints.framework in Copy Frameworks */,
 				9F72308C208F2F1A00F568F7 /* Starscream.framework in Copy Frameworks */,
+				9FB2D629216CFEAE008EE350 /* EtherealCereal.framework in Copy Frameworks */,
+				9FB2D62A216CFEAE008EE350 /* SQLite.framework in Copy Frameworks */,
+				9FB2D62F216CFED3008EE350 /* SweetUIKit.framework in Copy Frameworks */,
 				9F72308D208F2F1A00F568F7 /* CommonCrypto.framework in Copy Frameworks */,
 				9F72308E208F2F1A00F568F7 /* SwiftProtobuf.framework in Copy Frameworks */,
-				9FF2E49E208A2023001C666C /* EtherealCereal.framework in Copy Frameworks */,
-				9FF2E49F208A2023001C666C /* SQLite.framework in Copy Frameworks */,
-				9FF2E4A0208A2023001C666C /* Teapot.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -187,8 +206,6 @@
 		9F0A199720A06F030051B268 /* Date+Intervals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Intervals.swift"; sourceTree = "<group>"; };
 		9F0A19B120A09F7E0051B268 /* MessagesTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesTextCell.swift; sourceTree = "<group>"; };
 		9F0A19B420A09F7E0051B268 /* StatusCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusCell.swift; sourceTree = "<group>"; };
-		9F0A19BA20A0A14D0051B268 /* TinyConstraints.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TinyConstraints.framework; path = Carthage/Build/iOS/TinyConstraints.framework; sourceTree = "<group>"; };
-		9F0A19C320A0A2AF0051B268 /* SweetUIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SweetUIKit.framework; path = Carthage/Build/iOS/SweetUIKit.framework; sourceTree = "<group>"; };
 		9F27B9EE2090B40C0032C7DD /* SignalLibraryStoreProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalLibraryStoreProtocol.swift; sourceTree = "<group>"; };
 		9F27B9F02090C61F0032C7DD /* InfoSignalMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoSignalMessage.swift; sourceTree = "<group>"; };
 		9F33523D20862B5500E0F145 /* QuetzalcoatlClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuetzalcoatlClient.swift; sourceTree = "<group>"; };
@@ -236,6 +253,17 @@
 		9FA8EF052087963700D0CBB6 /* Starscream.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Starscream.framework; path = Carthage/Build/iOS/Starscream.framework; sourceTree = SOURCE_ROOT; };
 		9FAA85082165F375007C17DE /* IDAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDAPIClient.swift; sourceTree = "<group>"; };
 		9FAA850A2165F642007C17DE /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
+		9FB2D616216CD199008EE350 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		9FB2D618216CD352008EE350 /* SettingsViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SettingsViewController.storyboard; sourceTree = "<group>"; };
+		9FB2D61E216CD765008EE350 /* AvatarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarManager.swift; sourceTree = "<group>"; };
+		9FB2D620216CD93B008EE350 /* Blockies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Blockies.swift; sourceTree = "<group>"; };
+		9FB2D622216CD945008EE350 /* UIColor+HSL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+HSL.swift"; sourceTree = "<group>"; };
+		9FB2D625216CFEA8008EE350 /* EtherealCereal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EtherealCereal.framework; path = Carthage/Build/iOS/EtherealCereal.framework; sourceTree = "<group>"; };
+		9FB2D626216CFEA8008EE350 /* SQLite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SQLite.framework; path = Carthage/Build/iOS/SQLite.framework; sourceTree = "<group>"; };
+		9FB2D62D216CFED2008EE350 /* SweetUIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SweetUIKit.framework; path = Carthage/Build/iOS/SweetUIKit.framework; sourceTree = "<group>"; };
+		9FB2D630216D0093008EE350 /* Teapot.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Teapot.framework; path = Carthage/Build/iOS/Teapot.framework; sourceTree = "<group>"; };
+		9FB2D631216D0093008EE350 /* TinyConstraints.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TinyConstraints.framework; path = Carthage/Build/iOS/TinyConstraints.framework; sourceTree = "<group>"; };
+		9FB2D636216D0902008EE350 /* generate-app-icon */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = "generate-app-icon"; sourceTree = "<group>"; };
 		9FCCD5BE2088D6A200F2D9F3 /* SignalLibraryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalLibraryStore.swift; sourceTree = "<group>"; };
 		9FCCD5D22089E0AC00F2D9F3 /* SignalContext+Optionals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SignalContext+Optionals.swift"; sourceTree = "<group>"; };
 		9FCDD50720A1E21A006835DC /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -249,9 +277,6 @@
 		9FE925F4208A099A008ABCE4 /* FilePersistenceStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilePersistenceStore.swift; sourceTree = "<group>"; };
 		9FE925F9208A09B1008ABCE4 /* SofaMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SofaMessage.swift; sourceTree = "<group>"; };
 		9FE92607208A0BAD008ABCE4 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
-		9FF2E498208A201F001C666C /* SQLite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SQLite.framework; path = Carthage/Build/iOS/SQLite.framework; sourceTree = "<group>"; };
-		9FF2E499208A2020001C666C /* Teapot.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Teapot.framework; path = Carthage/Build/iOS/Teapot.framework; sourceTree = "<group>"; };
-		9FF2E49A208A2020001C666C /* EtherealCereal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EtherealCereal.framework; path = Carthage/Build/iOS/EtherealCereal.framework; sourceTree = "<group>"; };
 		9FF35704216A3752001AA7E3 /* include.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = include.h; sourceTree = "<group>"; };
 		9FF35705216A3752001AA7E3 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		9FF4F5C1208798C300EC4D5D /* SignalMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalMessage.swift; sourceTree = "<group>"; };
@@ -333,15 +358,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9FF2E49C208A2020001C666C /* Teapot.framework in Frameworks */,
-				9F0A19BB20A0A14D0051B268 /* TinyConstraints.framework in Frameworks */,
-				9FF2E49B208A2020001C666C /* SQLite.framework in Frameworks */,
 				9F72308F208F2F1C00F568F7 /* Starscream.framework in Frameworks */,
-				9F0A19C420A0A2B00051B268 /* SweetUIKit.framework in Frameworks */,
+				9FB2D632216D0093008EE350 /* Teapot.framework in Frameworks */,
+				9FB2D627216CFEA9008EE350 /* EtherealCereal.framework in Frameworks */,
+				9FB2D628216CFEA9008EE350 /* SQLite.framework in Frameworks */,
 				9F723090208F2F1C00F568F7 /* CommonCrypto.framework in Frameworks */,
 				9F723091208F2F1C00F568F7 /* SwiftProtobuf.framework in Frameworks */,
-				9FF2E49D208A2020001C666C /* EtherealCereal.framework in Frameworks */,
+				9FB2D633216D0093008EE350 /* TinyConstraints.framework in Frameworks */,
 				9FF2E497208A1F87001C666C /* Quetzalcoatl.framework in Frameworks */,
+				9FB2D62E216CFED2008EE350 /* SweetUIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -451,36 +476,82 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		9FB2D61A216CD35C008EE350 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				9F89637321661F6100CC639A /* SettingsNavigationController.swift */,
+				9FB2D616216CD199008EE350 /* SettingsViewController.swift */,
+				9FB2D618216CD352008EE350 /* SettingsViewController.storyboard */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		9FB2D61B216CD370008EE350 /* Chats */ = {
+			isa = PBXGroup;
+			children = (
+				9F5CF5C6216384D600FAAFD4 /* ChatsNavigationController.swift */,
+				9FE925E2208A08F6008ABCE4 /* ChatsViewController.swift */,
+				9FA5FD7521621E2A0046F0A7 /* Cells.swift */,
+				9F5CF5CA2163A15600FAAFD4 /* ChatTableView.swift */,
+			);
+			path = Chats;
+			sourceTree = "<group>";
+		};
+		9FB2D61C216CD385008EE350 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				9FE925F4208A099A008ABCE4 /* FilePersistenceStore.swift */,
+				9FE92607208A0BAD008ABCE4 /* User.swift */,
+				9FAA85082165F375007C17DE /* IDAPIClient.swift */,
+				9FAA850A2165F642007C17DE /* Profile.swift */,
+				9FB2D61E216CD765008EE350 /* AvatarManager.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		9FB2D61D216CD392008EE350 /* Messaging */ = {
+			isa = PBXGroup;
+			children = (
+				9F0A19AF20A09F7E0051B268 /* Cells */,
+				9FA5FD8721623A400046F0A7 /* SlackTextViewController */,
+				9FE925E4208A08F6008ABCE4 /* MessagesViewController.swift */,
+				9FA5FDA821623A520046F0A7 /* ChatInputViewController.swift */,
+			);
+			path = Messaging;
+			sourceTree = "<group>";
+		};
+		9FB2D624216CFE17008EE350 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9FB2D630216D0093008EE350 /* Teapot.framework */,
+				9FB2D631216D0093008EE350 /* TinyConstraints.framework */,
+				9FB2D62D216CFED2008EE350 /* SweetUIKit.framework */,
+				9FB2D625216CFEA8008EE350 /* EtherealCereal.framework */,
+				9FB2D626216CFEA8008EE350 /* SQLite.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		9FE925DF208A08F6008ABCE4 /* SignalDemo */ = {
 			isa = PBXGroup;
 			children = (
-				9F0A19C320A0A2AF0051B268 /* SweetUIKit.framework */,
-				9F0A19BA20A0A14D0051B268 /* TinyConstraints.framework */,
-				9FF2E49A208A2020001C666C /* EtherealCereal.framework */,
-				9FF2E498208A201F001C666C /* SQLite.framework */,
-				9FF2E499208A2020001C666C /* Teapot.framework */,
 				9FE925E0208A08F6008ABCE4 /* AppDelegate.swift */,
 				9F5CF5C8216385F200FAAFD4 /* Theme.swift */,
-				9F5CF5C6216384D600FAAFD4 /* ChatsNavigationController.swift */,
 				9F89636F21661D1700CC639A /* TabBarController.swift */,
-				9F89637321661F6100CC639A /* SettingsNavigationController.swift */,
-				9FE925E2208A08F6008ABCE4 /* ChatsViewController.swift */,
-				9FA5FD7521621E2A0046F0A7 /* Cells.swift */,
-				9FE92607208A0BAD008ABCE4 /* User.swift */,
-				9FE925E4208A08F6008ABCE4 /* MessagesViewController.swift */,
-				9FA5FDA821623A520046F0A7 /* ChatInputViewController.swift */,
-				9F5CF5C42163840400FAAFD4 /* String+Truncation.swift */,
-				9F5CF5CA2163A15600FAAFD4 /* ChatTableView.swift */,
-				9FAA85082165F375007C17DE /* IDAPIClient.swift */,
-				9FAA850A2165F642007C17DE /* Profile.swift */,
-				9FA5FD8721623A400046F0A7 /* SlackTextViewController */,
-				9F0A19AF20A09F7E0051B268 /* Cells */,
+				9FB2D61B216CD370008EE350 /* Chats */,
+				9FB2D61D216CD392008EE350 /* Messaging */,
+				9FB2D61A216CD35C008EE350 /* Settings */,
+				9FB2D61C216CD385008EE350 /* Models */,
 				9FE925F8208A09B1008ABCE4 /* Sofa */,
-				9FE925F4208A099A008ABCE4 /* FilePersistenceStore.swift */,
+				9F5CF5C42163840400FAAFD4 /* String+Truncation.swift */,
+				9FB2D620216CD93B008EE350 /* Blockies.swift */,
+				9FB2D622216CD945008EE350 /* UIColor+HSL.swift */,
 				9FE925E9208A08F8008ABCE4 /* Assets.xcassets */,
 				9FE925EB208A08F8008ABCE4 /* LaunchScreen.storyboard */,
 				9FCDD50620A1E21A006835DC /* Localizable.strings */,
 				9FE925EE208A08F8008ABCE4 /* Info.plist */,
+				9FB2D636216D0902008EE350 /* generate-app-icon */,
+				9FB2D624216CFE17008EE350 /* Frameworks */,
 			);
 			path = SignalDemo;
 			sourceTree = "<group>";
@@ -769,6 +840,9 @@
 				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = elland.me;
 				TargetAttributes = {
+					9FB2D638216D090A008EE350 = {
+						CreatedOnToolsVersion = 10.0;
+					};
 					9FE925DD208A08F6008ABCE4 = {
 						CreatedOnToolsVersion = 9.3;
 						LastSwiftMigration = 1000;
@@ -794,6 +868,7 @@
 			targets = (
 				9FFB8B04208629B60067BCE9 /* Quetzalcoatl */,
 				9FE925DD208A08F6008ABCE4 /* Signal */,
+				9FB2D638216D090A008EE350 /* GenerateIcons */,
 			);
 		};
 /* End PBXProject section */
@@ -803,6 +878,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9FB2D619216CD352008EE350 /* SettingsViewController.storyboard in Resources */,
 				9FE925ED208A08F8008ABCE4 /* LaunchScreen.storyboard in Resources */,
 				9FE925EA208A08F8008ABCE4 /* Assets.xcassets in Resources */,
 				9FCDD50820A1E21A006835DC /* Localizable.strings in Resources */,
@@ -835,6 +911,23 @@
 			shellPath = /bin/sh;
 			shellScript = "REVEAL_APP_PATH=$(mdfind kMDItemCFBundleIdentifier=\"com.ittybittyapps.Reveal2\" | head -n 1)\nBUILD_SCRIPT_PATH=\"${REVEAL_APP_PATH}/Contents/SharedSupport/Scripts/reveal_server_build_phase.sh\"\nif [ \"${REVEAL_APP_PATH}\" -a -e \"${BUILD_SCRIPT_PATH}\" ]; then\n    \"${BUILD_SCRIPT_PATH}\"\nelse\n    echo \"Reveal Server not loaded: Cannot find a compatible Reveal app.\"\nfi\n";
 		};
+		9FB2D63C216D092B008EE350 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/Users/elland/Documents/bb/Quetzalcoatl/SignalDemo/generate-app-icon \"${SRCROOT}\"\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -850,18 +943,21 @@
 				9FE925E5208A08F6008ABCE4 /* MessagesViewController.swift in Sources */,
 				9F5CF5CB2163A15600FAAFD4 /* ChatTableView.swift in Sources */,
 				9FA5FDA621623A410046F0A7 /* SLKTextInputBar.m in Sources */,
+				9FB2D61F216CD765008EE350 /* AvatarManager.swift in Sources */,
 				9FAA850C2165F7D6007C17DE /* IDAPIClient.swift in Sources */,
 				9F5CF5C52163840400FAAFD4 /* String+Truncation.swift in Sources */,
 				9FA5FDA721623A410046F0A7 /* UIScrollView+SLKAdditions.m in Sources */,
 				9F89637421661F6100CC639A /* SettingsNavigationController.swift in Sources */,
 				9FE92608208A0BAD008ABCE4 /* User.swift in Sources */,
 				9F0A19B920A09F7E0051B268 /* StatusCell.swift in Sources */,
+				9FB2D623216CD945008EE350 /* UIColor+HSL.swift in Sources */,
 				9FA5FDAF21624CAB0046F0A7 /* PassthroughView.swift in Sources */,
 				9F89637221661DBE00CC639A /* TabBarController.swift in Sources */,
 				9FE925E3208A08F6008ABCE4 /* ChatsViewController.swift in Sources */,
 				9FA5FD9F21623A410046F0A7 /* SLKInputAccessoryView.m in Sources */,
 				9FA5FDA121623A410046F0A7 /* SLKTextView.m in Sources */,
 				9F0A19B620A09F7E0051B268 /* MessagesTextCell.swift in Sources */,
+				9FB2D617216CD199008EE350 /* SettingsViewController.swift in Sources */,
 				9FA5FDA921623A520046F0A7 /* ChatInputViewController.swift in Sources */,
 				9FA5FDA321623A410046F0A7 /* SLKTextInput+Implementation.m in Sources */,
 				9FA5FDA521623A410046F0A7 /* SLKTypingIndicatorView.m in Sources */,
@@ -871,6 +967,7 @@
 				9F5CF5C7216384D600FAAFD4 /* ChatsNavigationController.swift in Sources */,
 				9FE925FA208A09B1008ABCE4 /* SofaMessage.swift in Sources */,
 				9FA5FDA421623A410046F0A7 /* SLKTextView+SLKAdditions.m in Sources */,
+				9FB2D621216CD93B008EE350 /* Blockies.swift in Sources */,
 				9FA5FDAD21623C440046F0A7 /* AutoCompleteTableViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -949,6 +1046,24 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		9FB2D63A216D090B008EE350 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5XX9JCG35B;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		9FB2D63B216D090B008EE350 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5XX9JCG35B;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		9FE925F0208A08F8008ABCE4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -968,7 +1083,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.bakkenbaeck.SignalDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "SignalDemo/SlackTextViewController/Signal-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "SignalDemo/Messaging/SlackTextViewController/Signal-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -994,7 +1109,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.bakkenbaeck.SignalDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "SignalDemo/SlackTextViewController/Signal-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "SignalDemo/Messaging/SlackTextViewController/Signal-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -1194,6 +1309,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		9FB2D639216D090B008EE350 /* Build configuration list for PBXAggregateTarget "GenerateIcons" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9FB2D63A216D090B008EE350 /* Debug */,
+				9FB2D63B216D090B008EE350 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		9FE925EF208A08F8008ABCE4 /* Build configuration list for PBXNativeTarget "Signal" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

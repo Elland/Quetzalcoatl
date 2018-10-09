@@ -95,7 +95,11 @@ public class SignalChat: Equatable, Codable {
     }
 
     /// Returns the latest date of a message in the chat or the chat creation date if there are no messages.
-    public var lastMessageDate: Date = Date()
+    public var lastMessageDate: Date? {
+        guard let timestamp = self.messages.last?.timestamp else {return nil}
+
+        return Date(milisecondTimeIntervalSinceEpoch: timestamp)
+    }
 
     /// Returns the last date at which chat was archived or nil if it was never archived or it was brought back to the inbox.
     public var lastArchivalDate: Date?

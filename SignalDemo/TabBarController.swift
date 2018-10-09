@@ -16,7 +16,7 @@ class TabBarController: UITabBarController {
     }()
 
     lazy var settingsNavController: SettingsNavigationController = {
-        return SettingsNavigationController(rootViewController: UIViewController())
+        return SettingsNavigationController(rootViewController: SettingsViewController.instantiate())
     }()
 
     convenience init() {

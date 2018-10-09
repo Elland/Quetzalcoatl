@@ -16,7 +16,7 @@ public protocol PersistenceStore: SignalLibraryStoreDelegate {
     func deleteMessage(_ message: SignalMessage, _ completion: PersistenceCompletionBlock)
 
     /* Chats */
-    func retrieveAllChats() -> [SignalChat]
+    func retrieveAllChats(sortDescriptors: [NSSortDescriptor]?) -> [SignalChat]
 
     func retrieveChats(with predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]?) -> [SignalChat]
 
@@ -196,8 +196,8 @@ public class SignalServiceStore {
         return self.persistenceStore.retrieveChats(with: NSPredicate(format: "%K == %@", "id", groupId), sortDescriptors: nil).first
     }
 
-    public func retrieveAllChats() -> [SignalChat] {
-        let chats = self.persistenceStore.retrieveAllChats()
+    public func retrieveAllChats(sortDescriptors: [NSSortDescriptor]?) -> [SignalChat] {
+        let chats = self.persistenceStore.retrieveAllChats(sortDescriptors: sortDescriptors)
 
         chats.forEach { chat in
             chat.store = self
@@ -251,6 +251,8 @@ public class SignalServiceStore {
                     self.messageDelegate?.signalServiceStoreDidChangeMessage(message, at: indexPath, for: .update)
                     self.messageDelegate?.signalServiceStoreDidChangeMessages()
                 }
+
+                try? self.save(chat)
             }
         } else {
             // new message
@@ -272,6 +274,8 @@ public class SignalServiceStore {
                         self.messageDelegate?.signalServiceStoreDidChangeMessage(message, at: indexPath, for: .insert)
                         self.messageDelegate?.signalServiceStoreDidChangeMessages()
                     }
+
+                    try? self.save(chat)
                 }
             } else {
                 NSLog("Error: No chat for message: \(message).")
