@@ -38,6 +38,8 @@ class SignalMessageManager {
     func sendMessage(_ message: OutgoingSignalMessage, to recipient: SignalAddress, in chat: SignalChat, retryAttempts: UInt = 3, completion: @escaping (_ success: Bool) -> Void) {
         // no need to send a message to ourselves
         guard recipient.name != self.sender.username else {
+
+            message.messageState = .unsent
             completion(false)
 
             return
@@ -57,6 +59,8 @@ class SignalMessageManager {
             return
         }
 
+        message.messageState = .attemptingOut
+        
         self.networkClient.sendMessage(messagesDict, from: self.sender, to: recipient.name) { success, params, statusCode in
             if success {
                  completion(success)
@@ -496,7 +500,7 @@ class SignalMessageManager {
 
     private func updateInfo(groupChat: SignalChat, dataMessage: Signalservice_DataMessage) -> (customMessage: String, additionalInfo: String) {
         // new group
-        if groupChat.recipients == nil || groupChat.recipients?.count == 0 {
+        if groupChat.recipients.isEmpty {
             return ("GROUP_BECAME_MEMBER", groupChat.name)
         }
 

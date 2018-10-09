@@ -65,7 +65,7 @@ public class SignalChat: Equatable, Codable {
 
     var recipientIdentifiers: [String]
 
-    public var recipients: [SignalAddress]? {
+    public var recipients: [SignalAddress] {
         return self.isGroupChat ? self.store.recipients(with: self.recipientIdentifiers) : self.store.recipients(with: [self.recipientIdentifier!])
     }
 

@@ -147,11 +147,13 @@ public class Quetzalcoatl {
     }
 
     public func sendGroupMessage(_ body: String, type: OutgoingSignalMessage.GroupMetaMessageType, to recipientAddresses: [SignalAddress], attachments: [Data] = []) {
+
+        guard let messageSender = self.messageSender else { fatalError() }
+
         let names = recipientAddresses.map { (address) -> String in address.name }
         let chat = self.store.fetchOrCreateChat(with: names)
 
-        guard let messageSender = self.messageSender else { fatalError() }
-        guard let recipients = chat.recipients?.filter({ recipient -> Bool in recipient.name != messageSender.sender.username }) else { return }
+        let recipients = chat.recipients.filter({ recipient -> Bool in recipient.name != messageSender.sender.username })
 
         let message = OutgoingSignalMessage(recipientId: chat.uniqueId, senderId: messageSender.sender.username, chatId: chat.uniqueId, body: body, groupMessageType: type, store: self.store)
         try? self.store.save(message)
@@ -166,35 +168,7 @@ public class Quetzalcoatl {
 
         dispatchGroup.notify(queue: .main) {
             for recipient in recipients {
-                self.messageSender?.sendMessage(message, to: recipient, in: chat) { success in
-                    if success && type == .deliver, recipient == recipients.first {
-                        do {
-                            try self.store.save(message)
-                        } catch (let error) {
-                            NSLog("Could not save message: %@", error.localizedDescription)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    public func sendMessage(_ body: String, to recipientAddress: SignalAddress, in chat: SignalChat, attachments: [Data] = []) {
-        guard let senderId = self.messageSender?.sender.username else { fatalError() }
-        let message = OutgoingSignalMessage(recipientId: recipientAddress.name, senderId: senderId, chatId: chat.uniqueId, body: body, store: self.store)
-        try! self.store.save(message)
-
-        let dispatchGroup = DispatchGroup()
-        for attachment in attachments {
-            dispatchGroup.enter()
-            self.messageSender?.uploadAttachment(attachment, in: message) { _ in
-                dispatchGroup.leave()
-            }
-        }
-
-        dispatchGroup.notify(queue: .main) {
-            self.messageSender?.sendMessage(message, to: recipientAddress, in: chat) { success in
-                if success {
+                self.messageSender?.sendMessage(message, to: recipient, in: chat) { _ in
                     do {
                         try self.store.save(message)
                     } catch (let error) {
@@ -205,6 +179,22 @@ public class Quetzalcoatl {
         }
     }
 
+    public func sendMessage(_ body: String, to recipient: SignalAddress, in chat: SignalChat, attachments: [Data] = []) {
+        guard let senderId = self.messageSender?.sender.username else { fatalError() }
+        let message = OutgoingSignalMessage(recipientId: recipient.name, senderId: senderId, chatId: chat.uniqueId, body: body, store: self.store)
+        try! self.store.save(message)
+
+        self.dispatchMessage(message, attachments: attachments, to: recipient)
+    }
+
+    public func retryMessage(_ message: OutgoingSignalMessage, to recipients: [SignalAddress]) {
+        let attachments = [message.attachment].compactMap({$0})
+
+        for recipient in recipients {
+            self.dispatchMessage(message, attachments: attachments, to: recipient)
+        }
+    }
+
     public func deleteMessage(_ message: SignalMessage) {
         try! self.store.delete(message)
     }
@@ -212,6 +202,28 @@ public class Quetzalcoatl {
     public func requestNewIdentity(for address: SignalAddress) {
         // TODO: handle multiple devices
         _ = self.libraryStore.saveRemoteIdentity(with: address, identityKey: nil)
+    }
+
+    private func dispatchMessage(_ message: OutgoingSignalMessage, attachments: [Data], to recipient: SignalAddress) {
+        guard let chat = self.store.chat(chatId: message.chatId) else { fatalError("Could not retrieve chat for message") }
+        let dispatchGroup = DispatchGroup()
+
+        for attachment in attachments {
+            dispatchGroup.enter()
+            self.messageSender?.uploadAttachment(attachment, in: message) { _ in
+                dispatchGroup.leave()
+            }
+        }
+
+        dispatchGroup.notify(queue: .main) {
+            self.messageSender?.sendMessage(message, to: recipient, in: chat) { _ in
+                do {
+                    try self.store.save(message)
+                } catch (let error) {
+                    NSLog("Could not save message: %@", error.localizedDescription)
+                }
+            }
+        }
     }
 }
 

@@ -28,6 +28,9 @@ public extension CGFloat {
 
 protocol MessagesViewControllerDelegate {
     func didRequestSendMessage(text: String, in chat: SignalChat)
+
+    func didRequestRetryMessage(message: OutgoingSignalMessage, to recipients: [SignalAddress])
+    
     func didRequestNewIdentity(for address: SignalAddress, deleting message: SignalMessage)
 }
 
@@ -165,7 +168,7 @@ extension MessagesViewController: UITableViewDelegate {
         if message is InfoSignalMessage {
             let alert = UIAlertController(title: "Accept new identity?", message: nil, preferredStyle: .actionSheet)
             let accept = UIAlertAction(title: "Accept", style: .default) { _ in
-                guard let address = self.chat.recipients?.first(where: { address -> Bool in
+                guard let address = self.chat.recipients.first(where: { address -> Bool in
                     address.name == message.senderId
                 }) else  {
                     fatalError("Could not restore identity for recipient")
@@ -204,6 +207,7 @@ extension MessagesViewController: UITableViewDataSource {
 
         if let message = message as? InfoSignalMessage {
             let cell = self.tableView.dequeue(StatusCell.self, for: indexPath)
+
             let localizedFormat = NSLocalizedString(message.customMessage, comment: "")
             let contact = ContactManager.displayName(for: message.senderId)
             let string = String(format: localizedFormat, contact, message.additionalInfo)
@@ -217,11 +221,15 @@ extension MessagesViewController: UITableViewDataSource {
             return cell
         } else {
             let cell = self.tableView.dequeue(MessagesTextCell.self, for: indexPath)
+            cell.indexPath = indexPath
+
+            cell.delegate = self
+
             cell.isOutgoingMessage = message is OutgoingSignalMessage
             cell.messageBody = message.body // SofaMessage(content: message.body).body
             cell.avatar = ContactManager.image(for: message.senderId)
 
-//            cell.sentState = (message as? OutgoingSignalMessage)?.messageState ?? .none
+            cell.messageState = (message as? OutgoingSignalMessage)?.messageState ?? .none
 //            cell.dateStrng = self.dateFormatter.string(from: Date(milisecondTimeIntervalSinceEpoch: message.timestamp))
 
             if let attachment = message.attachment, let image = UIImage(data: attachment) {
@@ -229,8 +237,6 @@ extension MessagesViewController: UITableViewDataSource {
             } else {
                 cell.messageImage = nil
             }
-
-//            cell.transform = CGAffineTransform(rotationAngle: .pi)
 
             return cell
         }
@@ -290,5 +296,12 @@ extension MessagesViewController: ChatInputViewControllerDelegate {
 
     @objc func didShowOrHideKeyboard(_ notification: NSNotification) {
 
+    }
+}
+
+extension MessagesViewController: MessagesTextCellDelegate {
+    func didTapErrorView(for cell: MessagesTextCell) {
+        guard let message = self.message(at: cell.indexPath) as? OutgoingSignalMessage else { fatalError("Trying to send a non-outgoing message!") }
+        self.delegate?.didRequestRetryMessage(message: message, to: self.chat.recipients)
     }
 }

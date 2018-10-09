@@ -1,8 +1,17 @@
 import Foundation
 import TinyConstraints
 import UIKit
+import Quetzalcoatl
+
+protocol MessagesTextCellDelegate: class {
+    func didTapErrorView(for cell: MessagesTextCell)
+}
 
 class MessagesTextCell: UITableViewCell {
+    weak var delegate: MessagesTextCellDelegate?
+
+    var indexPath: IndexPath!
+
     var isOutgoingMessage: Bool = false {
         didSet {
             self.bubbleView.backgroundColor = self.isOutgoingMessage ? .outgoingBubble : .incomingBubble
@@ -11,15 +20,23 @@ class MessagesTextCell: UITableViewCell {
             self.avatarImageView.isHidden = self.isOutgoingMessage
 
             // Now mess up with some constraints to get the desired left/right align
-//            if self.isOutgoingMessage {
-//                self.bubbleViewLeft.priority = .defaultHigh
-//                self.bubbleViewRight.priority = UILayoutPriority(999)
-//            } else {
-//                self.bubbleViewLeft.priority = UILayoutPriority(999)
-//                self.bubbleViewRight.priority = .defaultHigh
-//            }
+            if self.isOutgoingMessage {
+                self.bubbleViewLeft.priority = .defaultHigh
+                self.bubbleViewRight.priority = UILayoutPriority(999)
+            } else {
+                self.bubbleViewLeft.priority = UILayoutPriority(999)
+                self.bubbleViewRight.priority = .defaultHigh
+            }
         }
     }
+
+    var messageState: OutgoingSignalMessage.MessageState = .none {
+        didSet {
+            self.errorViewWidthConstraint.constant = self.messageState == .unsent ? 24.0 : 0.0
+            self.errorView.alpha = self.messageState == .unsent ? 1.0 : 0.0
+        }
+    }
+
     var avatar: UIImage? {
         didSet {
             self.avatarImageView.image = self.avatar
@@ -60,6 +77,10 @@ class MessagesTextCell: UITableViewCell {
         }
     }
 
+    private lazy var errorViewWidthConstraint: NSLayoutConstraint = {
+        return self.errorView.widthAnchor.constraint(equalToConstant: 24)
+    }()
+
     private lazy var textViewBottomMargin: NSLayoutConstraint = {
         return self.textView.bottomAnchor.constraint(equalTo: self.bubbleView.bottomAnchor, constant: -8)
     }()
@@ -92,7 +113,7 @@ class MessagesTextCell: UITableViewCell {
     }()
 
     private lazy var bubbleViewRight: NSLayoutConstraint = {
-        let c = self.bubbleView.rightAnchor.constraint(equalTo: self.containerView.rightAnchor, constant: -8)
+        let c = self.bubbleView.rightAnchor.constraint(equalTo: self.errorView.leftAnchor, constant: -8)
         c.priority = UILayoutPriority(999)
 
         return c
@@ -183,7 +204,7 @@ class MessagesTextCell: UITableViewCell {
 
     private lazy var errorView: MessagesErrorView = {
         let view = MessagesErrorView(withAutoLayout: true)
-        view.alpha = 0
+        view.addTarget(self, action: #selector(self.didTapErrorView), for: .touchUpInside)
 
         return view
     }()
@@ -200,7 +221,7 @@ class MessagesTextCell: UITableViewCell {
 
         self.containerView.addSubview(self.bubbleView)
         self.containerView.addSubview(self.avatarImageView)
-        //        self.containerView.addSubview(self.errorView)
+        self.containerView.addSubview(self.errorView)
 
         self.bubbleView.addSubview(self.messageImageView)
         self.bubbleView.addSubview(self.textView)
@@ -212,12 +233,10 @@ class MessagesTextCell: UITableViewCell {
         self.avatarImageView.bottomAnchor.constraint(equalTo: self.containerView.bottomAnchor, constant: -8).isActive = true
         self.avatarImageView.leftAnchor.constraint(equalTo: self.containerView.leftAnchor, constant: 8).isActive = true
 
-        //        self.errorView.set(height: 24)
-        //        self.errorView.set(width: 24)
-        //        self.errorView.rightAnchor.constraint(equalTo: self.containerView.rightAnchor, constant: 9).isActive = true
-        //        self.errorView.bottomAnchor.constraint(equalTo: self.containerView.bottomAnchor, constant: -8).isActive = true
-        //        self.errorView.topAnchor.constraintEqualToSystemSpacingBelow(self.containerView.topAnchor, multiplier: 1.0).isActive = true
-
+        self.errorView.set(height: 24)
+        self.errorViewWidthConstraint.isActive = true
+        self.errorView.rightAnchor.constraint(equalTo: self.containerView.rightAnchor, constant: -8).isActive = true
+        self.errorView.bottomAnchor.constraint(equalTo: self.containerView.bottomAnchor, constant: -12).isActive = true
 
         self.bubbleViewLeft.isActive = true
         self.bubbleViewRight.isActive = true
@@ -240,9 +259,13 @@ class MessagesTextCell: UITableViewCell {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    @objc private func didTapErrorView() {
+        self.delegate?.didTapErrorView(for: self)
+    }
 }
 
-final class MessagesErrorView: UIView {
+final class MessagesErrorView: UIControl {
     private lazy var imageView: UIImageView = {
         let view = UIImageView(withAutoLayout: true)
         view.image = UIImage(named: "error")!
@@ -258,7 +281,7 @@ final class MessagesErrorView: UIView {
 
         self.imageView.set(height: 24)
         self.imageView.set(width: 24)
-        self.imageView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 6).isActive = true
+        self.imageView.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 0).isActive = true
         self.imageView.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 0).isActive = true
     }
 

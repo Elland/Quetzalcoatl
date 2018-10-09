@@ -236,6 +236,10 @@ extension ChatsViewController: UITableViewDelegate {
 }
 
 extension ChatsViewController: MessagesViewControllerDelegate {
+    func didRequestRetryMessage(message: OutgoingSignalMessage, to recipients: [SignalAddress]) {
+        self.quetzalcoatl.retryMessage(message, to: recipients)
+    }
+    
     func didRequestNewIdentity(for address: SignalAddress, deleting message: SignalMessage) {
         self.quetzalcoatl.requestNewIdentity(for: address)
         self.quetzalcoatl.deleteMessage(message)
@@ -260,9 +264,9 @@ extension ChatsViewController: MessagesViewControllerDelegate {
         let attachments = images.compactMap { img in img.pngData() }
 
         if chat.isGroupChat {
-            self.quetzalcoatl.sendGroupMessage(text, type: .deliver, to: chat.recipients!, attachments: attachments)
+            self.quetzalcoatl.sendGroupMessage(text, type: .deliver, to: chat.recipients, attachments: attachments)
         } else {
-            self.quetzalcoatl.sendMessage(text, to: chat.recipients!.first!, in: chat, attachments: attachments)
+            self.quetzalcoatl.sendMessage(text, to: chat.recipients.first!, in: chat, attachments: attachments)
         }
     }
 }

@@ -573,7 +573,7 @@ extension FilePersistenceStore: PersistenceStore {
         let insert = self.chatsTable.insert(
             SignalChatKeys.uniqueIdField <- chat.uniqueId,
             SignalChatKeys.recipientIdentifierField <- chat.recipientIdentifier,
-            SignalChatKeys.recipientIdentifiersField <- chat.recipients?.map({ r in r.name }).joined(separator: ",") ?? nil,
+            SignalChatKeys.recipientIdentifiersField <- chat.recipients.map({ r in r.name }).joined(separator: ","),
             SignalChatKeys.nameField <- chat.name,
             SignalChatKeys.currentDraftField <- chat.currentDraft,
             SignalChatKeys.isMutedField <- chat.isMuted,
