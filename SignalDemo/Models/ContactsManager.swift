@@ -31,12 +31,6 @@ class ContactManager {
     }
 
     static func image(for address: String) -> UIImage? {
-        if address == "0x94b7382e8cbd02fc7bfd2e233e42b778ac2ce224" {
-            return UIImage(named: "igor2")
-        } else if address == "0xcc4886677b6f60e346fe48968189c1b1fe9f3b33" {
-            return UIImage(named: "karina")
-        } else {
-            return UIImage(named: "igor")
-        }
+        return nil
     }
 }

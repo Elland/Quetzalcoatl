@@ -1,5 +1,6 @@
 github "Elland/CameraScanner" "92a320dcff2b227e71f7736b096491d4a37c52d3"
 github "UseSweet/SweetUIKit" "1.14.0"
+github "aschuch/AwesomeCache" "592a9e8e8e421de8b29fbc8464ada1aaf8d0d5d7"
 github "bakkenbaeck/EtherealCereal" "0.3.0"
 github "roberthein/TinyConstraints" "3.2.1"
 github "stephencelis/SQLite.swift" "0.11.5"

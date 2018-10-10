@@ -68,10 +68,18 @@ final class IDAPIClient {
                 case .success(let json, let response):
                     guard response.statusCode == 200 else { return }
 
-                    guard json?.data != nil else {
+                    guard let data = json?.data,
+                        let newUser = try? JSONDecoder().decode(Profile.self, from: data)
+                        else {
                         assertionFailure("No data from registration request response")
                         return
                     }
+
+                    var user = newUser
+                    user.cereal = cereal
+                    user.password = UUID().uuidString
+
+                    Profile.current = user
 
                     status = .registered
                 case .failure(_, _, let error):
@@ -81,7 +89,6 @@ final class IDAPIClient {
             }
         }
     }
-
 
     public func updateUser(userDictionary: [String: Any], cereal: EtherealCereal, _ success: @escaping (() -> Void)) {
         self.fetchTimestamp { timestamp in
@@ -103,9 +110,16 @@ final class IDAPIClient {
                 switch result {
                 case let .success(json, response):
                     guard response.statusCode == 200 else { return }
-                    guard let json = json?.dictionary else { return }
+                    guard let data = json?.data else { return }
 
-                    print("Registered user with address: \(cereal.address)")
+                    let updated = try! JSONDecoder().decode(Profile.self, from: data)
+                    var user = Profile.current!
+
+                    user.username = updated.username
+                    user.name = updated.name
+                    user.avatar = updated.avatar
+
+                    Profile.current = user
 
                     success()
                 case let .failure(json, response, error):

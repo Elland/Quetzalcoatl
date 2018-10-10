@@ -15,6 +15,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         let window = UIWindow(frame: UIScreen.main.bounds)
 
+        SessionManager.shared.loadOrCreateuser()
+
         window.rootViewController = TabBarController()
         window.backgroundColor = .white
         window.tintColor = .tint

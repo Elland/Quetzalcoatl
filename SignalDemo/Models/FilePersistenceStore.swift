@@ -288,6 +288,8 @@ class FilePersistenceStore {
             t.column(UserKeys.nameField)
             t.column(UserKeys.avatarField)
             t.column(UserKeys.descriptionField)
+
+            t.unique([UserKeys.privateKeyField, UserKeys.usernameField])
         })
 
         NSLog("Did finish database setup.")
@@ -303,7 +305,13 @@ class FilePersistenceStore {
             UserKeys.descriptionField <- user.description
         )
 
+        let existing = self.userTable.filter(UserKeys.privateKeyField == user.cereal.privateKey)
+
         do {
+            if try self.dbConnection.scalar(existing.count) > 0 {
+                try self.dbConnection.run(existing.delete())
+            }
+
             try self.dbConnection.run(insert)
         } catch (let error as SQLite.Result) {
             if case SQLite.Result.error(let message, let code, _) = error {

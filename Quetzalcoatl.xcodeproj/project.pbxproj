@@ -91,6 +91,9 @@
 		9FE84C5D216DEA8B00B5522B /* QRCodeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE84C5C216DEA8B00B5522B /* QRCodeGenerator.swift */; };
 		9FE84C5F216E146F00B5522B /* ChatsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE84C5E216E146F00B5522B /* ChatsDataSource.swift */; };
 		9FE84C61216E14AD00B5522B /* ContactsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE84C60216E14AD00B5522B /* ContactsManager.swift */; };
+		9FE84C63216E17B900B5522B /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE84C62216E17B900B5522B /* SessionManager.swift */; };
+		9FE84C65216E202500B5522B /* AwesomeCache.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FE84C64216E202500B5522B /* AwesomeCache.framework */; };
+		9FE84C66216E204100B5522B /* AwesomeCache.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9FE84C64216E202500B5522B /* AwesomeCache.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9FE925E1208A08F6008ABCE4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE925E0208A08F6008ABCE4 /* AppDelegate.swift */; };
 		9FE925E3208A08F6008ABCE4 /* ChatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE925E2208A08F6008ABCE4 /* ChatsViewController.swift */; };
 		9FE925E5208A08F6008ABCE4 /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE925E4208A08F6008ABCE4 /* MessagesViewController.swift */; };
@@ -195,6 +198,7 @@
 			files = (
 				9FF2E496208A1F85001C666C /* Quetzalcoatl.framework in Copy Frameworks */,
 				9FB2D634216D0094008EE350 /* Teapot.framework in Copy Frameworks */,
+				9FE84C66216E204100B5522B /* AwesomeCache.framework in Copy Frameworks */,
 				9FB2D635216D0094008EE350 /* TinyConstraints.framework in Copy Frameworks */,
 				9F72308C208F2F1A00F568F7 /* Starscream.framework in Copy Frameworks */,
 				9FE84C5B216DE61800B5522B /* CameraScanner.framework in Copy Frameworks */,
@@ -279,6 +283,8 @@
 		9FE84C5C216DEA8B00B5522B /* QRCodeGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeGenerator.swift; sourceTree = "<group>"; };
 		9FE84C5E216E146F00B5522B /* ChatsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsDataSource.swift; sourceTree = "<group>"; };
 		9FE84C60216E14AD00B5522B /* ContactsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsManager.swift; sourceTree = "<group>"; };
+		9FE84C62216E17B900B5522B /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
+		9FE84C64216E202500B5522B /* AwesomeCache.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AwesomeCache.framework; path = Carthage/Build/iOS/AwesomeCache.framework; sourceTree = "<group>"; };
 		9FE925DE208A08F6008ABCE4 /* Signal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Signal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9FE925E0208A08F6008ABCE4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9FE925E2208A08F6008ABCE4 /* ChatsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsViewController.swift; sourceTree = "<group>"; };
@@ -380,6 +386,7 @@
 				9FB2D633216D0093008EE350 /* TinyConstraints.framework in Frameworks */,
 				9FF2E497208A1F87001C666C /* Quetzalcoatl.framework in Frameworks */,
 				9FB2D62E216CFED2008EE350 /* SweetUIKit.framework in Frameworks */,
+				9FE84C65216E202500B5522B /* AwesomeCache.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -521,6 +528,7 @@
 				9FB2D61E216CD765008EE350 /* AvatarManager.swift */,
 				9FE84C5C216DEA8B00B5522B /* QRCodeGenerator.swift */,
 				9FE84C60216E14AD00B5522B /* ContactsManager.swift */,
+				9FE84C62216E17B900B5522B /* SessionManager.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -539,6 +547,7 @@
 		9FB2D624216CFE17008EE350 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9FE84C64216E202500B5522B /* AwesomeCache.framework */,
 				9FE84C59216DE61100B5522B /* CameraScanner.framework */,
 				9FB2D630216D0093008EE350 /* Teapot.framework */,
 				9FB2D631216D0093008EE350 /* TinyConstraints.framework */,
@@ -991,6 +1000,7 @@
 				9FA5FDA421623A410046F0A7 /* SLKTextView+SLKAdditions.m in Sources */,
 				9FB2D621216CD93B008EE350 /* Blockies.swift in Sources */,
 				9FA5FDAD21623C440046F0A7 /* AutoCompleteTableViewCell.m in Sources */,
+				9FE84C63216E17B900B5522B /* SessionManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

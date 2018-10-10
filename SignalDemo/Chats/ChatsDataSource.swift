@@ -9,7 +9,10 @@
 import Quetzalcoatl
 
 class ChatsDataSource: NSObject {
-    let quetzalcoatl: Quetzalcoatl
+    var quetzalcoatl: Quetzalcoatl {
+        return SessionManager.shared.quetzalcoatl
+    }
+
     unowned let tableView: UITableView
 
     var chats: [SignalChat] {
@@ -27,13 +30,30 @@ class ChatsDataSource: NSObject {
         return dateFormatter
     }()
 
-    init(tableView: UITableView, quetzalcoatl: Quetzalcoatl) {
+    init(tableView: UITableView) {
         self.tableView = tableView
-        self.quetzalcoatl = quetzalcoatl
 
         super.init()
 
         self.tableView.dataSource = self
+    }
+
+    func createChat(with id: String) -> SignalChat {
+        let chat = self.quetzalcoatl.store.fetchOrCreateChat(with: id)
+
+        if chat.messages.isEmpty {
+            if chat.isGroupChat {
+                self.quetzalcoatl.sendGroupMessage("", type: .deliver, to: chat.recipients)
+            } else {
+                self.quetzalcoatl.sendMessage("", to: chat.recipients.first!, in: chat)
+            }
+        }
+
+        return chat
+    }
+
+    func deleteChat(_ chat: SignalChat) {
+        self.quetzalcoatl.deleteChat(chat)
     }
 }
 
