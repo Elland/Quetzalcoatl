@@ -17,6 +17,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         SessionManager.shared.loadOrCreateuser()
 
+        UIApplication.shared.registerForRemoteNotifications()
+
+        NotificationCenter.default.addObserver(forName: ChatsDataSource.chatDidUpdateNotification, object: nil, queue: .main) { n in
+            UIApplication.shared.applicationIconBadgeNumber = (n.object as? Int) ?? 0
+        }
+
         window.rootViewController = TabBarController()
         window.backgroundColor = .white
         window.tintColor = .tint
@@ -25,5 +31,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window = window
 
         return true
+    }
+
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        print("oh no, could not register for remote notifications")
+    }
+
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        print("how remote notification?")
     }
 }

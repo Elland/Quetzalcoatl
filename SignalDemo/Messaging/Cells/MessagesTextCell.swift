@@ -21,11 +21,11 @@ class MessagesTextCell: UITableViewCell {
 
             // Now mess up with some constraints to get the desired left/right align
             if self.isOutgoingMessage {
-                self.bubbleViewLeft.priority = .defaultHigh
+                self.bubbleViewLeft.priority = .defaultLow
                 self.bubbleViewRight.priority = UILayoutPriority(999)
             } else {
                 self.bubbleViewLeft.priority = UILayoutPriority(999)
-                self.bubbleViewRight.priority = .defaultHigh
+                self.bubbleViewRight.priority = .defaultLow
             }
         }
     }
@@ -113,7 +113,7 @@ class MessagesTextCell: UITableViewCell {
     }()
 
     private lazy var bubbleViewRight: NSLayoutConstraint = {
-        let c = self.bubbleView.rightAnchor.constraint(equalTo: self.errorView.leftAnchor, constant: -8)
+        let c = self.bubbleView.rightAnchor.constraint(equalTo: self.containerView.rightAnchor, constant: -8)
         c.priority = UILayoutPriority(999)
 
         return c
@@ -168,6 +168,7 @@ class MessagesTextCell: UITableViewCell {
         view.linkTextAttributes = [NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single]
 
         view.setContentHuggingPriority(UILayoutPriority(999), for: .vertical)
+        view.setContentHuggingPriority(UILayoutPriority(999), for: .horizontal)
 
         return view
     }()
@@ -177,8 +178,8 @@ class MessagesTextCell: UITableViewCell {
         view.layer.cornerRadius = 8
         view.clipsToBounds = true
 
-        view.setContentHuggingPriority(UILayoutPriority(999), for: .vertical)
-        view.setContentHuggingPriority(UILayoutPriority(999), for: .horizontal)
+        view.setContentHuggingPriority(.required, for: .vertical)
+        view.setContentHuggingPriority(.required, for: .horizontal)
 
         return view
     }()
@@ -216,8 +217,6 @@ class MessagesTextCell: UITableViewCell {
         self.contentView.autoresizingMask = [.flexibleHeight]
 
         self.contentView.addSubview(self.containerView)
-        self.containerView.fillSuperview()
-
         self.containerView.addSubview(self.bubbleView)
         self.containerView.addSubview(self.avatarImageView)
         self.containerView.addSubview(self.errorView)
@@ -225,8 +224,15 @@ class MessagesTextCell: UITableViewCell {
         self.bubbleView.addSubview(self.messageImageView)
         self.bubbleView.addSubview(self.textView)
 
-        self.avatarImageView.set(height: 44)
+        let imageHeight = self.avatarImageView.heightAnchor.constraint(equalToConstant: 44)
+        imageHeight.priority = UILayoutPriority(999)
+        imageHeight.isActive = true
         self.avatarImageView.set(width: 44)
+
+        self.containerView.leftToSuperview()
+        self.containerView.topToSuperview()
+        self.containerView.bottomToSuperview()
+        self.containerView.rightToSuperview()
 
         self.avatarImageView.topAnchor.constraint(greaterThanOrEqualTo: self.containerView.topAnchor, constant: 8).isActive = true
         self.avatarImageView.bottomAnchor.constraint(equalTo: self.containerView.bottomAnchor, constant: -8).isActive = true
@@ -280,7 +286,7 @@ final class MessagesErrorView: UIControl {
 
         self.imageView.set(height: 24)
         self.imageView.set(width: 24)
-        self.imageView.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 0).isActive = true
+        self.imageView.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: 0).isActive = true
         self.imageView.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 0).isActive = true
     }
 

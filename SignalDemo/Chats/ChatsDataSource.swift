@@ -9,6 +9,8 @@
 import Quetzalcoatl
 
 class ChatsDataSource: NSObject {
+    static let chatDidUpdateNotification = Notification.Name(rawValue: "ChatsDataSource.chatDidUpdateNotification")
+
     var quetzalcoatl: Quetzalcoatl {
         return SessionManager.shared.quetzalcoatl
     }
@@ -79,8 +81,30 @@ extension ChatsDataSource: UITableViewDataSource {
         cell.title = chat.displayName
         cell.avatarImage = chat.image
 
+        cell.unreadCount = chat.unreadCount
+
         if let message = chat.visibleMessages.last {
             cell.date = self.dateFormatter.string(from: Date(milisecondTimeIntervalSinceEpoch: message.timestamp))
         }
+    }
+}
+
+extension ChatsDataSource: SignalServiceStoreChatDelegate {
+    func signalServiceStoreWillChangeChats() {
+        
+    }
+
+    func signalServiceStoreDidChangeChat(_ chat: SignalChat, at indexPath: IndexPath, for changeType: SignalServiceStore.ChangeType) {
+
+    }
+
+    func signalServiceStoreDidChangeChats() {
+        self.tableView.reloadData()
+
+        let count = self.chats.map { chat -> Int in chat.unreadCount }
+
+        let total = count.reduce(0, +)
+
+        NotificationCenter.default.post(name: ChatsDataSource.chatDidUpdateNotification, object: total)
     }
 }

@@ -64,11 +64,9 @@ extension SignalMessage {
             message = InfoSignalMessage(senderId: senderId ,chatId: chatId, messageType: messageType!, customMessage: customMessage!, additionalInfo: additionalInfo, store: nil)
         case .incoming:
             let isRead = try row.get(SignalMessageKeys.isReadField)
-            let isSent = try row.get(SignalMessageKeys.isSentField)
-
+            
             let incoming = IncomingSignalMessage(body: body, senderId: senderId, chatId: chatId, timestamp: UInt64(timestamp)!, store: nil)
             incoming.isRead = isRead!
-            incoming.isSent = isSent!
 
             message = incoming
         case .outgoing:
@@ -79,12 +77,20 @@ extension SignalMessage {
             let messageState = OutgoingSignalMessage.MessageState(rawValue: Int(stateRaw))
 
             let groupMessageType = OutgoingSignalMessage.GroupMetaMessageType(rawValue: Int(groupMessageTypeRaw))
-            let recipientId = try row.get(SignalMessageKeys.recipientIdField)
+            let recipientId = try row.get(SignalMessageKeys.recipientIdField)!
 
-            let outgoing = OutgoingSignalMessage(recipientId: recipientId!, senderId: senderId, chatId: chatId, body: body, groupMessageType: groupMessageType!, store: nil)
+            let outgoing = OutgoingSignalMessage(recipientId: recipientId, senderId: senderId, chatId: chatId, body: body, groupMessageType: groupMessageType!, store: nil)
             outgoing.messageState = messageState!
 
             message = outgoing
+
+        case .error:
+            let recipientId = try row.get(SignalMessageKeys.recipientIdField)!
+            let errorKindRaw = try row.get(SignalMessageKeys.errorKindField)!
+            let kind = ErrorSignalMessage.Kind(rawValue: Int32(errorKindRaw))!
+
+            let error = ErrorSignalMessage(kind: kind, senderId: senderId, recipientId: recipientId, chatId: chatId, store: nil)
+            message = error
         }
 
         message.timestamp = UInt64(timestamp)!
@@ -96,7 +102,7 @@ extension SignalMessage {
 }
 
 enum SignalMessageKind: Int64 {
-    case incoming, info, outgoing
+    case incoming, info, outgoing, error
 
     init(_ message: SignalMessage) {
         if message is IncomingSignalMessage {
@@ -105,6 +111,8 @@ enum SignalMessageKind: Int64 {
             self = .info
         } else if message is OutgoingSignalMessage {
             self = .outgoing
+        } else if message is ErrorSignalMessage {
+            self = .error
         } else {
             fatalError()
         }
@@ -132,7 +140,6 @@ struct SignalMessageKeys {
 
     /* Incoming messages */
     static let isReadField = Expression<Bool?>("isRead")
-    static let isSentField = Expression<Bool?>("isSent")
 
     /* Info messages */
     static let messageTypeField = Expression<Int64?>("messageType")
@@ -141,6 +148,9 @@ struct SignalMessageKeys {
 
     /* Info & Incoming both have a sender */
     static let senderIdField = Expression<String>("senderId")
+
+    /* Error message */
+    static let errorKindField = Expression<Int64?>("kind")
 
     /* Every message */
     static let uniqueIdField = Expression<String>("id")
@@ -237,7 +247,8 @@ class FilePersistenceStore {
             t.column(SignalMessageKeys.messageTypeField)
 
             t.column(SignalMessageKeys.isReadField)
-            t.column(SignalMessageKeys.isSentField)
+
+            t.column(SignalMessageKeys.errorKindField)
 
             t.column(SignalMessageKeys.groupMetaMessageTypeField)
             t.column(SignalMessageKeys.recipientIdField)
@@ -438,6 +449,11 @@ class FilePersistenceStore {
             messageState = nil
         }
 
+        var kindRaw: Int64? = nil
+        if let raw = (message as? ErrorSignalMessage)?.kind.rawValue {
+            kindRaw = Int64(raw)
+        }
+
         let values = [
             SignalMessageKeys.uniqueIdField <- message.uniqueId,
             SignalMessageKeys.bodyField <- message.body,
@@ -457,13 +473,15 @@ class FilePersistenceStore {
 
             // incoming
             SignalMessageKeys.isReadField <- (message as? IncomingSignalMessage)?.isRead,
-            SignalMessageKeys.isSentField <- (message as? IncomingSignalMessage)?.isSent,
+
+            // error
+            SignalMessageKeys.errorKindField <- kindRaw,
 
             // outgoing
             SignalMessageKeys.groupMetaMessageTypeField <- groupMetaType,
             SignalMessageKeys.recipientIdField <- (message as? OutgoingSignalMessage)?.recipientId,
             SignalMessageKeys.messageStateField <- messageState,
-            SignalMessageKeys.attachmentIdsField <- message.attachmentPointerIds.joined(separator: ",")
+            SignalMessageKeys.attachmentIdsField <- message.attachmentPointerIds.joined(separator: ","),
         ]
 
         if T.self is Insert.Type {
@@ -573,7 +591,18 @@ extension FilePersistenceStore: PersistenceStore {
     }
 
     func updateChat(_ chat: SignalChat, _ completion: () -> Void) {
-        NSLog("update chat")
+        let values = [
+            SignalChatKeys.recipientIdentifierField <- chat.recipientIdentifier,
+            SignalChatKeys.recipientIdentifiersField <- chat.recipients.map({ r in r.name }).joined(separator: ","),
+            SignalChatKeys.nameField <- chat.name,
+            SignalChatKeys.currentDraftField <- chat.currentDraft,
+            SignalChatKeys.isMutedField <- chat.isMuted,
+            SignalChatKeys.lastArchivalDateField <- chat.lastArchivalDate?.timeIntervalSinceReferenceDate
+        ]
+
+        let update = self.chatsTable.filter(SignalChatKeys.uniqueIdField == chat.uniqueId).update(values)
+        self.update(update)
+
         completion()
     }
 

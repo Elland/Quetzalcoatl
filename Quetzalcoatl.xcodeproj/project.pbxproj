@@ -94,6 +94,9 @@
 		9FE84C63216E17B900B5522B /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE84C62216E17B900B5522B /* SessionManager.swift */; };
 		9FE84C65216E202500B5522B /* AwesomeCache.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FE84C64216E202500B5522B /* AwesomeCache.framework */; };
 		9FE84C66216E204100B5522B /* AwesomeCache.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9FE84C64216E202500B5522B /* AwesomeCache.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9FE84C68216E572C00B5522B /* AvatarImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE84C67216E572C00B5522B /* AvatarImageView.swift */; };
+		9FE84C6A216E689D00B5522B /* ErrorSignalMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE84C69216E689D00B5522B /* ErrorSignalMessage.swift */; };
+		9FE84C6C216E827600B5522B /* InsetLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE84C6B216E827600B5522B /* InsetLabel.swift */; };
 		9FE925E1208A08F6008ABCE4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE925E0208A08F6008ABCE4 /* AppDelegate.swift */; };
 		9FE925E3208A08F6008ABCE4 /* ChatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE925E2208A08F6008ABCE4 /* ChatsViewController.swift */; };
 		9FE925E5208A08F6008ABCE4 /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE925E4208A08F6008ABCE4 /* MessagesViewController.swift */; };
@@ -285,6 +288,9 @@
 		9FE84C60216E14AD00B5522B /* ContactsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsManager.swift; sourceTree = "<group>"; };
 		9FE84C62216E17B900B5522B /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
 		9FE84C64216E202500B5522B /* AwesomeCache.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AwesomeCache.framework; path = Carthage/Build/iOS/AwesomeCache.framework; sourceTree = "<group>"; };
+		9FE84C67216E572C00B5522B /* AvatarImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarImageView.swift; sourceTree = "<group>"; };
+		9FE84C69216E689D00B5522B /* ErrorSignalMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorSignalMessage.swift; sourceTree = "<group>"; };
+		9FE84C6B216E827600B5522B /* InsetLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsetLabel.swift; sourceTree = "<group>"; };
 		9FE925DE208A08F6008ABCE4 /* Signal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Signal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9FE925E0208A08F6008ABCE4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9FE925E2208A08F6008ABCE4 /* ChatsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsViewController.swift; sourceTree = "<group>"; };
@@ -558,6 +564,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		9FE84C6D216E828D00B5522B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				9FE84C67216E572C00B5522B /* AvatarImageView.swift */,
+				9FE84C6B216E827600B5522B /* InsetLabel.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		9FE925DF208A08F6008ABCE4 /* SignalDemo */ = {
 			isa = PBXGroup;
 			children = (
@@ -573,6 +588,7 @@
 				9F5CF5C42163840400FAAFD4 /* String+Truncation.swift */,
 				9FB2D620216CD93B008EE350 /* Blockies.swift */,
 				9FB2D622216CD945008EE350 /* UIColor+HSL.swift */,
+				9FE84C6D216E828D00B5522B /* Views */,
 				9FE925E9208A08F8008ABCE4 /* Assets.xcassets */,
 				9FE925EB208A08F8008ABCE4 /* LaunchScreen.storyboard */,
 				9FCDD50620A1E21A006835DC /* Localizable.strings */,
@@ -608,6 +624,7 @@
 				9F27B9F02090C61F0032C7DD /* InfoSignalMessage.swift */,
 				9FF4F5C3208798DD00EC4D5D /* IncomingSignalMessage.swift */,
 				9FF4F5C52087990000EC4D5D /* OutgoingSignalMessage.swift */,
+				9FE84C69216E689D00B5522B /* ErrorSignalMessage.swift */,
 			);
 			path = SignalServiceMessages;
 			sourceTree = "<group>";
@@ -873,6 +890,11 @@
 					9FE925DD208A08F6008ABCE4 = {
 						CreatedOnToolsVersion = 9.3;
 						LastSwiftMigration = 1000;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					9FFB8B04208629B60067BCE9 = {
 						CreatedOnToolsVersion = 9.3;
@@ -975,6 +997,7 @@
 				9FE84C58216DE3D000B5522B /* ContactScannerViewController.swift in Sources */,
 				9F5CF5C52163840400FAAFD4 /* String+Truncation.swift in Sources */,
 				9FE84C61216E14AD00B5522B /* ContactsManager.swift in Sources */,
+				9FE84C6C216E827600B5522B /* InsetLabel.swift in Sources */,
 				9FA5FDA721623A410046F0A7 /* UIScrollView+SLKAdditions.m in Sources */,
 				9F89637421661F6100CC639A /* SettingsNavigationController.swift in Sources */,
 				9FE92608208A0BAD008ABCE4 /* User.swift in Sources */,
@@ -983,6 +1006,7 @@
 				9FA5FDAF21624CAB0046F0A7 /* PassthroughView.swift in Sources */,
 				9F89637221661DBE00CC639A /* TabBarController.swift in Sources */,
 				9FE925E3208A08F6008ABCE4 /* ChatsViewController.swift in Sources */,
+				9FE84C68216E572C00B5522B /* AvatarImageView.swift in Sources */,
 				9FA5FD9F21623A410046F0A7 /* SLKInputAccessoryView.m in Sources */,
 				9FA5FDA121623A410046F0A7 /* SLKTextView.m in Sources */,
 				9F0A19B620A09F7E0051B268 /* MessagesTextCell.swift in Sources */,
@@ -1018,6 +1042,7 @@
 				9FFD1E13208645B600FA4626 /* SignalAddress.swift in Sources */,
 				9FF4F5C2208798C300EC4D5D /* SignalMessage.swift in Sources */,
 				9FFD1E1B2086489500FA4626 /* SignalIdentityKeyPair.swift in Sources */,
+				9FE84C6A216E689D00B5522B /* ErrorSignalMessage.swift in Sources */,
 				9FFD1E362087400900FA4626 /* NSData+messagePadding.m in Sources */,
 				9FFD1E2220873D0E00FA4626 /* SignalLibraryMessage.swift in Sources */,
 				9FFD1DFE208644DE00FA4626 /* SignalCommonCryptoProvider.m in Sources */,
@@ -1101,8 +1126,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 29X3GG489T;
+				DEVELOPMENT_TEAM = 5XX9JCG35B;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/SignalDemo/Carthage/Build/iOS",
@@ -1113,8 +1139,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bakkenbaeck.SignalDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = me.elland.SignalDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "SignalDemo/Messaging/SlackTextViewController/Signal-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
@@ -1127,8 +1154,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 29X3GG489T;
+				DEVELOPMENT_TEAM = 5XX9JCG35B;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/SignalDemo/Carthage/Build/iOS",
@@ -1139,8 +1167,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bakkenbaeck.SignalDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = me.elland.SignalDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "SignalDemo/Messaging/SlackTextViewController/Signal-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;

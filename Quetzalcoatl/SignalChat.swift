@@ -75,18 +75,8 @@ public class SignalChat: Equatable, Codable {
 
     public var uniqueId: String = UUID().uuidString
 
-    public var hasUnreadMessages: Bool {
-        guard let incoming = self.messages.filter({ message -> Bool in
-            message is IncomingSignalMessage
-        }) as? [IncomingSignalMessage] else { return false } // no incoming messages
-
-        for message in incoming {
-            if !message.isRead {
-                return true
-            }
-        }
-
-        return false
+    public var unreadCount: Int {
+        return self.messages.filter({ ($0 as? IncomingSignalMessage)?.isRead == false }).count
     }
 
     /// Returns the string that will be displayed typically in a conversations view as a preview of the last message.
@@ -166,7 +156,7 @@ public class SignalChat: Equatable, Codable {
         }
 
         incomingMessages.forEach { incoming in
-            incoming.isRead = false
+            incoming.isRead = true
             try? self.store.save(incoming)
         }
     }

@@ -10,7 +10,6 @@ import UIKit
 private let TabBarItemTitleOffset: CGFloat = -3.0
 
 class TabBarController: UITabBarController {
-    
     lazy var chatsNavigationController: ChatsNavigationController = {
         return ChatsNavigationController(rootViewController: ChatsViewController())
     }()

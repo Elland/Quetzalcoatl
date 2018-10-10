@@ -31,6 +31,6 @@ class ContactManager {
     }
 
     static func image(for address: String) -> UIImage? {
-        return nil
+        return AvatarManager.cachedAvatar(for: address)
     }
 }

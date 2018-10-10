@@ -26,16 +26,12 @@ public extension CGFloat {
     }
 }
 
-protocol MessagesViewControllerDelegate {
-    func didRequestSendMessage(text: String, in chat: SignalChat)
-
-    func didRequestRetryMessage(message: OutgoingSignalMessage, to recipients: [SignalAddress])
-    
-    func didRequestNewIdentity(for address: SignalAddress, deleting message: SignalMessage)
-}
-
 class MessagesViewController: UIViewController {
     let chat: SignalChat
+
+    private var quetzalcoatl: Quetzalcoatl {
+        return SessionManager.shared.quetzalcoatl
+    }
 
     var shouldScrollToBottom = false
 
@@ -54,8 +50,6 @@ class MessagesViewController: UIViewController {
         return chatInputVC
     }()
 
-    var delegate: MessagesViewControllerDelegate?
-
     lazy var tableView: ChatTableView = {
         let view = ChatTableView(frame: .zero, style: .plain)
 
@@ -65,6 +59,12 @@ class MessagesViewController: UIViewController {
         view.register(UITableViewCell.self)
         view.register(MessagesTextCell.self)
         view.register(StatusCell.self)
+
+        return view
+    }()
+
+    lazy var avatarImageView: AvatarImageView = {
+        let view = AvatarImageView()
 
         return view
     }()
@@ -83,6 +83,17 @@ class MessagesViewController: UIViewController {
 
         self.hidesBottomBarWhenPushed = true
         self.chatInputViewController.hidesBottomBarWhenPushed = true
+
+        SessionManager.shared.messageDelegate = self
+
+        NotificationCenter.default.addObserver(forName: AvatarManager.avatarDidUpdateNotification, object: nil, queue: .main) { notif in
+            guard let id = notif.object as? String,
+                self.chat.recipients.map({$0.name}).contains(id),
+                let image  = notif.userInfo?["image"] as? UIImage
+                else { return }
+
+            self.avatarImageView.image = image
+        }
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -121,6 +132,8 @@ class MessagesViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
+        self.chat.markAllAsRead()
+        
         self.scrollTableViewToBottom(animated: false)
     }
 
@@ -145,6 +158,7 @@ class MessagesViewController: UIViewController {
         self.view.addSubview(self.chatInputViewController.view)
 
         self.navigationItem.title = self.chat.displayName
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.avatarImageView)
 
         NSLayoutConstraint.activate([
             self.tableView.topAnchor.constraint(equalTo: self.view.topAnchor),
@@ -162,6 +176,23 @@ class MessagesViewController: UIViewController {
     private func message(at indexPath: IndexPath) -> SignalMessage {
         return self.messages[indexPath.row]
     }
+
+    private func didRequestRetryMessage(message: OutgoingSignalMessage, to recipients: [SignalAddress]) {
+        self.quetzalcoatl.retryMessage(message, to: recipients)
+    }
+
+    private func didRequestNewIdentity(for address: SignalAddress, deleting message: SignalMessage) {
+        self.quetzalcoatl.requestNewIdentity(for: address)
+        self.quetzalcoatl.deleteMessage(message)
+    }
+
+    private func didRequestSendMessage(text: String, in chat: SignalChat) {
+        if chat.isGroupChat {
+            self.quetzalcoatl.sendGroupMessage(text, type: .deliver, to: chat.recipients)
+        } else {
+            self.quetzalcoatl.sendMessage(text, to: chat.recipients.first!, in: chat)
+        }
+    }
 }
 
 extension MessagesViewController: UITableViewDelegate {
@@ -176,7 +207,7 @@ extension MessagesViewController: UITableViewDelegate {
                     fatalError("Could not restore identity for recipient")
                 }
 
-                self.delegate?.didRequestNewIdentity(for: address, deleting: message)
+                self.didRequestNewIdentity(for: address, deleting: message)
             }
             let cancel = UIAlertAction(title: "Cancel", style: .cancel) { (_) in
 
@@ -280,7 +311,7 @@ extension MessagesViewController: ChatInputViewControllerDelegate {
         guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
 
         self.shouldScrollToBottom = true
-        self.delegate?.didRequestSendMessage(text: text, in: self.chat)
+        self.didRequestSendMessage(text: text, in: self.chat)
     }
 
     @objc func willShowOrHideKeyboard(_ notification: NSNotification) {
@@ -305,6 +336,6 @@ extension MessagesViewController: ChatInputViewControllerDelegate {
 extension MessagesViewController: MessagesTextCellDelegate {
     func didTapErrorView(for cell: MessagesTextCell) {
         guard let message = self.message(at: cell.indexPath) as? OutgoingSignalMessage else { fatalError("Trying to send a non-outgoing message!") }
-        self.delegate?.didRequestRetryMessage(message: message, to: self.chat.recipients)
+        self.didRequestRetryMessage(message: message, to: self.chat.recipients)
     }
 }

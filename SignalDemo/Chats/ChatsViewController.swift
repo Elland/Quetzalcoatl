@@ -27,6 +27,11 @@ class ChatsViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
 
         self.chatsDataSource = ChatsDataSource(tableView: self.tableView)
+        SessionManager.shared.chatDelegate = self.chatsDataSource
+
+        NotificationCenter.default.addObserver(forName: ChatsDataSource.chatDidUpdateNotification, object: nil, queue: .main) { n in
+            self.navigationController?.tabBarItem.badgeValue = (n.object as! Int) > 0 ? String((n.object as! Int)) : nil
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -45,12 +50,16 @@ class ChatsViewController: UIViewController {
         self.tableView.fillSuperview()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        let count = self.chatsDataSource.chats.map({$0.unreadCount}).reduce(0,+)
+        self.navigationController?.tabBarItem.badgeValue = count > 0 ? String(count) : nil
     }
 
     @IBAction func didTapCreateChatButton(_ sender: Any) {
         let scannerController = ContactScannerViewController(instructions:  "", types: [.qrCode], startScanningAtLoad: true, showSwitchCameraButton: false, showTorchButton: false, alertIfUnavailable: true)
+
         scannerController.delegate = self
         self.navigationController?.pushViewController(scannerController, animated: true)
     }
@@ -61,8 +70,6 @@ extension ChatsViewController: UITableViewDelegate {
         let chat = self.chatsDataSource.chats[indexPath.row]
 
         let destination = MessagesViewController(chat: chat)
-//        destination.delegate = self
-//        self.quetzalcoatl.store.messageDelegate = destination
 
         self.navigationController?.pushViewController(destination, animated: true)
     }
@@ -92,58 +99,10 @@ extension ChatsViewController: ScannerViewControllerDelegate {
                 return
         }
 
-        let chat = self.chatsDataSource.createChat(with: id)
+        _ = self.chatsDataSource.createChat(with: id)
     }
 
     func scannerViewControllerDidCancel(_ controller: ScannerViewController) {
         self.navigationController?.popViewController(animated: true)
     }
 }
-
-extension ChatsViewController: SignalServiceStoreChatDelegate {
-    func signalServiceStoreWillChangeChats() {
-    }
-
-    func signalServiceStoreDidChangeChat(_ chat: SignalChat, at indexPath: IndexPath, for changeType: SignalServiceStore.ChangeType) {
-    }
-
-    func signalServiceStoreDidChangeChats() {
-        self.tableView.reloadData()
-    }
-}
-
-//extension ChatsViewController: MessagesViewControllerDelegate {
-//    func didRequestRetryMessage(message: OutgoingSignalMessage, to recipients: [SignalAddress]) {
-//        self.quetzalcoatl.retryMessage(message, to: recipients)
-//    }
-//
-//    func didRequestNewIdentity(for address: SignalAddress, deleting message: SignalMessage) {
-//        self.quetzalcoatl.requestNewIdentity(for: address)
-//        self.quetzalcoatl.deleteMessage(message)
-//    }
-//
-//    static func randomMessage() -> (String, [UIImage]) {
-//        let messages: [(String, [UIImage])] = [
-//            (SofaMessage(body: "This is testing message from our Signal demo client.").content, []),
-//            (SofaMessage(body: "This is random message from SQLite demo.").content, []),
-//            (SofaMessage(body: "What's up, doc?.").content, [UIImage(named: "doc")!]),
-//            (SofaMessage(body: "This is Ceti Alpha 5!!!!!!!").content, [UIImage(named: "cetialpha5")!]),
-//            (SofaMessage(body: "Hey, this is a test with a slightly longer text, and some utf-32 characters as well. 👨‍👩‍👧☺️😇 Am I right? 👨🏿‍🔬. I am right…").content, [])
-//        ]
-//
-//        let index = Int(arc4random() % UInt32(messages.count))
-//
-//        return messages[index]
-//    }
-//
-//    func didRequestSendMessage(text: String, in chat: SignalChat) {
-//        let (_, images) = ChatsViewController.randomMessage()
-//        let attachments = images.compactMap { img in img.pngData() }
-//
-//        if chat.isGroupChat {
-//            self.quetzalcoatl.sendGroupMessage(text, type: .deliver, to: chat.recipients, attachments: attachments)
-//        } else {
-//            self.quetzalcoatl.sendMessage(text, to: chat.recipients.first!, in: chat, attachments: attachments)
-//        }
-//    }
-//}

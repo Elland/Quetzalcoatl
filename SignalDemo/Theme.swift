@@ -26,10 +26,18 @@ extension UIColor {
     static var defaultTextLight: UIColor {
         return .white
     }
+
+    static var lighterText: UIColor {
+        return .gray
+    }
 }
 
 extension UIFont {
     static func defaultFont(size: CGFloat) -> UIFont {
         return UIFont(name: "MalayalamSangamMN", size: size)!
+    }
+
+    static func boldFont(size: CGFloat) -> UIFont {
+        return UIFont(name: "MalayalamSangamMN-Bold", size: size)!
     }
 }

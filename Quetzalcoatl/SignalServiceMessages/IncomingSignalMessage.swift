@@ -9,11 +9,8 @@
 public class IncomingSignalMessage: SignalMessage {
     public var isRead: Bool = false
 
-    public var isSent: Bool = false
-
     enum CodingKeys: String, CodingKey {
         case isRead
-        case isSent
         case body,
             chatId,
             uniqueId,
@@ -32,7 +29,6 @@ public class IncomingSignalMessage: SignalMessage {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         self.isRead = try container.decode(Bool.self, forKey: .isRead)
-        self.isSent = try container.decode(Bool.self, forKey: .isSent)
 
         try super.init(from: decoder)
     }
@@ -41,7 +37,6 @@ public class IncomingSignalMessage: SignalMessage {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(self.isRead, forKey: CodingKeys.isRead)
-        try container.encode(self.isSent, forKey: CodingKeys.isSent)
 
         try super.encode(to: encoder)
     }

@@ -136,22 +136,6 @@ class SignalMessageManager {
         }
     }
 
-    //    func handleReceiptEnvelope(_ envelope: Signalservice_Envelope) {
-    //        guard envelope.hasTimestamp else { return }
-    //
-    //        let timestamp = envelope.timestamp
-    //        let messages: [IncomingSignalMessage] = self.store.messages(timestamp: timestamp, type: .incomingMessage)
-    //        guard !messages.isEmpty else {
-    //            NSLog("Missing message for delivery receipt %@.", String(describing: envelope))
-    //            return
-    //        }
-    //
-    //        for message in messages {
-    //            message.isSent = true
-    //            try? self.store.save(message)
-    //        }
-    //    }
-
     private func receivedTextMessage(_ envelope: Signalservice_Envelope, dataMessage: Signalservice_DataMessage) {
         let groupIdData = dataMessage.hasGroup ? dataMessage.group.id : nil
 
@@ -306,6 +290,14 @@ class SignalMessageManager {
         self.sendMessage(infoMessage, to: recipient, in: groupChat) { _ in }
     }
 
+    private func handleErrorMessage(_ error: NSError, for envelope: Signalservice_Envelope) {
+        let chat = self.store.fetchOrCreateChat(with: envelope.source)
+        if error.code == 7, error.domain == SignalErrorDomain {
+            let errorMessage = ErrorSignalMessage(kind: .noSession, senderId: sender.username, recipientId: envelope.source, chatId: chat.uniqueId, store: self.store)
+            try? self.store.save(errorMessage)
+        }
+    }
+
     private func handleEnvelope(_ envelope: Signalservice_Envelope, dataMessage: Signalservice_DataMessage) {
         if dataMessage.hasGroup {
             let groupContext = dataMessage.group
@@ -416,8 +408,10 @@ class SignalMessageManager {
             }
 
         } catch (let error) {
-            // TODO: handle this better.
-            NSLog("Could not decrypt message: %@", error.localizedDescription)
+            NSLog("Could not decrypt message. Error: %@", error.localizedDescription)
+
+            self.handleErrorMessage(error as NSError, for: envelope)
+
             return false
         }
 

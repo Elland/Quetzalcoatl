@@ -63,7 +63,7 @@ class SettingsViewController: UIViewController {
         self.qrCodeImageView.image = QRCodeGenerator.qrCodeImage(for: profile.id)
         self.avatarImageView.layer.cornerRadius = self.avatarImageView.bounds.width / 2
 
-        AvatarManager.avatar(at: profile.avatar) { image in
+        AvatarManager.avatar(for: profile.id, at: profile.avatar) { image in
             self.avatarImageView.image = image ?? Blockies(seed: profile.id, scale: Int(10.0 * UIScreen.main.scale)).createImage()
         }
 
