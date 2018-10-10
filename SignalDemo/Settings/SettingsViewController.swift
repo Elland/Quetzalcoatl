@@ -41,7 +41,8 @@ class SettingsViewController: UIViewController {
     @IBOutlet private weak var nameTextField: UITextField!
     @IBOutlet private weak var usernameTextField: UITextField!
     @IBOutlet private weak var separatorView: UIView!
-
+    @IBOutlet weak var qrCodeImageView: UIImageView!
+    
     static func instantiate() -> UIViewController {
         return UIStoryboard(name: String(describing: self), bundle: nil).instantiateInitialViewController()!
     }
@@ -59,6 +60,7 @@ class SettingsViewController: UIViewController {
     private func setupView() {
         guard let profile = Profile.current else { return }
 
+        self.qrCodeImageView.image = QRCodeGenerator.qrCodeImage(for: profile.id)
         self.avatarImageView.layer.cornerRadius = self.avatarImageView.bounds.width / 2
 
         AvatarManager.avatar(at: profile.avatar) { image in

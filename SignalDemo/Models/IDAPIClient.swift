@@ -101,14 +101,14 @@ final class IDAPIClient {
 
             self.teapot.put(path, parameters: json, headerFields: fields) { result in
                 switch result {
-                case .success(let json, let response):
+                case let .success(json, response):
                     guard response.statusCode == 200 else { return }
-//                    guard let json = json?.dictionary else { return }
+                    guard let json = json?.dictionary else { return }
 
                     print("Registered user with address: \(cereal.address)")
 
                     success()
-                case .failure(let json, let response, let error):
+                case let .failure(json, response, error):
                     print(response)
                     print(error)
                     print(json ?? "")

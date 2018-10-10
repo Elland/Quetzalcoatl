@@ -7,6 +7,7 @@
 
 import EtherealCereal
 import Quetzalcoatl
+import CameraScanner
 import Teapot
 import UIKit
 
@@ -15,15 +16,7 @@ class ChatsViewController: UIViewController {
         return Profile.current!
     }
 
-    let igorContact = SignalAddress(name: "0x94b7382e8cbd02fc7bfd2e233e42b778ac2ce224", deviceId: 1)
-    let karinaContact = SignalAddress(name: "0xcc4886677b6f60e346fe48968189c1b1fe9f3b33", deviceId: 1)
-
-    lazy var dateFormatter: DateFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "HH:mm dd/mm/yyyy"
-
-        return dateFormatter
-    }()
+    private(set) var chatsDataSource: ChatsDataSource!
 
     let idClient = IDAPIClient()
 
@@ -38,21 +31,11 @@ class ChatsViewController: UIViewController {
 
     var persistenceStore = FilePersistenceStore()
 
-
-    var chats: [SignalChat] {
-        get {
-            return self.quetzalcoatl.store
-                .retrieveAllChats(sortDescriptors: nil)
-                .sorted(by: {a, b -> Bool in a.lastMessageDate?.compare(b.lastMessageDate ?? Date()) == .orderedDescending})
-        }
-    }
-
     lazy var tableView: UITableView = {
         let view = UITableView(frame: .zero, style: .plain)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.separatorStyle = .none
         view.delegate = self
-        view.dataSource = self
 
         return view
     }()
@@ -74,7 +57,7 @@ class ChatsViewController: UIViewController {
             let sim = "2989d7b7ccfe3baf39ed441d001df834173e0729916210d14f60068d1d22c595"
             let iPhone7 = "2989d7b7ccfe3baf3fa3441d001ff834173e0729916210d14f60068d1d22c595"
 
-            Profile.current = Profile(password: UUID().uuidString, privateKey: iPhone7)
+            Profile.current = Profile(password: UUID().uuidString, privateKey: igor)
 
             super.init(nibName: nil, bundle: nil)
 
@@ -88,6 +71,7 @@ class ChatsViewController: UIViewController {
         }
 
         self.quetzalcoatl.store.chatDelegate = self
+        self.chatsDataSource = ChatsDataSource(tableView: self.tableView, quetzalcoatl: self.quetzalcoatl)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -169,66 +153,15 @@ class ChatsViewController: UIViewController {
     }
 
     @IBAction func didTapCreateChatButton(_ sender: Any) {
-        // Group message test
-        //        self.quetzalcoatl.sendGroupMessage("", type: .new, to: [self.testContact, self.otherContact, self.ellenContact, self.user.address])
-        //        // 1:1 chat test.
-        let chat = self.quetzalcoatl.store.fetchOrCreateChat(with: self.igorContact.name)
-        self.didRequestSendMessage(text: "", in: chat)
-    }
-}
-
-extension ChatsViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.chats.count
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeue(ChatCell.self, for: indexPath)
-
-        self.configureCell(cell, at: indexPath)
-
-        return cell
-    }
-
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-
-    private func configureCell(_ cell: ChatCell, at indexPath: IndexPath) {
-        let chat = self.chats[indexPath.row]
-        cell.title = chat.displayName
-        cell.avatarImage = chat.image
-
-        if let message = chat.visibleMessages.last {
-            cell.date = self.dateFormatter.string(from: Date(milisecondTimeIntervalSinceEpoch: message.timestamp))
-        }
-    }
-}
-
-extension ChatsViewController: SignalServiceStoreChatDelegate {
-    func signalServiceStoreWillChangeChats() {
-//        self.tableView.reloadData()
-    }
-
-    func signalServiceStoreDidChangeChat(_ chat: SignalChat, at indexPath: IndexPath, for changeType: SignalServiceStore.ChangeType) {
-//        switch changeType {
-//        case .delete:
-//            self.tableView.deleteRows(at: [indexPath], with: .automatic)
-//        case .insert:
-//            self.tableView.insertRows(at: [indexPath], with: .right)
-//        case .update:
-//            self.tableView.reloadRows(at: [indexPath], with: .fade)
-//        }
-    }
-
-    func signalServiceStoreDidChangeChats() {
-        self.tableView.reloadData()
+        let scannerController = ContactScannerViewController(instructions:  "", types: [.qrCode], startScanningAtLoad: true, showSwitchCameraButton: false, showTorchButton: false, alertIfUnavailable: true)
+        scannerController.delegate = self
+        self.navigationController?.pushViewController(scannerController, animated: true)
     }
 }
 
 extension ChatsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let chat = self.chats[indexPath.row]
+        let chat = self.chatsDataSource.chats[indexPath.row]
 
         let destination = MessagesViewController(chat: chat)
         destination.delegate = self
@@ -237,8 +170,48 @@ extension ChatsViewController: UITableViewDelegate {
         self.navigationController?.pushViewController(destination, animated: true)
     }
 
-    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return true
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let deleteAction = UITableViewRowAction(style: .destructive, title: "Delete") { (action, indexPath) in
+            let chat = self.chatsDataSource.chats[indexPath.row]
+            self.quetzalcoatl.deleteChat(chat)
+        }
+
+        return [deleteAction]
+    }
+}
+
+extension ChatsViewController: ScannerViewControllerDelegate {
+    func scannerViewController(_ controller: ScannerViewController, didScanResult result: String) {
+        defer {
+            self.navigationController?.popToViewController(self, animated: true)
+        }
+
+        guard let url = URL(string: result),
+            url.scheme == "quetzalcoatl",
+            let id = url.host
+            else {
+                controller.startScanning()
+                return
+        }
+
+        let chat = self.quetzalcoatl.store.fetchOrCreateChat(with: id)
+        self.didRequestSendMessage(text: "", in: chat)
+    }
+
+    func scannerViewControllerDidCancel(_ controller: ScannerViewController) {
+        self.navigationController?.popViewController(animated: true)
+    }
+}
+
+extension ChatsViewController: SignalServiceStoreChatDelegate {
+    func signalServiceStoreWillChangeChats() {
+    }
+
+    func signalServiceStoreDidChangeChat(_ chat: SignalChat, at indexPath: IndexPath, for changeType: SignalServiceStore.ChangeType) {
+    }
+
+    func signalServiceStoreDidChangeChats() {
+        self.tableView.reloadData()
     }
 }
 
@@ -285,40 +258,5 @@ extension ChatsViewController: SignalRecipientsDisplayDelegate {
 
     func image(for address: String) -> UIImage? {
         return ContactManager.image(for: address)
-    }
-}
-
-class ContactManager {
-    private static let shared = ContactManager()
-
-    private let idClient: IDAPIClient
-
-    init() {
-        self.idClient = IDAPIClient()
-    }
-
-    static func displayName(for address: String) -> String {
-        var name: String!
-
-        let semaphore = DispatchSemaphore(value: 0)
-
-        self.shared.idClient.findUserWithId(address) { profile in
-            name = profile.nameOrUsername
-            semaphore.signal()
-        }
-
-        _ = semaphore.wait(timeout: .distantFuture)
-
-        return name
-    }
-
-    static func image(for address: String) -> UIImage? {
-        if address == "0x94b7382e8cbd02fc7bfd2e233e42b778ac2ce224" {
-            return UIImage(named: "igor2")
-        } else if address == "0xcc4886677b6f60e346fe48968189c1b1fe9f3b33" {
-            return UIImage(named: "karina")
-        } else {
-            return UIImage(named: "igor")
-        }
     }
 }

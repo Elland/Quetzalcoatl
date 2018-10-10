@@ -199,6 +199,10 @@ public class Quetzalcoatl {
         try! self.store.delete(message)
     }
 
+    public func deleteChat(_ chat: SignalChat) {
+        try! self.store.delete(chat)
+    }
+
     public func requestNewIdentity(for address: SignalAddress) {
         // TODO: handle multiple devices
         _ = self.libraryStore.saveRemoteIdentity(with: address, identityKey: nil)

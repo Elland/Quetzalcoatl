@@ -67,13 +67,31 @@
                                     <constraint firstAttribute="height" constant="1" id="lAb-Lc-4MG"/>
                                 </constraints>
                             </view>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="dDy-g4-Kj2" userLabel="QR code">
+                                <rect key="frame" x="87.5" y="233.5" width="200" height="200"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="200" id="E6Z-t9-OoV"/>
+                                    <constraint firstAttribute="width" constant="200" id="GK9-0W-avd"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="This QR code is your contact id" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NEO-qu-JZ4">
+                                <rect key="frame" x="12" y="188.5" width="351" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="AAM-qy-2iH" firstAttribute="trailing" secondItem="PY5-aw-lW0" secondAttribute="trailing" id="6tN-IH-WWo"/>
+                            <constraint firstItem="NEO-qu-JZ4" firstAttribute="leading" secondItem="AAM-qy-2iH" secondAttribute="leading" constant="12" id="7NR-Uf-QET"/>
+                            <constraint firstItem="dDy-g4-Kj2" firstAttribute="centerY" secondItem="fNY-bG-4ra" secondAttribute="centerY" id="FZC-5T-UFk"/>
+                            <constraint firstItem="dDy-g4-Kj2" firstAttribute="top" secondItem="NEO-qu-JZ4" secondAttribute="bottom" constant="24" id="GmW-p1-rwX"/>
                             <constraint firstItem="CXg-Bn-DUy" firstAttribute="leading" secondItem="AAM-qy-2iH" secondAttribute="leading" id="MqH-2e-eW4"/>
                             <constraint firstItem="AAM-qy-2iH" firstAttribute="trailing" secondItem="CXg-Bn-DUy" secondAttribute="trailing" id="Uaw-79-k3X"/>
+                            <constraint firstItem="dDy-g4-Kj2" firstAttribute="centerX" secondItem="fNY-bG-4ra" secondAttribute="centerX" id="YTf-pj-3Wn"/>
+                            <constraint firstItem="AAM-qy-2iH" firstAttribute="trailing" secondItem="NEO-qu-JZ4" secondAttribute="trailing" constant="12" id="fAu-8u-wc9"/>
                             <constraint firstItem="CXg-Bn-DUy" firstAttribute="top" secondItem="AAM-qy-2iH" secondAttribute="top" id="fdB-UZ-UID"/>
                             <constraint firstItem="PY5-aw-lW0" firstAttribute="leading" secondItem="AAM-qy-2iH" secondAttribute="leading" id="vfG-bK-xe9"/>
                             <constraint firstItem="PY5-aw-lW0" firstAttribute="top" secondItem="CXg-Bn-DUy" secondAttribute="bottom" id="woC-N3-iMu"/>
@@ -86,6 +104,7 @@
                     <connections>
                         <outlet property="avatarImageView" destination="VVt-cI-PgP" id="8vq-lT-LPr"/>
                         <outlet property="nameTextField" destination="aKw-YS-R5v" id="66o-Gu-Bph"/>
+                        <outlet property="qrCodeImageView" destination="dDy-g4-Kj2" id="Gku-2c-XTs"/>
                         <outlet property="separatorView" destination="PY5-aw-lW0" id="PFb-Te-iLv"/>
                         <outlet property="usernameTextField" destination="8YT-fp-fL4" id="bxJ-ve-dmU"/>
                     </connections>

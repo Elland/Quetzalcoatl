@@ -585,6 +585,20 @@ extension FilePersistenceStore: PersistenceStore {
         completion()
     }
 
+    func deleteChat(_ chat: SignalChat, _ completion: () -> Void) {
+        let deleteMessages = self.messagesTable.filter(SignalMessageKeys.chatIdField == chat.uniqueId)
+        let deleteChat = self.chatsTable.filter(SignalChatKeys.uniqueIdField == chat.uniqueId)
+
+        do {
+            try self.dbConnection.run(deleteChat.delete())
+            try self.dbConnection.run(deleteMessages.delete())
+        } catch (let error) {
+            NSLog("Failed to delete data in the db: %@", error.localizedDescription)
+        }
+
+        completion()
+    }
+
     func retrieveAllChats(sortDescriptors: [NSSortDescriptor]?) -> [SignalChat] {
         var chats = [SignalChat]()
         let query = self.buildQuery(for: self.chatsTable, sortDescriptors: sortDescriptors)

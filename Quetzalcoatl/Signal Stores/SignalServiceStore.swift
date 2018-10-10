@@ -22,6 +22,7 @@ public protocol PersistenceStore: SignalLibraryStoreDelegate {
 
     func updateChat(_ chat: SignalChat, _ completion: PersistenceCompletionBlock)
     func storeChat(_  chat: SignalChat, _ completion: PersistenceCompletionBlock)
+    func deleteChat(_ chat: SignalChat, _ completion: PersistenceCompletionBlock)
 
     /* Recipients */
     func retrieveRecipients(with predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]?) -> [SignalAddress]
@@ -300,6 +301,19 @@ public class SignalServiceStore {
             DispatchQueue.main.async {
                 self.messageDelegate?.signalServiceStoreDidChangeMessage(message, at: indexPath, for: .delete)
                 self.messageDelegate?.signalServiceStoreDidChangeMessages()
+            }
+        }
+    }
+
+    func delete(_ chat: SignalChat) throws {
+        DispatchQueue.main.async {
+            self.chatDelegate?.signalServiceStoreWillChangeChats()
+        }
+
+        self.persistenceStore.deleteChat(chat) {
+            DispatchQueue.main.async {
+                self.chatDelegate?.signalServiceStoreDidChangeChat(chat, at: IndexPath(item: 0, section: 0), for: .delete)
+                self.chatDelegate?.signalServiceStoreDidChangeChats()
             }
         }
     }
