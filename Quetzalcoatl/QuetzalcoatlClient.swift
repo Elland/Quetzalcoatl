@@ -30,19 +30,32 @@ extension Array where Element: Equatable {
     }
 }
 
+public protocol SignalSocketConnectionStatusDelegate: class {
+    func socketConnectionStatusDidChange(_ isConnected: Bool)
+}
+
 public class Quetzalcoatl {
     var socket: WebSocket?
 
     var messageSender: SignalMessageManager?
 
-    /// TODO: make this internal, move user bootstrapping data generation to client.
+    /// TODO: make this internal, move user bootstrapping data generation to client?
     public var libraryStore: SignalLibraryStoreProtocol
-    var libraryStoreBridge: SignalLibraryStoreBridge
     public var signalContext: SignalContext
+
+    var libraryStoreBridge: SignalLibraryStoreBridge
+
+    public weak var connectionStatusDelegate: SignalSocketConnectionStatusDelegate?
 
     public var store: SignalServiceStore
 
     public var shouldKeepSocketAlive: Bool = false
+
+    public var isSocketConnected: Bool = false {
+        didSet {
+            self.connectionStatusDelegate?.socketConnectionStatusDidChange(self.isSocketConnected)
+        }
+    }
 
     lazy var keepAliveTimer: Timer = {
         Timer(fire: Date(), interval: 30.0, repeats: true) { _ in
@@ -242,9 +255,13 @@ extension Quetzalcoatl: WebSocketDelegate {
         if DebugLevel.current == .verbose {
             NSLog("did connect")
         }
+
+        self.isSocketConnected = true
     }
 
     public func websocketDidDisconnect(socket: WebSocketClient, error: Error?) {
+        self.isSocketConnected = false
+
         NSLog("did disconnect: \((error as? WSError)?.message ?? "No error")")
 
         if self.shouldKeepSocketAlive {

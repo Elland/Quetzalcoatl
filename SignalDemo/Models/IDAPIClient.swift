@@ -35,7 +35,7 @@ final class IDAPIClient {
 
                 completion(String(timestamp))
             case .failure(_, _, let error):
-                fatalError(error.localizedDescription)
+                NSLog(error.localizedDescription)
             }
         }
     }

@@ -292,8 +292,17 @@ class SignalMessageManager {
 
     private func handleErrorMessage(_ error: NSError, for envelope: Signalservice_Envelope) {
         let chat = self.store.fetchOrCreateChat(with: envelope.source)
-        if error.code == 7, error.domain == SignalErrorDomain {
-            let errorMessage = ErrorSignalMessage(kind: .noSession, senderId: sender.username, recipientId: envelope.source, chatId: chat.uniqueId, store: self.store)
+        if error.domain == SignalErrorDomain {
+            let kind: ErrorSignalMessage.Kind
+            if error.code == 7 {
+                kind = .noSession
+            } else if error.code == 3 {
+                kind = .duplicateMessage
+            } else {
+                kind = .invalidMessage
+            }
+
+            let errorMessage = ErrorSignalMessage(kind: kind, senderId: envelope.source, recipientId: sender.username, chatId: chat.uniqueId, store: self.store)
             try? self.store.save(errorMessage)
         }
     }
@@ -389,7 +398,7 @@ class SignalMessageManager {
         }
 
         do {
-            guard let decryptedData = try sessionCipher.decrypt(cipher: cipherMessage),
+            guard let decryptedData = try sessionCipher.decrypt(cipher: cipherMessage, ciphertextType: cipherMessage.ciphertextType),
                 let content = try? Signalservice_Content(serializedData: decryptedData) else {
                     NSLog("Could not decrypt message! (1)")
                     return false

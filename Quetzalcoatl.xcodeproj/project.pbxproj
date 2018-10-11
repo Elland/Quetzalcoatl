@@ -45,6 +45,7 @@
 		9F723093208F2FD500F568F7 /* Date+milisecondTimestamp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F723092208F2FD500F568F7 /* Date+milisecondTimestamp.swift */; };
 		9F723096208F303200F568F7 /* NSDate+Chrono.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F723094208F303200F568F7 /* NSDate+Chrono.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9F723097208F303200F568F7 /* NSDate+Chrono.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9F723095208F303200F568F7 /* NSDate+Chrono.mm */; };
+		9F73B80B216F5D89002CF67E /* ConnectionStatusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F73B80A216F5D89002CF67E /* ConnectionStatusViewController.swift */; };
 		9F89637221661DBE00CC639A /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F89636F21661D1700CC639A /* TabBarController.swift */; };
 		9F89637421661F6100CC639A /* SettingsNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F89637321661F6100CC639A /* SettingsNavigationController.swift */; };
 		9F8F25192091D3A10020FF00 /* SignalRecipientsDisplayDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F8F25182091D3A10020FF00 /* SignalRecipientsDisplayDelegate.swift */; };
@@ -231,6 +232,8 @@
 		9F723092208F2FD500F568F7 /* Date+milisecondTimestamp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+milisecondTimestamp.swift"; sourceTree = "<group>"; };
 		9F723094208F303200F568F7 /* NSDate+Chrono.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Chrono.h"; sourceTree = "<group>"; };
 		9F723095208F303200F568F7 /* NSDate+Chrono.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSDate+Chrono.mm"; sourceTree = "<group>"; };
+		9F73B809216E8EAD002CF67E /* iOS.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = iOS.entitlements; sourceTree = "<group>"; };
+		9F73B80A216F5D89002CF67E /* ConnectionStatusViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionStatusViewController.swift; sourceTree = "<group>"; };
 		9F89636F21661D1700CC639A /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		9F89637321661F6100CC639A /* SettingsNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsNavigationController.swift; sourceTree = "<group>"; };
 		9F8F25182091D3A10020FF00 /* SignalRecipientsDisplayDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalRecipientsDisplayDelegate.swift; sourceTree = "<group>"; };
@@ -579,6 +582,7 @@
 				9FE925E0208A08F6008ABCE4 /* AppDelegate.swift */,
 				9F5CF5C8216385F200FAAFD4 /* Theme.swift */,
 				9F89636F21661D1700CC639A /* TabBarController.swift */,
+				9F73B80A216F5D89002CF67E /* ConnectionStatusViewController.swift */,
 				9FE84C57216DE3D000B5522B /* ContactScannerViewController.swift */,
 				9FB2D61B216CD370008EE350 /* Chats */,
 				9FB2D61D216CD392008EE350 /* Messaging */,
@@ -593,6 +597,7 @@
 				9FE925EB208A08F8008ABCE4 /* LaunchScreen.storyboard */,
 				9FCDD50620A1E21A006835DC /* Localizable.strings */,
 				9FE925EE208A08F8008ABCE4 /* Info.plist */,
+				9F73B809216E8EAD002CF67E /* iOS.entitlements */,
 				9FB2D636216D0902008EE350 /* generate-app-icon */,
 				9FB2D624216CFE17008EE350 /* Frameworks */,
 			);
@@ -1020,6 +1025,7 @@
 				9FA5FD7721621E3B0046F0A7 /* Cells.swift in Sources */,
 				9FE84C5F216E146F00B5522B /* ChatsDataSource.swift in Sources */,
 				9F5CF5C7216384D600FAAFD4 /* ChatsNavigationController.swift in Sources */,
+				9F73B80B216F5D89002CF67E /* ConnectionStatusViewController.swift in Sources */,
 				9FE925FA208A09B1008ABCE4 /* SofaMessage.swift in Sources */,
 				9FA5FDA421623A410046F0A7 /* SLKTextView+SLKAdditions.m in Sources */,
 				9FB2D621216CD93B008EE350 /* Blockies.swift in Sources */,
@@ -1126,9 +1132,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/SignalDemo/iOS.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 5XX9JCG35B;
+				DEVELOPMENT_TEAM = 29X3GG489T;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/SignalDemo/Carthage/Build/iOS",
@@ -1139,7 +1146,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = me.elland.SignalDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bb.quetzalcoatl;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "SignalDemo/Messaging/SlackTextViewController/Signal-Bridging-Header.h";
@@ -1154,9 +1161,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/SignalDemo/iOS.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 5XX9JCG35B;
+				DEVELOPMENT_TEAM = 29X3GG489T;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/SignalDemo/Carthage/Build/iOS",
@@ -1167,7 +1175,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = me.elland.SignalDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bb.quetzalcoatl;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "SignalDemo/Messaging/SlackTextViewController/Signal-Bridging-Header.h";
@@ -1323,7 +1331,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Quetzalcoatl/SignalProtocolC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bakkenbaeck.Quetzalcoatl;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bb.QuetzalcoatlFramework;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1359,7 +1367,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Quetzalcoatl/SignalProtocolC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bakkenbaeck.Quetzalcoatl;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bb.QuetzalcoatlFramework;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.2;

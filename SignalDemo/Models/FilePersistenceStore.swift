@@ -105,14 +105,14 @@ enum SignalMessageKind: Int64 {
     case incoming, info, outgoing, error
 
     init(_ message: SignalMessage) {
-        if message is IncomingSignalMessage {
-            self = .incoming
+        if message is ErrorSignalMessage {
+            self = .error
         } else if message is InfoSignalMessage {
             self = .info
+        } else if message is IncomingSignalMessage {
+            self = .incoming
         } else if message is OutgoingSignalMessage {
             self = .outgoing
-        } else if message is ErrorSignalMessage {
-            self = .error
         } else {
             fatalError()
         }
@@ -627,8 +627,8 @@ extension FilePersistenceStore: PersistenceStore {
         let deleteChat = self.chatsTable.filter(SignalChatKeys.uniqueIdField == chat.uniqueId)
 
         do {
-            try self.dbConnection.run(deleteChat.delete())
             try self.dbConnection.run(deleteMessages.delete())
+            try self.dbConnection.run(deleteChat.delete())
         } catch (let error) {
             NSLog("Failed to delete data in the db: %@", error.localizedDescription)
         }

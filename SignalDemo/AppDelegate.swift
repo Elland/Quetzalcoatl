@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,6 +17,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let window = UIWindow(frame: UIScreen.main.bounds)
 
         SessionManager.shared.loadOrCreateuser()
+
+        let center = UNUserNotificationCenter.current()
+        center.requestAuthorization(options: [.badge]) { (granted, _) in
+            if granted {
+                DispatchQueue.main.async {
+                    UIApplication.shared.registerForRemoteNotifications()
+                }
+            }
+        }
 
         UIApplication.shared.registerForRemoteNotifications()
 

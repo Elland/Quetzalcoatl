@@ -137,6 +137,12 @@ class MessagesViewController: UIViewController {
         self.scrollTableViewToBottom(animated: false)
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        self.chat.markAllAsRead()
+        
+        super.viewWillDisappear(animated)
+    }
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
@@ -198,6 +204,7 @@ class MessagesViewController: UIViewController {
 extension MessagesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let message = self.message(at: indexPath)
+
         if message is InfoSignalMessage {
             let alert = UIAlertController(title: "Accept new identity?", message: nil, preferredStyle: .actionSheet)
             let accept = UIAlertAction(title: "Accept", style: .default) { _ in
@@ -216,6 +223,9 @@ extension MessagesViewController: UITableViewDelegate {
             alert.addAction(cancel)
 
             self.present(alert, animated: true)
+        } else if message is ErrorSignalMessage {
+            let result = self.quetzalcoatl.libraryStore.deleteAllDeviceSessions(for: message.senderId)
+            print(result)
         }
     }
 }

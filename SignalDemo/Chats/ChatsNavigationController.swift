@@ -7,5 +7,5 @@
 
 import UIKit
 
-class ChatsNavigationController: UINavigationController {
+class ChatsNavigationController: ConnectionStatusDisplayingNavigationController {
 }

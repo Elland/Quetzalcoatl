@@ -7,5 +7,6 @@
 
 import UIKit
 
-class SettingsNavigationController: UINavigationController {
+class SettingsNavigationController: ConnectionStatusDisplayingNavigationController {
+
 }

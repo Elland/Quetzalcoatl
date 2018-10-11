@@ -25,10 +25,39 @@ public class ErrorSignalMessage: OutgoingSignalMessage {
 
     public let kind: Kind
 
+    override var isVisible: Bool {
+        return [.noSession, .invalidKeyException, .invalidMessage].contains(self.kind)
+    }
+
     public init(kind: Kind, senderId: String, recipientId: String, chatId: String, store: SignalServiceStore?) {
         self.kind = kind
 
-        super.init(recipientId: recipientId, senderId: senderId, chatId: chatId, body: "", store: store)
+        let body: String
+
+        switch kind {
+        case .duplicateMessage:
+            body = "ERROR_MESSAGE_DUPLICATE_MESSAGE"
+        case .groupCreationFailed:
+            body = "GROUP_CREATION_FAILED"
+        case .invalidKeyException:
+            body = "ERROR_MESSAGE_INVALID_KEY_EXCEPTION"
+        case .invalidMessage:
+            body = "ERROR_MESSAGE_INVALID_MESSAGE"
+        case .invalidVersion:
+            body = "ERROR_MESSAGE_INVALID_VERSION"
+        case .nonBlockingIdentityChange:
+            body = "ERROR_MESSAGE_NON_BLOCKING_IDENTITY_CHANGE_FORMAT"
+        case .noSession:
+            body = "ERROR_MESSAGE_NO_SESSION"
+        case .unknownContactBlockOffer:
+            body = "UNKNOWN_CONTACT_BLOCK_OFFER"
+        case .wrongTrustedIdentityKey:
+            body = "ERROR_MESSAGE_WRONG_TRUSTED_IDENTITY_KEY"
+        case .missingKeyId:
+            body = "ERROR_MESSAGE_MISSING_KEY_ID"
+        }
+
+        super.init(recipientId: recipientId, senderId: senderId, chatId: chatId, body: body, store: store)
     }
 
     required init(from decoder: Decoder) throws {
