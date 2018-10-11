@@ -33,7 +33,7 @@ class ConnectionStatusDisplayingNavigationController: UINavigationController, Si
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.view.addSubview(self.connectionStatusView)
+        self.view.insertSubview(self.connectionStatusView, belowSubview: self.navigationBar)
         self.connectionStatusView.topAnchor.constraint(equalTo: self.navigationBar.bottomAnchor).isActive = true
         self.connectionStatusView.leftToSuperview()
         self.connectionStatusView.rightToSuperview()
@@ -43,9 +43,27 @@ class ConnectionStatusDisplayingNavigationController: UINavigationController, Si
         super.viewWillAppear(animated)
 
         SessionManager.shared.quetzalcoatl.connectionStatusDelegate = self
+        self.updateConnectionStatusView(SessionManager.shared.quetzalcoatl.isSocketConnected)
     }
 
     func socketConnectionStatusDidChange(_ isConnected: Bool) {
-        self.connectionStatusView.isHidden = isConnected
+        self.updateConnectionStatusView(isConnected)
+    }
+
+    func updateConnectionStatusView(_ isConnected: Bool) {
+        if isConnected {
+            UIView.animate(withDuration: 0.25, animations: {
+                self.connectionStatusView.frame.origin.y -= self.connectionStatusView.bounds.height
+            }) { _ in
+                self.connectionStatusView.isHidden = true
+            }
+        } else {
+            self.connectionStatusView.frame.origin.y -= self.connectionStatusView.bounds.height
+            self.connectionStatusView.isHidden = false
+
+            UIView.animate(withDuration: 0.25) {
+                self.view.layoutIfNeeded()
+            }
+        }
     }
 }

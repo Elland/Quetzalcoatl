@@ -55,9 +55,10 @@ public class SignalLibraryStore: NSObject, SignalLibraryStoreProtocol {
     }
 
     @objc public var identityKeyPair: SignalIdentityKeyPair? {
-        guard let data = self.identityKeyStore[IdentityKeyStoreIdentityKey]?.data as NSData? else {
-            return nil
-        }
+        guard let identityKeyData = self.delegate.retrieveSignalLibraryValue(key: IdentityKeyStoreIdentityKey, type: .identityKey),
+            let identityKey = try? self.decoder.decode(SignalLibraryIdentityKeyRecord.self, from: identityKeyData),
+            let data = identityKey.data as NSData?
+            else { return nil }
 
         var key_pair: UnsafeMutablePointer<ratchet_identity_key_pair>?
         ratchet_identity_key_pair_deserialize(&key_pair, data.bytes.assumingMemoryBound(to: UInt8.self), data.length, self.context.context)
@@ -89,50 +90,8 @@ public class SignalLibraryStore: NSObject, SignalLibraryStoreProtocol {
         }
     }
 
-    private(set) var sessionStore: [String: [[Int32: SignalLibrarySessionRecord]]]
-
-    private(set) var preKeyStore: [UInt32: SignalLibraryPreKeyRecord] {
-        didSet {
-            let newValues = self.preKeyStore.filter { v -> Bool in
-                return !oldValue.keys.contains(v.key)
-            }
-            for item in newValues {
-                let prekeyData = try! JSONEncoder().encode(item.value)
-                self.delegate.storeSignalLibraryValue(prekeyData, key: "prekey: \(item.key)", type: .preKey)
-            }
-        }
-    }
-
-    private(set) var signedPreKeyStore: [UInt32: SignalLibraryPreKeyRecord] {
-        didSet {
-            for item in self.signedPreKeyStore {
-                let prekeyData = try! JSONEncoder().encode(item.value)
-                self.delegate.storeSignalLibraryValue(prekeyData, key: "signedprekey: \(item.key)", type: .signedPreKey)
-            }
-        }
-    }
-
-    private(set) var identityKeyStore: [String: SignalLibraryIdentityKeyRecord] {
-        didSet {
-            let newValues = self.identityKeyStore.filter { v -> Bool in
-                return !oldValue.keys.contains(v.key)
-            }
-            for item in newValues {
-                let identityKeyData = try! JSONEncoder().encode(item.value)
-                self.delegate.storeSignalLibraryValue(identityKeyData, key: item.key, type: .identityKey)
-            }
-        }
-    }
-
-    private(set) var senderKeyStore: [String: Data] {
-        didSet {
-            for item in self.senderKeyStore {
-                let record = SignalLibrarySenderKeyRecord(key: item.key, data: item.value)
-                let identityKeyData = try! JSONEncoder().encode(record)
-                self.delegate.storeSignalLibraryValue(identityKeyData, key: item.key, type: .senderKey)
-            }
-        }
-    }
+    private let decoder = JSONDecoder()
+    private let encoder = JSONEncoder()
 
     public init(delegate: SignalLibraryStoreDelegate) {
         self.delegate = delegate
@@ -146,83 +105,31 @@ public class SignalLibraryStore: NSObject, SignalLibraryStoreProtocol {
             self.currentlySignedPreKeyId = .max
         }
 
-        let decoder = JSONDecoder()
-
-        // reload prekeys from db
-        let prekeysData = self.delegate.retrieveAllSignalLibraryValue(ofType: .preKey)
-        var prekeys: [UInt32: SignalLibraryPreKeyRecord] = [:]
-
-        for prekeyData in prekeysData {
-            let preKeyRecord = try! decoder.decode(SignalLibraryPreKeyRecord.self, from: prekeyData)
-            prekeys[preKeyRecord.key] = preKeyRecord
-        }
-
-        self.preKeyStore = prekeys
-
-        // reload signed prekey from db
-        let signedPrekeysData = self.delegate.retrieveAllSignalLibraryValue(ofType: .signedPreKey)
-        var signedPreKeys: [UInt32: SignalLibraryPreKeyRecord] = [:]
-
-        for signedPreKeyData in signedPrekeysData {
-            let signedPreKeyRecord = try! decoder.decode(SignalLibraryPreKeyRecord.self, from: signedPreKeyData)
-            signedPreKeys[signedPreKeyRecord.key] = signedPreKeyRecord
-        }
-
-        self.signedPreKeyStore = signedPreKeys
-
-        // load session data from db
-        let sessionsData = self.delegate.retrieveAllSignalLibraryValue(ofType: .session)
-        var sessions: [String: [[Int32: SignalLibrarySessionRecord]]] = [:]
-
-        for sessionData in sessionsData {
-            let sessionRecord = try! decoder.decode(SignalLibrarySessionRecord.self, from: sessionData)
-            if sessions[sessionRecord.key] == nil {
-                sessions[sessionRecord.key] = []
-            }
-
-            sessions[sessionRecord.key]!.append([sessionRecord.deviceId: sessionRecord])
-        }
-
-        self.sessionStore = sessions
-
-        // load session data from db
-        let senderKeysData = self.delegate.retrieveAllSignalLibraryValue(ofType: .senderKey)
-        var senderKeys: [String: Data] = [:]
-
-        for senderKeyData in senderKeysData {
-            let senderKeyRecord = try! decoder.decode(SignalLibrarySenderKeyRecord.self, from: senderKeyData)
-            senderKeys[senderKeyRecord.key] = senderKeyRecord.data
-        }
-
-        self.senderKeyStore = senderKeys
-
-        // load identity keys from db
-        let identityKeysData = self.delegate.retrieveAllSignalLibraryValue(ofType: .identityKey)
-        var identityKeys: [String: SignalLibraryIdentityKeyRecord] = [:]
-
-        for identityKeyData in identityKeysData {
-            let identityKeyRecord = try! decoder.decode(SignalLibraryIdentityKeyRecord.self, from: identityKeyData)
-            identityKeys[identityKeyRecord.key] = identityKeyRecord
-        }
-
-        self.identityKeyStore = identityKeys
-
         super.init()
+    }
+
+    private func key(for address: SignalAddress, groupId: String) -> String {
+        return "\(address.name)\(address.deviceId)\(groupId)"
+    }
+
+    private func keyForPreKey(id: UInt32) -> String {
+        return "prekey: \(id)"
+    }
+    private func keyForSignedPreKey(id: UInt32) -> String {
+        return "signedprekey: \(id)"
     }
 
     private let currentlySignedPreKeyStoreKey = UInt32.max
 
     // MARK: SignalSessionStore
     @objc public func deviceSessionRecord(for addressName: String, deviceId: Int32) -> Data? {
-        guard let sessions = self.sessionStore[addressName], let session = sessions.first(where: { dict -> Bool in
-            dict[deviceId] != nil
-        }) else {
-            return nil
-        }
+        let address = SignalAddress(name: addressName, deviceId: deviceId)
 
-        let sessionRecord = session[deviceId]
+        guard let sessionData = self.delegate.retrieveSignalLibraryValue(key: address.nameForStoring, type: .session),
+            let sessionRecord = try? self.decoder.decode(SignalLibrarySessionRecord.self, from: sessionData)
+            else { return nil }
 
-        return sessionRecord?.data
+        return sessionRecord.data
     }
 
     /**
@@ -231,22 +138,22 @@ public class SignalLibraryStore: NSObject, SignalLibraryStoreProtocol {
      * or nil if not found.
      */
     @objc public func sessionRecord(for address: SignalAddress) -> Data {
-        guard let deviceSession = self.deviceSessionRecord(for: address.name, deviceId: address.deviceId) else {
-            var record: UnsafeMutablePointer<session_record>?
-            var state: UnsafeMutablePointer<session_state>?
-            session_state_create(&state, self.context.context)
-            session_record_create(&record, state, self.context.context)
+        guard let deviceSessionData = self.deviceSessionRecord(for: address.name, deviceId: address.deviceId) else {
+                var record: UnsafeMutablePointer<session_record>?
+                var state: UnsafeMutablePointer<session_state>?
+                session_state_create(&state, self.context.context)
+                session_record_create(&record, state, self.context.context)
 
-            var buffer: UnsafeMutablePointer<signal_buffer>?
-            session_record_serialize(&buffer, record)
-            let data = Data(bytes: signal_buffer_data(buffer), count: signal_buffer_len(buffer))
+                var buffer: UnsafeMutablePointer<signal_buffer>?
+                session_record_serialize(&buffer, record)
+                let data = Data(bytes: signal_buffer_data(buffer), count: signal_buffer_len(buffer))
 
-            signal_buffer_free(buffer)
+                signal_buffer_free(buffer)
 
-            return data
+                return data
         }
 
-        return deviceSession
+        return deviceSessionData
     }
 
     /**
@@ -258,17 +165,8 @@ public class SignalLibraryStore: NSObject, SignalLibraryStoreProtocol {
     @objc public func storeSessionRecord(_ recordData: Data, for address: SignalAddress) -> Bool {
         let newSessionRecord = SignalLibrarySessionRecord(key: address.name, deviceId: address.deviceId, data: recordData)
 
-        if let array = self.sessionStore[address.name] {
-            for (index, element) in array.enumerated() {
-                if element.keys.first == address.deviceId {
-                    self.sessionStore[address.name]![index] = [address.deviceId: newSessionRecord]
-                }
-            }
-        } else {
-            self.sessionStore[address.name] = [[address.deviceId: newSessionRecord]]
-        }
-
-        let sessionData = try! JSONEncoder().encode(newSessionRecord)
+        let sessionData = try! self.encoder.encode(newSessionRecord)
+        _ = self.delegate.deleteSignalLibraryValue(key: address.nameForStoring, type: .session)
         self.delegate.storeSignalLibraryValue(sessionData, key: address.nameForStoring, type: .session)
 
         return self.sessionRecordExists(for: address)
@@ -292,11 +190,7 @@ public class SignalLibraryStore: NSObject, SignalLibraryStoreProtocol {
      * Remove a session record for a recipient ID + device ID tuple.
      */
     @objc public func deleteSessionRecord(for address: SignalAddress) -> Bool {
-        while self.sessionRecordExists(for: address) {
-            self.sessionStore.removeValue(forKey: address.name)
-        }
-
-        return self.sessionStore[address.name] == nil
+        return self.delegate.deleteSignalLibraryValue(key: address.nameForStoring, type: .session)
     }
 
     /**
@@ -305,9 +199,16 @@ public class SignalLibraryStore: NSObject, SignalLibraryStoreProtocol {
      * @return the number of deleted sessions on success, negative on failure
      */
     @objc public func deleteAllDeviceSessions(for addressName: String) -> Int32 {
-        let count = Int32(self.sessionStore[addressName]?.count ?? 0)
+        var key = SignalAddress(name: addressName, deviceId: 0)
+        var count: Int32 = 0
 
-        self.sessionStore.removeValue(forKey: addressName)
+        while self.delegate.retrieveSignalLibraryValue(key: key.nameForStoring, type: .session) != nil {
+            if self.delegate.deleteSignalLibraryValue(key: key.nameForStoring, type: .session) {
+
+                count += 1
+                key = SignalAddress(name: addressName, deviceId: count)
+            }
+        }
 
         return count
     }
@@ -318,7 +219,11 @@ public class SignalLibraryStore: NSObject, SignalLibraryStoreProtocol {
      * return nil if not found
      */
     @objc public func loadPreKey(with id: UInt32) -> Data? {
-        return self.preKeyStore[id]?.data
+        guard let preKeyData = self.delegate.retrieveSignalLibraryValue(key: self.keyForPreKey(id: id), type: .preKey),
+            let preKey = try? self.decoder.decode(SignalLibraryPreKeyRecord.self, from: preKeyData)
+            else { return nil }
+
+        return preKey.data
     }
 
     /**
@@ -326,7 +231,8 @@ public class SignalLibraryStore: NSObject, SignalLibraryStoreProtocol {
      * return YES if storage successful, else NO
      */
     @discardableResult @objc public func storePreKey(data: Data, id: UInt32) -> Bool {
-        self.preKeyStore[id] = SignalLibraryPreKeyRecord(key: id, data: data)
+        let prekeyData = try! self.encoder.encode(SignalLibraryPreKeyRecord(key: id, data: data))
+        self.delegate.storeSignalLibraryValue(prekeyData, key: self.keyForPreKey(id: id), type: .preKey)
 
         return true
     }
@@ -336,7 +242,7 @@ public class SignalLibraryStore: NSObject, SignalLibraryStoreProtocol {
      * provided ID.
      */
     @objc public func containsPreKey(with id: UInt32) -> Bool {
-        return self.preKeyStore[id] != nil
+        return self.delegate.retrieveSignalLibraryValue(key: self.keyForPreKey(id: id), type: .preKey) != nil
     }
 
     /**
@@ -344,13 +250,19 @@ public class SignalLibraryStore: NSObject, SignalLibraryStoreProtocol {
      */
     @discardableResult
     @objc public func deletePreKey(with id: UInt32) -> Bool {
-        self.preKeyStore.removeValue(forKey: id)
-
-        return self.preKeyStore[id] == nil
+        return self.delegate.deleteSignalLibraryValue(key: self.keyForPreKey(id: id), type: .preKey)
     }
 
     public func nextPreKeyId() -> UInt32 {
-        guard let lastKey = self.preKeyStore.keys.sorted().last else { return 1 }
+        let prekeysData = self.delegate.retrieveAllSignalLibraryValue(ofType: .preKey)
+        var keys: [UInt32] = []
+
+        for prekeyData in prekeysData {
+            let preKeyRecord = try! decoder.decode(SignalLibraryPreKeyRecord.self, from: prekeyData)
+            keys.append(preKeyRecord.key)
+        }
+
+        guard let lastKey = keys.sorted().last else { return 1 }
 
         return lastKey + 1
     }
@@ -359,8 +271,12 @@ public class SignalLibraryStore: NSObject, SignalLibraryStoreProtocol {
     /**
      * Load a local serialized signed PreKey record.
      */
-    @objc public func loadSignedPreKey(with signedPreKeyId: UInt32) -> Data? {
-        return self.signedPreKeyStore[signedPreKeyId]?.data
+    @objc public func loadSignedPreKey(with id: UInt32) -> Data? {
+        guard let signedPreKeyData = self.delegate.retrieveSignalLibraryValue(key: self.keyForSignedPreKey(id: id), type: .signedPreKey),
+            let signedPreKey = try? self.decoder.decode(SignalLibraryPreKeyRecord.self, from: signedPreKeyData)
+            else { return nil }
+
+        return signedPreKey.data
     }
 
     /**
@@ -369,7 +285,8 @@ public class SignalLibraryStore: NSObject, SignalLibraryStoreProtocol {
     @discardableResult
     @objc public func storeSignedPreKey(_ signedPreKey: Data?, signedPreKeyId: UInt32) -> Bool {
         if let signedPreKey = signedPreKey {
-            self.signedPreKeyStore[signedPreKeyId] = SignalLibraryPreKeyRecord(key: signedPreKeyId, data: signedPreKey)
+            let signedPrekeyData = try! self.encoder.encode(SignalLibraryPreKeyRecord(key: signedPreKeyId, data: signedPreKey))
+            self.delegate.storeSignalLibraryValue(signedPrekeyData, key: self.keyForSignedPreKey(id: signedPreKeyId), type: .signedPreKey)
         } else {
             self.removeSignedPreKey(with: signedPreKeyId)
         }
@@ -381,18 +298,16 @@ public class SignalLibraryStore: NSObject, SignalLibraryStoreProtocol {
      * Determine whether there is a committed signed PreKey record matching
      * the provided ID.
      */
-    @objc public func containsSignedPreKey(with signedPreKeyId: UInt32) -> Bool {
-        return self.signedPreKeyStore[signedPreKeyId] != nil
+    @objc public func containsSignedPreKey(with id: UInt32) -> Bool {
+        return self.delegate.retrieveSignalLibraryValue(key: self.keyForSignedPreKey(id: id), type: .signedPreKey) != nil
     }
 
     /**
      * Delete a SignedPreKeyRecord from local storage.
      */
     @discardableResult
-    @objc public func removeSignedPreKey(with signedPreKeyId: UInt32) -> Bool {
-        self.signedPreKeyStore.removeValue(forKey: signedPreKeyId)
-
-        return true
+    @objc public func removeSignedPreKey(with id: UInt32) -> Bool {
+        return self.delegate.deleteSignalLibraryValue(key: self.keyForSignedPreKey(id: id), type: .signedPreKey)
     }
 
     public func retrieveCurrentSignedPreKeyId() -> UInt32 {
@@ -415,22 +330,26 @@ public class SignalLibraryStore: NSObject, SignalLibraryStoreProtocol {
      */
     public func saveRemoteIdentity(with address: SignalAddress, identityKey: Data?) -> Bool {
         if let identityKey = identityKey {
-            self.identityKeyStore[address.name] = SignalLibraryIdentityKeyRecord(key: address.name, data: identityKey)
-        } else {
-            self.identityKeyStore[address.name] = nil
-        }
+            let identityKeyRecord = SignalLibraryIdentityKeyRecord(key: address.name, data: identityKey)
+            let identityKeyRecordData = try! self.encoder.encode(identityKeyRecord)
+            self.delegate.storeSignalLibraryValue(identityKeyRecordData, key: address.nameForStoring, type: .identityKey)
 
-        return self.identityKeyStore[address.name] != nil
+            return self.delegate.retrieveSignalLibraryValue(key: address.nameForStoring, type: .identityKey) != nil
+        } else {
+            return self.delegate.deleteSignalLibraryValue(key: address.nameForStoring, type: .identityKey)
+        }
     }
 
     public func saveIdentity(_ identityKey: Data?) -> Bool {
         if let identityKey = identityKey {
-            self.identityKeyStore[IdentityKeyStoreIdentityKey] = SignalLibraryIdentityKeyRecord(key: self.IdentityKeyStoreIdentityKey, data: identityKey)
-        } else {
-            self.identityKeyStore[IdentityKeyStoreIdentityKey] = nil
-        }
+            let identityKeyRecord = SignalLibraryIdentityKeyRecord(key: self.IdentityKeyStoreIdentityKey, data: identityKey)
+            let identityKeyRecordData = try! self.encoder.encode(identityKeyRecord)
+            self.delegate.storeSignalLibraryValue(identityKeyRecordData, key: self.IdentityKeyStoreIdentityKey, type: .identityKey)
 
-        return self.identityKeyStore[IdentityKeyStoreIdentityKey] != nil
+            return self.delegate.retrieveSignalLibraryValue(key: self.IdentityKeyStoreIdentityKey, type: .identityKey) != nil
+        } else {
+            return self.delegate.deleteSignalLibraryValue(key: self.IdentityKeyStoreIdentityKey, type: .identityKey)
+        }
     }
 
     /**
@@ -444,9 +363,9 @@ public class SignalLibraryStore: NSObject, SignalLibraryStoreProtocol {
      * 'untrusted.'
      */
     @objc public func isTrustedIdentity(with address: SignalAddress, identityKey: Data) -> Bool {
-        guard let existingKey = self.identityKeyStore[address.name] else {
-            return true
-        }
+        guard let existingKeyData = self.delegate.retrieveSignalLibraryValue(key: address.nameForStoring, type: .identityKey),
+            let existingKey = try? self.decoder.decode(SignalLibraryIdentityKeyRecord.self, from: existingKeyData)
+            else { return true }
 
         if existingKey.data == identityKey {
             return true
@@ -456,9 +375,6 @@ public class SignalLibraryStore: NSObject, SignalLibraryStoreProtocol {
     }
 
     // MARK: SignalSenderKeyStore
-    func key(for address: SignalAddress, groupId: String) -> String {
-        return "\(address.name)\(address.deviceId)\(groupId)"
-    }
 
     /**
      * Store a serialized sender key record for a given
@@ -466,7 +382,7 @@ public class SignalLibraryStore: NSObject, SignalLibraryStoreProtocol {
      */
     @objc public func storeSenderKey(with data: Data, signalAddress: SignalAddress, groupId: String) -> Bool {
         let key = self.key(for: signalAddress, groupId: groupId)
-        self.senderKeyStore[key] = data
+        self.delegate.storeSignalLibraryValue(data, key: key, type: .senderKey)
 
         return true
     }
@@ -477,12 +393,14 @@ public class SignalLibraryStore: NSObject, SignalLibraryStoreProtocol {
      */
     @objc public func loadSenderKey(for address: SignalAddress, groupId: String) -> Data? {
         let key = self.key(for: address, groupId: groupId)
-        return self.senderKeyStore[key]
+        return self.delegate.retrieveSignalLibraryValue(key: key, type: .senderKey)
     }
 
     @objc public func allDeviceIds(for addressName: String) -> [Int32] {
-        if let records = self.sessionStore[addressName] {
-            return Array(records.map({ r in r.keys }).joined())
+        let sessions = self.delegate.retrieveAllSignalLibraryValue(ofType: .session).map({ try! self.decoder.decode(SignalLibrarySessionRecord.self, from: $0) }).filter({$0.key == addressName})
+
+        if !sessions.isEmpty {
+            return sessions.map({ r in r.deviceId })
         }
 
         return []

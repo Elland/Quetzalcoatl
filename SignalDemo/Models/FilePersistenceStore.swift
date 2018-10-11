@@ -500,7 +500,9 @@ extension FilePersistenceStore: PersistenceStore {
         let result: Bool
         let delete = self.signalLibraryTable.filter(SignalLibraryKeys.identifierField == key && SignalLibraryKeys.typeField == type.rawValue)
         do {
-            result = try self.dbConnection.run(delete.delete()) > 0
+            try self.dbConnection.run(delete.delete())
+
+            result = try self.dbConnection.scalar(delete.count) == 0
         } catch (let error) {
             result = false
             NSLog("Failed to delete data in the db: %@", error.localizedDescription)

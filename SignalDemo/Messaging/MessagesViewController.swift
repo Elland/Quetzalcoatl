@@ -9,25 +9,9 @@ import Quetzalcoatl
 import SweetUIKit
 import UIKit
 
-extension UIColor {
-    static var darkGreen: UIColor {
-        return #colorLiteral(red: 0.02588345483, green: 0.7590896487, blue: 0.2107430398, alpha: 1)
-    }
-
-    static var lightGray: UIColor {
-        return #colorLiteral(red: 0.9254434109, green: 0.925465405, blue: 0.9339957833, alpha: 1)
-    }
-}
-
-public extension CGFloat {
-    /// The height of a single pixel on the screen.
-    static var lineHeight: CGFloat {
-        return 1 / UIScreen.main.scale
-    }
-}
-
-class MessagesViewController: UIViewController {
+class MessagesViewController: UIViewController, MessageActionsDelegate {
     let chat: SignalChat
+    private(set) var messagesDataSource: MessagesDataSource!
 
     private var quetzalcoatl: Quetzalcoatl {
         return SessionManager.shared.quetzalcoatl
@@ -38,8 +22,6 @@ class MessagesViewController: UIViewController {
     var messages: [SignalMessage] {
         return self.chat.visibleMessages
     }
-
-//    let refreshControl = UIRefreshControl()
 
     lazy var chatInputViewController: ChatInputViewController = {
         let usernames = self.chat.recipients.map({ addr -> String in addr.name }).map({ name in ContactManager.displayName(for: name) })
@@ -53,7 +35,6 @@ class MessagesViewController: UIViewController {
     lazy var tableView: ChatTableView = {
         let view = ChatTableView(frame: .zero, style: .plain)
 
-        view.dataSource = self
         view.delegate = self
 
         view.register(UITableViewCell.self)
@@ -69,22 +50,17 @@ class MessagesViewController: UIViewController {
         return view
     }()
 
-    lazy var dateFormatter: DateFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "HH:mm dd/MM/yyyy"
-
-        return dateFormatter
-    }()
-
     init(chat: SignalChat) {
         self.chat = chat
         super.init(nibName: nil, bundle: nil)
         self.addChild(self.chatInputViewController)
 
+        // TODO: fix this; this is dumb!
+        self.messagesDataSource = MessagesDataSource(tableView: self.tableView, chat: self.chat)
+        self.messagesDataSource.messageActionsDelegate = self
+
         self.hidesBottomBarWhenPushed = true
         self.chatInputViewController.hidesBottomBarWhenPushed = true
-
-        SessionManager.shared.messageDelegate = self
 
         NotificationCenter.default.addObserver(forName: AvatarManager.avatarDidUpdateNotification, object: nil, queue: .main) { notif in
             guard let id = notif.object as? String,
@@ -139,7 +115,7 @@ class MessagesViewController: UIViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         self.chat.markAllAsRead()
-        
+
         super.viewWillDisappear(animated)
     }
 
@@ -150,13 +126,6 @@ class MessagesViewController: UIViewController {
             self.shouldScrollToBottom = false
             self.scrollTableViewToBottom(animated: false)
         }
-    }
-
-    private func scrollTableViewToBottom(animated: Bool) {
-        guard !self.messages.isEmpty else { return }
-
-        let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
-        self.tableView.scrollToRow(at: indexPath, at: .top, animated: animated)
     }
 
     private func addSubviewsAndConstraints() {
@@ -179,8 +148,11 @@ class MessagesViewController: UIViewController {
         self.tableView.contentInset.bottom = self.chatInputViewController.textInputbar.frame.height
     }
 
-    private func message(at indexPath: IndexPath) -> SignalMessage {
-        return self.messages[indexPath.row]
+    func scrollTableViewToBottom(animated: Bool) {
+        guard !self.messages.isEmpty else { return }
+
+        let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
+        self.tableView.scrollToRow(at: indexPath, at: .top, animated: animated)
     }
 
     private func didRequestRetryMessage(message: OutgoingSignalMessage, to recipients: [SignalAddress]) {
@@ -203,7 +175,7 @@ class MessagesViewController: UIViewController {
 
 extension MessagesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let message = self.message(at: indexPath)
+        let message = self.messagesDataSource.message(at: indexPath)
 
         if message is InfoSignalMessage {
             let alert = UIAlertController(title: "Accept new identity?", message: nil, preferredStyle: .actionSheet)
@@ -226,92 +198,6 @@ extension MessagesViewController: UITableViewDelegate {
         } else if message is ErrorSignalMessage {
             let result = self.quetzalcoatl.libraryStore.deleteAllDeviceSessions(for: message.senderId)
             print(result)
-        }
-    }
-}
-
-extension MessagesViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.messages.count
-    }
-
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = self.configuredCell(for: indexPath)
-        cell.layoutIfNeeded()
-
-        return cell
-    }
-
-    private func configuredCell(for indexPath: IndexPath) -> UITableViewCell {
-        let message = self.message(at: indexPath)
-
-        if let message = message as? InfoSignalMessage {
-            let cell = self.tableView.dequeue(StatusCell.self, for: indexPath)
-
-            let localizedFormat = NSLocalizedString(message.customMessage, comment: "")
-            let contact = ContactManager.displayName(for: message.senderId)
-            let string = String(format: localizedFormat, contact, message.additionalInfo)
-
-            let attributed = NSMutableAttributedString(string: string)
-            attributed.addAttribute(.font, value: UIFont.boldSystemFont(ofSize: 17), range: (string as NSString).range(of: contact))
-            attributed.addAttribute(.font, value: UIFont.boldSystemFont(ofSize: 17), range: (string as NSString).range(of: message.additionalInfo))
-
-            cell.textLabel?.attributedText = attributed
-
-            return cell
-        } else {
-            let cell = self.tableView.dequeue(MessagesTextCell.self, for: indexPath)
-            cell.indexPath = indexPath
-
-            cell.delegate = self
-
-            cell.isOutgoingMessage = message is OutgoingSignalMessage
-            cell.messageBody = message.body // SofaMessage(content: message.body).body
-            cell.avatar = ContactManager.image(for: message.senderId)
-
-            cell.messageState = (message as? OutgoingSignalMessage)?.messageState ?? .none
-//            cell.dateStrng = self.dateFormatter.string(from: Date(milisecondTimeIntervalSinceEpoch: message.timestamp))
-
-            if let attachment = message.attachment, let image = UIImage(data: attachment) {
-                cell.messageImage = image
-            } else {
-                cell.messageImage = nil
-            }
-
-            return cell
-        }
-    }
-}
-
-extension MessagesViewController: SignalServiceStoreMessageDelegate {
-    func signalServiceStoreWillChangeMessages() {
-        self.tableView.beginUpdates()
-        self.shouldScrollToBottom = true
-    }
-
-    func signalServiceStoreDidChangeMessage(_ message: SignalMessage, at indexPath: IndexPath, for changeType: SignalServiceStore.ChangeType) {
-        guard message.chatId == self.chat.uniqueId else { return }
-
-        switch changeType {
-        case .insert:
-            self.tableView.insertRows(at: [indexPath], with: .automatic)
-        case .delete:
-            self.tableView.deleteRows(at: [indexPath], with: .automatic)
-        case .update:
-            self.tableView.reloadRows(at: [indexPath], with: .automatic)
-        }
-    }
-
-    func signalServiceStoreDidChangeMessages() {
-        self.tableView.endUpdates()
-
-        if self.shouldScrollToBottom  {
-            self.shouldScrollToBottom = false
-            self.scrollTableViewToBottom(animated: true)
         }
     }
 }
@@ -345,7 +231,7 @@ extension MessagesViewController: ChatInputViewControllerDelegate {
 
 extension MessagesViewController: MessagesTextCellDelegate {
     func didTapErrorView(for cell: MessagesTextCell) {
-        guard let message = self.message(at: cell.indexPath) as? OutgoingSignalMessage else { fatalError("Trying to send a non-outgoing message!") }
+        guard let message = self.messagesDataSource.message(at: cell.indexPath) as? OutgoingSignalMessage else { fatalError("Trying to send a non-outgoing message!") }
         self.didRequestRetryMessage(message: message, to: self.chat.recipients)
     }
 }

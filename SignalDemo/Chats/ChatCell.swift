@@ -128,7 +128,7 @@ class ChatCell: UITableViewCell {
         self.badgeLabel.width(min: 24, max: 120)
         self.badgeLabel.set(height: 24)
 
-        self.separatorView.set(height: 1)
+        self.separatorView.set(height: .lineHeight)
 
         self.avatarImageView.leftToSuperview(offset: 12)
         self.avatarImageView.topToSuperview(offset: 12)

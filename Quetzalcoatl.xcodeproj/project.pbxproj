@@ -46,12 +46,14 @@
 		9F723096208F303200F568F7 /* NSDate+Chrono.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F723094208F303200F568F7 /* NSDate+Chrono.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9F723097208F303200F568F7 /* NSDate+Chrono.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9F723095208F303200F568F7 /* NSDate+Chrono.mm */; };
 		9F73B80B216F5D89002CF67E /* ConnectionStatusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F73B80A216F5D89002CF67E /* ConnectionStatusViewController.swift */; };
+		9F73B80D216F6CA2002CF67E /* CGFloat+Quetzal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F73B80C216F6CA2002CF67E /* CGFloat+Quetzal.swift */; };
+		9F73B80F216F6D55002CF67E /* MessagesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F73B80E216F6D55002CF67E /* MessagesDataSource.swift */; };
 		9F89637221661DBE00CC639A /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F89636F21661D1700CC639A /* TabBarController.swift */; };
 		9F89637421661F6100CC639A /* SettingsNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F89637321661F6100CC639A /* SettingsNavigationController.swift */; };
 		9F8F25192091D3A10020FF00 /* SignalRecipientsDisplayDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F8F25182091D3A10020FF00 /* SignalRecipientsDisplayDelegate.swift */; };
 		9F8F251B209219680020FF00 /* SignalServiceAttachmentsProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F8F251A209219680020FF00 /* SignalServiceAttachmentsProcessor.swift */; };
 		9F8F251D209348260020FF00 /* SignalServiceAttachmentPointer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F8F251C209348260020FF00 /* SignalServiceAttachmentPointer.swift */; };
-		9FA5FD7721621E3B0046F0A7 /* Cells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FD7521621E2A0046F0A7 /* Cells.swift */; };
+		9FA5FD7721621E3B0046F0A7 /* ChatCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FD7521621E2A0046F0A7 /* ChatCell.swift */; };
 		9FA5FD9E21623A410046F0A7 /* UIResponder+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FD8821623A400046F0A7 /* UIResponder+SLKAdditions.m */; };
 		9FA5FD9F21623A410046F0A7 /* SLKInputAccessoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FD8921623A400046F0A7 /* SLKInputAccessoryView.m */; };
 		9FA5FDA021623A410046F0A7 /* UIView+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FA5FD8C21623A400046F0A7 /* UIView+SLKAdditions.m */; };
@@ -234,12 +236,14 @@
 		9F723095208F303200F568F7 /* NSDate+Chrono.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSDate+Chrono.mm"; sourceTree = "<group>"; };
 		9F73B809216E8EAD002CF67E /* iOS.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = iOS.entitlements; sourceTree = "<group>"; };
 		9F73B80A216F5D89002CF67E /* ConnectionStatusViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionStatusViewController.swift; sourceTree = "<group>"; };
+		9F73B80C216F6CA2002CF67E /* CGFloat+Quetzal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGFloat+Quetzal.swift"; sourceTree = "<group>"; };
+		9F73B80E216F6D55002CF67E /* MessagesDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesDataSource.swift; sourceTree = "<group>"; };
 		9F89636F21661D1700CC639A /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		9F89637321661F6100CC639A /* SettingsNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsNavigationController.swift; sourceTree = "<group>"; };
 		9F8F25182091D3A10020FF00 /* SignalRecipientsDisplayDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalRecipientsDisplayDelegate.swift; sourceTree = "<group>"; };
 		9F8F251A209219680020FF00 /* SignalServiceAttachmentsProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalServiceAttachmentsProcessor.swift; sourceTree = "<group>"; };
 		9F8F251C209348260020FF00 /* SignalServiceAttachmentPointer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalServiceAttachmentPointer.swift; sourceTree = "<group>"; };
-		9FA5FD7521621E2A0046F0A7 /* Cells.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cells.swift; sourceTree = "<group>"; };
+		9FA5FD7521621E2A0046F0A7 /* ChatCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatCell.swift; sourceTree = "<group>"; };
 		9FA5FD8821623A400046F0A7 /* UIResponder+SLKAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIResponder+SLKAdditions.m"; sourceTree = "<group>"; };
 		9FA5FD8921623A400046F0A7 /* SLKInputAccessoryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLKInputAccessoryView.m; sourceTree = "<group>"; };
 		9FA5FD8A21623A400046F0A7 /* SLKUIConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKUIConstants.h; sourceTree = "<group>"; };
@@ -521,7 +525,7 @@
 				9F5CF5C6216384D600FAAFD4 /* ChatsNavigationController.swift */,
 				9FE925E2208A08F6008ABCE4 /* ChatsViewController.swift */,
 				9FE84C5E216E146F00B5522B /* ChatsDataSource.swift */,
-				9FA5FD7521621E2A0046F0A7 /* Cells.swift */,
+				9FA5FD7521621E2A0046F0A7 /* ChatCell.swift */,
 				9F5CF5CA2163A15600FAAFD4 /* ChatTableView.swift */,
 			);
 			path = Chats;
@@ -548,6 +552,7 @@
 				9F0A19AF20A09F7E0051B268 /* Cells */,
 				9FA5FD8721623A400046F0A7 /* SlackTextViewController */,
 				9FE925E4208A08F6008ABCE4 /* MessagesViewController.swift */,
+				9F73B80E216F6D55002CF67E /* MessagesDataSource.swift */,
 				9FA5FDA821623A520046F0A7 /* ChatInputViewController.swift */,
 			);
 			path = Messaging;
@@ -592,6 +597,7 @@
 				9F5CF5C42163840400FAAFD4 /* String+Truncation.swift */,
 				9FB2D620216CD93B008EE350 /* Blockies.swift */,
 				9FB2D622216CD945008EE350 /* UIColor+HSL.swift */,
+				9F73B80C216F6CA2002CF67E /* CGFloat+Quetzal.swift */,
 				9FE84C6D216E828D00B5522B /* Views */,
 				9FE925E9208A08F8008ABCE4 /* Assets.xcassets */,
 				9FE925EB208A08F8008ABCE4 /* LaunchScreen.storyboard */,
@@ -1005,6 +1011,7 @@
 				9FE84C6C216E827600B5522B /* InsetLabel.swift in Sources */,
 				9FA5FDA721623A410046F0A7 /* UIScrollView+SLKAdditions.m in Sources */,
 				9F89637421661F6100CC639A /* SettingsNavigationController.swift in Sources */,
+				9F73B80D216F6CA2002CF67E /* CGFloat+Quetzal.swift in Sources */,
 				9FE92608208A0BAD008ABCE4 /* User.swift in Sources */,
 				9F0A19B920A09F7E0051B268 /* StatusCell.swift in Sources */,
 				9FB2D623216CD945008EE350 /* UIColor+HSL.swift in Sources */,
@@ -1022,7 +1029,8 @@
 				9FA5FDA521623A410046F0A7 /* SLKTypingIndicatorView.m in Sources */,
 				9FA5FDA021623A410046F0A7 /* UIView+SLKAdditions.m in Sources */,
 				9FE925E1208A08F6008ABCE4 /* AppDelegate.swift in Sources */,
-				9FA5FD7721621E3B0046F0A7 /* Cells.swift in Sources */,
+				9F73B80F216F6D55002CF67E /* MessagesDataSource.swift in Sources */,
+				9FA5FD7721621E3B0046F0A7 /* ChatCell.swift in Sources */,
 				9FE84C5F216E146F00B5522B /* ChatsDataSource.swift in Sources */,
 				9F5CF5C7216384D600FAAFD4 /* ChatsNavigationController.swift in Sources */,
 				9F73B80B216F5D89002CF67E /* ConnectionStatusViewController.swift in Sources */,

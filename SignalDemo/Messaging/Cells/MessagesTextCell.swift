@@ -166,9 +166,11 @@ class MessagesTextCell: UITableViewCell {
         view.textContainer.maximumNumberOfLines = 0
 
         view.linkTextAttributes = [NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single]
+        view.tintColor = .white
 
         view.setContentHuggingPriority(UILayoutPriority(999), for: .vertical)
         view.setContentHuggingPriority(UILayoutPriority(999), for: .horizontal)
+        view.setContentCompressionResistancePriority(.fittingSizeLevel, for: .horizontal)
 
         return view
     }()
@@ -224,9 +226,7 @@ class MessagesTextCell: UITableViewCell {
         self.bubbleView.addSubview(self.messageImageView)
         self.bubbleView.addSubview(self.textView)
 
-        let imageHeight = self.avatarImageView.heightAnchor.constraint(equalToConstant: 44)
-        imageHeight.priority = UILayoutPriority(999)
-        imageHeight.isActive = true
+        self.avatarImageView.set(height: 44)
         self.avatarImageView.set(width: 44)
 
         self.containerView.leftToSuperview()
