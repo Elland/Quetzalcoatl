@@ -9,7 +9,7 @@ protocol SignalMessageManagerDelegate {
     func sendSocketMessageAcknowledgement(_ message: Signalservice_WebSocketMessage)
 }
 
-class SignalMessageManager {
+public class SignalMessageManager {
     var sender: SignalSender
     var signalContext: SignalContext
     var networkClient: NetworkClient
@@ -377,7 +377,7 @@ class SignalMessageManager {
         }
     }
 
-    private func decryptCiphertextEnvelope(_ envelope: Signalservice_Envelope) -> Bool {
+    func decryptCiphertextEnvelope(_ envelope: Signalservice_Envelope) -> Bool {
         let content = envelope.hasContent ? envelope.content : envelope.legacyMessage
 
         let senderAddress = SignalAddress(name: envelope.source, deviceId: Int32(envelope.sourceDevice))

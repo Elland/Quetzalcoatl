@@ -57,8 +57,12 @@ class ChatInputViewController: SLKTextViewController {
     }
 
     override func didPressRightButton(_ sender: Any?) {
-        // Send a message
+        // hack to accept auto correct
+        self.textView.resignFirstResponder()
+        self.textView.becomeFirstResponder()
+
         self.delegate?.didSendMessage(self.textView.text)
+
         super.didPressRightButton(sender)
     }
 

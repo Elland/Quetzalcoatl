@@ -71,8 +71,8 @@ public class SignalServiceStore {
         case sender
     }
 
-    public var chatDelegate: SignalServiceStoreChatDelegate?
-    public var messageDelegate: SignalServiceStoreMessageDelegate?
+    public var chatDelegates: [SignalServiceStoreChatDelegate] = []
+    public var messageDelegates: [SignalServiceStoreMessageDelegate] = []
     public var contactsDelegate: SignalRecipientsDisplayDelegate
 
     private let decoder = JSONDecoder()
@@ -208,7 +208,7 @@ public class SignalServiceStore {
         return chats
     }
 
-    func chat(chatId: String) -> SignalChat? {
+    public func chat(chatId: String) -> SignalChat? {
         let chat = self.persistenceStore.retrieveChats(with: NSPredicate(format: "%K == %@", "id", chatId), sortDescriptors: nil).first
         chat?.store = self
         chat?.contactsDelegate = self.contactsDelegate
@@ -248,9 +248,9 @@ public class SignalServiceStore {
                 let indexPath = IndexPath(item: visibleIndex, section: 0)
 
                 DispatchQueue.main.async {
-                    self.messageDelegate?.signalServiceStoreWillChangeMessages()
-                    self.messageDelegate?.signalServiceStoreDidChangeMessage(message, at: indexPath, for: .update)
-                    self.messageDelegate?.signalServiceStoreDidChangeMessages()
+                    self.messageDelegates.forEach({ $0.signalServiceStoreWillChangeMessages() })
+                    self.messageDelegates.forEach({ $0.signalServiceStoreDidChangeMessage(message, at: indexPath, for: .update) })
+                    self.messageDelegates.forEach({ $0.signalServiceStoreDidChangeMessages() })
                 }
 
                 try? self.save(chat)
@@ -265,15 +265,15 @@ public class SignalServiceStore {
                     }
 
                     DispatchQueue.main.async {
-                        self.messageDelegate?.signalServiceStoreWillChangeMessages()
+                        self.messageDelegates.forEach({ $0.signalServiceStoreWillChangeMessages() })
                     }
 
                     let index = chat.visibleMessages.index(of: message)!
                     let indexPath = IndexPath(item: index, section: 0)
 
                     DispatchQueue.main.async {
-                        self.messageDelegate?.signalServiceStoreDidChangeMessage(message, at: indexPath, for: .insert)
-                        self.messageDelegate?.signalServiceStoreDidChangeMessages()
+                        self.messageDelegates.forEach({ $0.signalServiceStoreDidChangeMessage(message, at: indexPath, for: .insert) })
+                        self.messageDelegates.forEach({ $0.signalServiceStoreDidChangeMessages() })
                     }
 
                     try? self.save(chat)
@@ -291,7 +291,7 @@ public class SignalServiceStore {
         }
 
         DispatchQueue.main.async {
-            self.messageDelegate?.signalServiceStoreWillChangeMessages()
+            self.messageDelegates.forEach({ $0.signalServiceStoreWillChangeMessages() })
         }
 
         let index = chat.visibleMessages.index(of: message)!
@@ -299,28 +299,28 @@ public class SignalServiceStore {
 
         self.persistenceStore.deleteMessage(message) {
             DispatchQueue.main.async {
-                self.messageDelegate?.signalServiceStoreDidChangeMessage(message, at: indexPath, for: .delete)
-                self.messageDelegate?.signalServiceStoreDidChangeMessages()
+                self.messageDelegates.forEach({ $0.signalServiceStoreDidChangeMessage(message, at: indexPath, for: .delete) })
+                self.messageDelegates.forEach({ $0.signalServiceStoreDidChangeMessages() })
             }
         }
     }
 
     func delete(_ chat: SignalChat) throws {
         DispatchQueue.main.async {
-            self.chatDelegate?.signalServiceStoreWillChangeChats()
+            self.chatDelegates.forEach({ $0.signalServiceStoreWillChangeChats() })
         }
 
         self.persistenceStore.deleteChat(chat) {
             DispatchQueue.main.async {
-                self.chatDelegate?.signalServiceStoreDidChangeChat(chat, at: IndexPath(item: 0, section: 0), for: .delete)
-                self.chatDelegate?.signalServiceStoreDidChangeChats()
+                self.chatDelegates.forEach({ $0.signalServiceStoreDidChangeChat(chat, at: IndexPath(item: 0, section: 0), for: .delete) })
+                self.chatDelegates.forEach({ $0.signalServiceStoreDidChangeChats() })
             }
         }
     }
 
     func save(_ chat: SignalChat) throws {
         DispatchQueue.main.async {
-            self.chatDelegate?.signalServiceStoreWillChangeChats()
+            self.chatDelegates.forEach({ $0.signalServiceStoreWillChangeChats() })
         }
 
         // insert
@@ -328,8 +328,8 @@ public class SignalServiceStore {
             self.persistenceStore.storeChat(chat)  {
                 let indexPath = IndexPath(item: 0, section: 0)
                 DispatchQueue.main.async {
-                    self.chatDelegate?.signalServiceStoreDidChangeChat(chat, at: indexPath, for: .insert)
-                    self.chatDelegate?.signalServiceStoreDidChangeChats()
+                    self.chatDelegates.forEach({ $0.signalServiceStoreDidChangeChat(chat, at: indexPath, for: .insert) })
+                    self.chatDelegates.forEach({ $0.signalServiceStoreDidChangeChats() })
                 }
             }
         } else {
@@ -338,8 +338,8 @@ public class SignalServiceStore {
                 let indexPath = IndexPath(item: 0, section: 0)
 
                 DispatchQueue.main.async {
-                    self.chatDelegate?.signalServiceStoreDidChangeChat(chat, at: indexPath, for: .update)
-                    self.chatDelegate?.signalServiceStoreDidChangeChats()
+                    self.chatDelegates.forEach({ $0.signalServiceStoreDidChangeChat(chat, at: indexPath, for: .update) })
+                    self.chatDelegates.forEach({ $0.signalServiceStoreDidChangeChats() })
                 }
             }
         }

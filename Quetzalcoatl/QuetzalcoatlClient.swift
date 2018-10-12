@@ -37,7 +37,7 @@ public protocol SignalSocketConnectionStatusDelegate: class {
 public class Quetzalcoatl {
     var socket: WebSocket?
 
-    var messageSender: SignalMessageManager?
+    public var messageManager: SignalMessageManager?
 
     /// TODO: make this internal, move user bootstrapping data generation to client?
     public var libraryStore: SignalLibraryStoreProtocol
@@ -112,7 +112,7 @@ public class Quetzalcoatl {
         self.store.storeSender(sender)
         
         let networkClient = NetworkClient(baseURL: self.baseURL, username: sender.username, password: sender.password)
-        self.messageSender = SignalMessageManager(sender: sender, networkClient: networkClient, signalContext: self.signalContext, store: self.store, delegate: self)
+        self.messageManager = SignalMessageManager(sender: sender, networkClient: networkClient, signalContext: self.signalContext, store: self.store, delegate: self)
 
         var prekeysDict = [[String: Any]]()
 
@@ -154,14 +154,14 @@ public class Quetzalcoatl {
         self.socket?.connect()
 
         let networkClient = NetworkClient(baseURL: self.baseURL, username: sender.username, password: sender.password)
-        self.messageSender = SignalMessageManager(sender: sender, networkClient: networkClient, signalContext: self.signalContext, store: self.store, delegate: self)
+        self.messageManager = SignalMessageManager(sender: sender, networkClient: networkClient, signalContext: self.signalContext, store: self.store, delegate: self)
 
         RunLoop.main.add(self.keepAliveTimer, forMode: .default)
     }
 
     public func sendGroupMessage(_ body: String, type: OutgoingSignalMessage.GroupMetaMessageType, to recipientAddresses: [SignalAddress], attachments: [Data] = []) {
 
-        guard let messageSender = self.messageSender else { fatalError() }
+        guard let messageSender = self.messageManager else { fatalError() }
 
         let names = recipientAddresses.map { (address) -> String in address.name }
         let chat = self.store.fetchOrCreateChat(with: names)
@@ -174,14 +174,14 @@ public class Quetzalcoatl {
         let dispatchGroup = DispatchGroup()
         for attachment in attachments {
             dispatchGroup.enter()
-            self.messageSender?.uploadAttachment(attachment, in: message) { _ in
+            self.messageManager?.uploadAttachment(attachment, in: message) { _ in
                 dispatchGroup.leave()
             }
         }
 
         dispatchGroup.notify(queue: .main) {
             for recipient in recipients {
-                self.messageSender?.sendMessage(message, to: recipient, in: chat) { _ in
+                self.messageManager?.sendMessage(message, to: recipient, in: chat) { _ in
                     do {
                         try self.store.save(message)
                     } catch (let error) {
@@ -193,7 +193,7 @@ public class Quetzalcoatl {
     }
 
     public func sendMessage(_ body: String, to recipient: SignalAddress, in chat: SignalChat, attachments: [Data] = []) {
-        guard let senderId = self.messageSender?.sender.username else { fatalError() }
+        guard let senderId = self.messageManager?.sender.username else { fatalError() }
         let message = OutgoingSignalMessage(recipientId: recipient.name, senderId: senderId, chatId: chat.uniqueId, body: body, store: self.store)
         try! self.store.save(message)
 
@@ -227,13 +227,13 @@ public class Quetzalcoatl {
 
         for attachment in attachments {
             dispatchGroup.enter()
-            self.messageSender?.uploadAttachment(attachment, in: message) { _ in
+            self.messageManager?.uploadAttachment(attachment, in: message) { _ in
                 dispatchGroup.leave()
             }
         }
 
         dispatchGroup.notify(queue: .main) {
-            self.messageSender?.sendMessage(message, to: recipient, in: chat) { _ in
+            self.messageManager?.sendMessage(message, to: recipient, in: chat) { _ in
                 do {
                     try self.store.save(message)
                 } catch (let error) {
@@ -279,7 +279,7 @@ extension Quetzalcoatl: WebSocketDelegate {
 
         switch webSocketMessage.type {
         case .request:
-            self.messageSender?.processSocketMessage(webSocketMessage)
+            self.messageManager?.processSocketMessage(webSocketMessage)
         default:
             fatalError("Should not receive socket response messages")
         }

@@ -20,6 +20,7 @@ class ContactManager {
 
         let semaphore = DispatchSemaphore(value: 0)
 
+        // TODO: unflatten this, use notifications instead 🤦🏽‍♀️
         self.shared.idClient.findUserWithId(address) { profile in
             name = profile.nameOrUsername
             semaphore.signal()

@@ -11,3 +11,4 @@
 "COULD_NOT_VERIFY_SIGNATURE" = "Could not verify identity of recipient. Please check through secure means that they've changed devices. Tap this message to proceed.";
 
 "ERROR_MESSAGE_NO_SESSION" = "Session is invalid. Tap to recreate it.";
+"APN_Message" = "New message!";

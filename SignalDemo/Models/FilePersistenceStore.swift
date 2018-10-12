@@ -630,7 +630,9 @@ extension FilePersistenceStore: PersistenceStore {
 
         do {
             try self.dbConnection.run(deleteMessages.delete())
-            try self.dbConnection.run(deleteChat.delete())
+            while try self.dbConnection.run(deleteChat.delete()) != 0 {
+                continue
+            }
         } catch (let error) {
             NSLog("Failed to delete data in the db: %@", error.localizedDescription)
         }

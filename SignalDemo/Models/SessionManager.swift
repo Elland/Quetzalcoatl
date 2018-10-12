@@ -9,9 +9,12 @@
 import Quetzalcoatl
 import EtherealCereal
 import Teapot
+import UserNotifications
 
 class SessionManager {
     static var shared: SessionManager = SessionManager()
+
+    private var fetcherJob: MessageFetcherJob?
 
     var user: Profile {
         return Profile.current!
@@ -19,23 +22,29 @@ class SessionManager {
 
     let idClient = IDAPIClient()
 
+    var currentChatId: String?
+
     var persistenceStore = FilePersistenceStore()
 
     var signalRecipientsDelegate = SignalRecipientsDisplayManager()
 
     var chatDelegate: SignalServiceStoreChatDelegate? {
         didSet {
-            self.quetzalcoatl.store.chatDelegate = self.chatDelegate
+            if let cd = self.chatDelegate {
+                self.quetzalcoatl.store.chatDelegates.append(cd)
+            }
         }
     }
 
     var messageDelegate: SignalServiceStoreMessageDelegate? {
         didSet {
-            self.quetzalcoatl.store.messageDelegate = self.messageDelegate
+            if let md = self.messageDelegate {
+                self.quetzalcoatl.store.messageDelegates.append(md)
+            }
         }
     }
 
-    let teapot = Teapot(baseURL: URL(string: "https://token-chat-service-development.herokuapp.com")!)
+    let teapot = Teapot(baseURL: URL(string: "https://quetzalcoatl-chat-service.herokuapp.com")!)
 
     lazy var quetzalcoatl: Quetzalcoatl = {
         return Quetzalcoatl(baseURL: self.teapot.baseURL, recipientsDelegate: self.signalRecipientsDelegate, persistenceStore: self.persistenceStore)
@@ -47,6 +56,8 @@ class SessionManager {
 
             self.persistenceStore.storeUser(profile)
         }
+
+        self.quetzalcoatl.store.messageDelegates.append(self)
     }
 
     func loadOrCreateuser() {
@@ -55,6 +66,8 @@ class SessionManager {
 
             self.quetzalcoatl.startSocket()
             self.quetzalcoatl.shouldKeepSocketAlive = true
+
+            self.requestAPNS()
 
             return
         }
@@ -91,6 +104,8 @@ class SessionManager {
                             self.quetzalcoatl.startSocket()
                             self.quetzalcoatl.shouldKeepSocketAlive = true
                             self.persistenceStore.storeUser(user)
+
+                            self.requestAPNS()
                         case .failure(_, _, let error):
                             NSLog(error.localizedDescription)
                             break
@@ -99,6 +114,60 @@ class SessionManager {
                 }
             }
         }
+    }
+
+    func fetchContent() {
+        self.fetcherJob = MessageFetcherJob(teapot: self.teapot, username: self.user.id, password: self.user.password, messageManager: self.quetzalcoatl.messageManager!)
+        self.fetcherJob?.run()
+    }
+
+    func requestAPNS() {
+        AppDelegate.shared.requestAPNS()
+    }
+
+    func updatePushNotificationCredentials(_ token: String) {
+        self.idClient.fetchTimestamp { timestamp in
+            let path = "/v1/accounts/apn"
+            let payload = ["apnRegistrationId": token]
+
+            let headers = self.teapot.basicAuthenticationHeader(username: self.user.id, password: self.user.password)
+
+            self.teapot.put(path, parameters: RequestParameter(payload), headerFields: headers) { result in
+                print(result)
+            }
+        }
+    }
+}
+
+extension SessionManager: SignalServiceStoreMessageDelegate {
+    func signalServiceStoreWillChangeMessages() {
+
+    }
+
+    func signalServiceStoreDidChangeMessage(_ message: SignalMessage, at indexPath: IndexPath, for changeType: SignalServiceStore.ChangeType) {
+        if changeType == .insert {
+            guard message.senderId != self.user.id else { return }
+            guard let chat = self.quetzalcoatl.store.chat(chatId: message.chatId),
+            chat.uniqueId != self.currentChatId
+            else { return }
+
+            
+            let content = UNMutableNotificationContent()
+            content.title = chat.displayName
+            content.body = message.body
+            content.threadIdentifier = chat.uniqueId
+            content.sound = UNNotificationSound(named: UNNotificationSoundName("PN.m4a"))
+
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
+            let request = UNNotificationRequest(identifier: message.uniqueId, content: content, trigger: trigger)
+
+            let center = UNUserNotificationCenter.current()
+            center.add(request, withCompletionHandler: nil)
+        }
+    }
+
+    func signalServiceStoreDidChangeMessages() {
+
     }
 }
 
@@ -111,3 +180,4 @@ struct SignalRecipientsDisplayManager: SignalRecipientsDisplayDelegate {
         return ContactManager.image(for: address)
     }
 }
+

@@ -109,7 +109,8 @@ class MessagesViewController: UIViewController, MessageActionsDelegate {
         super.viewDidAppear(animated)
 
         self.chat.markAllAsRead()
-        
+        SessionManager.shared.currentChatId = self.chat.uniqueId
+
         self.scrollTableViewToBottom(animated: false)
     }
 
@@ -117,6 +118,8 @@ class MessagesViewController: UIViewController, MessageActionsDelegate {
         self.chat.markAllAsRead()
 
         super.viewWillDisappear(animated)
+
+        SessionManager.shared.currentChatId = nil
     }
 
     override func viewDidLayoutSubviews() {

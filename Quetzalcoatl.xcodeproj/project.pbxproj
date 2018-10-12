@@ -24,6 +24,14 @@
 		9F0A199820A06F030051B268 /* Date+Intervals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F0A199720A06F030051B268 /* Date+Intervals.swift */; };
 		9F0A19B620A09F7E0051B268 /* MessagesTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F0A19B120A09F7E0051B268 /* MessagesTextCell.swift */; };
 		9F0A19B920A09F7E0051B268 /* StatusCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F0A19B420A09F7E0051B268 /* StatusCell.swift */; };
+		9F1F13D92170CC9100477BA1 /* BackgroundNotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1F13D82170CC9100477BA1 /* BackgroundNotificationHandler.swift */; };
+		9F1F13E12170CCF600477BA1 /* menuButton.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 9F1F13DB2170CCF500477BA1 /* menuButton.m4a */; };
+		9F1F13E22170CCF600477BA1 /* addContactApp.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 9F1F13DC2170CCF600477BA1 /* addContactApp.m4a */; };
+		9F1F13E32170CCF600477BA1 /* PN.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 9F1F13DD2170CCF600477BA1 /* PN.m4a */; };
+		9F1F13E42170CCF600477BA1 /* messageSent.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 9F1F13DE2170CCF600477BA1 /* messageSent.m4a */; };
+		9F1F13E52170CCF600477BA1 /* scan.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 9F1F13DF2170CCF600477BA1 /* scan.m4a */; };
+		9F1F13E62170CCF600477BA1 /* messageReceived.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 9F1F13E02170CCF600477BA1 /* messageReceived.m4a */; };
+		9F1F13E92170D39C00477BA1 /* MessageFetcherJob.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1F13E72170D35E00477BA1 /* MessageFetcherJob.swift */; };
 		9F27B9EF2090B40C0032C7DD /* SignalLibraryStoreProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F27B9EE2090B40C0032C7DD /* SignalLibraryStoreProtocol.swift */; };
 		9F27B9F12090C61F0032C7DD /* InfoSignalMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F27B9F02090C61F0032C7DD /* InfoSignalMessage.swift */; };
 		9F33523E20862B5500E0F145 /* QuetzalcoatlClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F33523D20862B5500E0F145 /* QuetzalcoatlClient.swift */; };
@@ -223,6 +231,14 @@
 		9F0A199720A06F030051B268 /* Date+Intervals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Intervals.swift"; sourceTree = "<group>"; };
 		9F0A19B120A09F7E0051B268 /* MessagesTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesTextCell.swift; sourceTree = "<group>"; };
 		9F0A19B420A09F7E0051B268 /* StatusCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusCell.swift; sourceTree = "<group>"; };
+		9F1F13D82170CC9100477BA1 /* BackgroundNotificationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundNotificationHandler.swift; sourceTree = "<group>"; };
+		9F1F13DB2170CCF500477BA1 /* menuButton.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = menuButton.m4a; sourceTree = "<group>"; };
+		9F1F13DC2170CCF600477BA1 /* addContactApp.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = addContactApp.m4a; sourceTree = "<group>"; };
+		9F1F13DD2170CCF600477BA1 /* PN.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = PN.m4a; sourceTree = "<group>"; };
+		9F1F13DE2170CCF600477BA1 /* messageSent.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = messageSent.m4a; sourceTree = "<group>"; };
+		9F1F13DF2170CCF600477BA1 /* scan.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = scan.m4a; sourceTree = "<group>"; };
+		9F1F13E02170CCF600477BA1 /* messageReceived.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = messageReceived.m4a; sourceTree = "<group>"; };
+		9F1F13E72170D35E00477BA1 /* MessageFetcherJob.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageFetcherJob.swift; sourceTree = "<group>"; };
 		9F27B9EE2090B40C0032C7DD /* SignalLibraryStoreProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalLibraryStoreProtocol.swift; sourceTree = "<group>"; };
 		9F27B9F02090C61F0032C7DD /* InfoSignalMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoSignalMessage.swift; sourceTree = "<group>"; };
 		9F33523D20862B5500E0F145 /* QuetzalcoatlClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuetzalcoatlClient.swift; sourceTree = "<group>"; };
@@ -469,6 +485,19 @@
 			path = Cells;
 			sourceTree = "<group>";
 		};
+		9F1F13DA2170CCDF00477BA1 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				9F1F13DC2170CCF600477BA1 /* addContactApp.m4a */,
+				9F1F13DB2170CCF500477BA1 /* menuButton.m4a */,
+				9F1F13E02170CCF600477BA1 /* messageReceived.m4a */,
+				9F1F13DE2170CCF600477BA1 /* messageSent.m4a */,
+				9F1F13DD2170CCF600477BA1 /* PN.m4a */,
+				9F1F13DF2170CCF600477BA1 /* scan.m4a */,
+			);
+			path = Sounds;
+			sourceTree = "<group>";
+		};
 		9FA5FD8721623A400046F0A7 /* SlackTextViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -542,6 +571,8 @@
 				9FE84C5C216DEA8B00B5522B /* QRCodeGenerator.swift */,
 				9FE84C60216E14AD00B5522B /* ContactsManager.swift */,
 				9FE84C62216E17B900B5522B /* SessionManager.swift */,
+				9F1F13E72170D35E00477BA1 /* MessageFetcherJob.swift */,
+				9F1F13D82170CC9100477BA1 /* BackgroundNotificationHandler.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -596,8 +627,9 @@
 				9FE925F8208A09B1008ABCE4 /* Sofa */,
 				9F5CF5C42163840400FAAFD4 /* String+Truncation.swift */,
 				9FB2D620216CD93B008EE350 /* Blockies.swift */,
-				9FB2D622216CD945008EE350 /* UIColor+HSL.swift */,
 				9F73B80C216F6CA2002CF67E /* CGFloat+Quetzal.swift */,
+				9FB2D622216CD945008EE350 /* UIColor+HSL.swift */,
+				9F1F13DA2170CCDF00477BA1 /* Sounds */,
 				9FE84C6D216E828D00B5522B /* Views */,
 				9FE925E9208A08F8008ABCE4 /* Assets.xcassets */,
 				9FE925EB208A08F8008ABCE4 /* LaunchScreen.storyboard */,
@@ -939,9 +971,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				9FB2D619216CD352008EE350 /* SettingsViewController.storyboard in Resources */,
+				9F1F13E62170CCF600477BA1 /* messageReceived.m4a in Resources */,
+				9F1F13E52170CCF600477BA1 /* scan.m4a in Resources */,
+				9F1F13E12170CCF600477BA1 /* menuButton.m4a in Resources */,
 				9FE925ED208A08F8008ABCE4 /* LaunchScreen.storyboard in Resources */,
+				9F1F13E22170CCF600477BA1 /* addContactApp.m4a in Resources */,
 				9FE925EA208A08F8008ABCE4 /* Assets.xcassets in Resources */,
 				9FCDD50820A1E21A006835DC /* Localizable.strings in Resources */,
+				9F1F13E42170CCF600477BA1 /* messageSent.m4a in Resources */,
+				9F1F13E32170CCF600477BA1 /* PN.m4a in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -995,6 +1033,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9F1F13D92170CC9100477BA1 /* BackgroundNotificationHandler.swift in Sources */,
 				9F5CF5C9216385F200FAAFD4 /* Theme.swift in Sources */,
 				9FA5FDA221623A410046F0A7 /* SLKTextViewController.m in Sources */,
 				9FAA850B2165F642007C17DE /* Profile.swift in Sources */,
@@ -1050,6 +1089,7 @@
 				9F27B9F12090C61F0032C7DD /* InfoSignalMessage.swift in Sources */,
 				9F8F25192091D3A10020FF00 /* SignalRecipientsDisplayDelegate.swift in Sources */,
 				9FFD1DDC208630E900FA4626 /* SignalSender.swift in Sources */,
+				9F1F13E92170D39C00477BA1 /* MessageFetcherJob.swift in Sources */,
 				9FFD1E112086459600FA4626 /* SignalIdentityKeyStoreProtocol.swift in Sources */,
 				9F8F251B209219680020FF00 /* SignalServiceAttachmentsProcessor.swift in Sources */,
 				9FF4F5C4208798DD00EC4D5D /* IncomingSignalMessage.swift in Sources */,
