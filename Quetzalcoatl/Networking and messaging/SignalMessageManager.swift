@@ -291,7 +291,7 @@ public class SignalMessageManager {
     }
 
     private func handleErrorMessage(_ error: NSError, for envelope: Signalservice_Envelope) {
-        let chat = self.store.fetchOrCreateChat(with: envelope.source)
+        guard let chat = self.store.chat(recipientIdentifier: envelope.source) else { return }
         if error.domain == SignalErrorDomain {
             let kind: ErrorSignalMessage.Kind
             if error.code == 7 {
