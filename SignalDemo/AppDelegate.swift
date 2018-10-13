@@ -13,6 +13,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
     var window: UIWindow?
 
+    var tabBarController: TabBarController!
+
     static var shared: AppDelegate!
 
     var token: String = "" {
@@ -25,8 +27,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         AppDelegate.shared = self
 
         let window = UIWindow(frame: UIScreen.main.bounds)
-
-        window.rootViewController = TabBarController()
+        self.tabBarController = TabBarController()
+        window.rootViewController = self.tabBarController
         window.backgroundColor = .white
         window.tintColor = .tint
         window.makeKeyAndVisible()
@@ -65,6 +67,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        DispatchQueue.main.async {
+            let threadIdentifier = response.notification.request.content.threadIdentifier
+            let animated = true
+
+            // get tab controller
+            if self.tabBarController.presentedViewController != nil {
+                self.tabBarController.dismiss(animated: animated)
+            }
+
+            self.tabBarController.chatsNavigationController.openChat(with: threadIdentifier, animated: animated)
+            self.tabBarController.switch(to: .chats)
+        }
+
         completionHandler()
     }
 

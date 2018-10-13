@@ -63,15 +63,23 @@ class ChatsViewController: UIViewController {
         scannerController.delegate = self
         self.navigationController?.pushViewController(scannerController, animated: true)
     }
+
+    func openChat(_ chat: SignalChat, animated: Bool) {
+        let destination = MessagesViewController(chat: chat)
+        self.navigationController?.pushViewController(destination, animated: animated)
+    }
+
+    func openChat(with identifier: String, animated: Bool) {
+        if let chat = self.chatsDataSource.chats.first(where: { s in s.uniqueId == identifier }) {
+            self.openChat(chat, animated: animated)
+        }
+    }
 }
 
 extension ChatsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let chat = self.chatsDataSource.chats[indexPath.row]
-
-        let destination = MessagesViewController(chat: chat)
-
-        self.navigationController?.pushViewController(destination, animated: true)
+        self.openChat(chat, animated: true)
     }
 
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {

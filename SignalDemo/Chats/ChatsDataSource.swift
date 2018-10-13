@@ -43,13 +43,13 @@ class ChatsDataSource: NSObject {
     func createChat(with id: String) -> SignalChat {
         let chat = self.quetzalcoatl.store.fetchOrCreateChat(with: id)
 
-        if chat.messages.isEmpty {
-            if chat.isGroupChat {
-                self.quetzalcoatl.sendGroupMessage("", type: .deliver, to: chat.recipients)
-            } else {
-                self.quetzalcoatl.sendMessage("", to: chat.recipients.first!, in: chat)
-            }
-        }
+//        if chat.messages.isEmpty {
+//            if chat.isGroupChat {
+//                self.quetzalcoatl.sendGroupMessage("", type: .deliver, to: chat.recipients)
+//            } else {
+//                self.quetzalcoatl.sendMessage("", to: chat.recipients.first!, in: chat)
+//            }
+//        }
 
         return chat
     }

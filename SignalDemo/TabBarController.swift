@@ -10,6 +10,11 @@ import UIKit
 private let TabBarItemTitleOffset: CGFloat = -3.0
 
 class TabBarController: UITabBarController {
+    enum Tab: Int {
+        case chats
+        case settings
+    }
+
     lazy var chatsNavigationController: ChatsNavigationController = {
         return ChatsNavigationController(rootViewController: ChatsViewController())
     }()
@@ -28,5 +33,9 @@ class TabBarController: UITabBarController {
         self.chatsNavigationController.tabBarItem.titlePositionAdjustment.vertical = TabBarItemTitleOffset
 
         self.viewControllers = [self.chatsNavigationController, self.settingsNavController]
+    }
+
+    func `switch`(to tab: Tab) {
+        self.selectedIndex = tab.rawValue
     }
 }
