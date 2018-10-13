@@ -9,38 +9,57 @@
 import Quetzalcoatl
 import AwesomeCache
 
-class ContactManager: SignalRecipientsDisplayDelegate {
-    static let shared = ContactManager()
+class ContactManager {
     static let displayNameDidUpdateNotification = Notification.Name("AvatarManager.displayNameDidUpdateNotification")
-    private let cache = try! Cache<NSString>(name: "com.quetzalcoatl.DisplayNameCache")
-    private let idClient: IDAPIClient
-    
-    init() {
-        self.idClient = IDAPIClient()
+
+    private(set) var profiles: [Profile] = []
+
+    let persistenceStore: FilePersistenceStore
+
+    var profilesAvatarPaths: [String] {
+        return self.profiles.compactMap { $0.avatar }
     }
 
-    static func displayName(for address: String) -> String {
-        return self.shared.displayName(for: address)
+    var profilesIds: [String] {
+        return self.profiles.map { $0.id }
     }
 
-    static func image(for address: String) -> UIImage? {
-        return self.shared.image(for: address)
+    init(persistenceStore: FilePersistenceStore) {
+        self.persistenceStore = persistenceStore
+        self.fetchContactsFromDatabase()
     }
 
-    func displayName(for address: String) -> String {
-        self.idClient.findUserWithId(address) { profile in
-            guard let name = profile?.nameOrDisplayName else { return }
+    func profile(for id: String) -> Profile? {
+        return self.profiles.first(where: {  $0.id == id })
+    }
 
-            self.cache[address] = name as NSString
+    func updateProfile(_ profile: Profile) {
+        guard let existingProfileIndex = self.profiles.index(where: { $0.id == profile.id }) else {
+            self.profiles.append(profile)
 
-            NotificationCenter.default.post(name: ContactManager.displayNameDidUpdateNotification, object: address, userInfo: ["displayName" : name])
+            return
         }
 
-        return (self.cache[address] as String?) ?? address.truncated(limit: 6, leader: "")
+        self.profiles[existingProfileIndex] = profile
+    }
+
+    public func clearProfiles() {
+        self.profiles = []
+    }
+
+    func fetchContactsFromDatabase() {
+        self.profiles = self.persistenceStore.retrieveContacts()
+    }
+}
+
+extension ContactManager: SignalRecipientsDisplayDelegate {
+    func displayName(for address: String) -> String {
+        guard let profile = self.profiles.first(where: { $0.id == address }) else { return address.truncated(limit: 6, leader: "") }
+
+        return profile.nameOrDisplayName
     }
 
     func image(for address: String) -> UIImage? {
         return AvatarManager.cachedAvatar(for: address)
     }
 }
-

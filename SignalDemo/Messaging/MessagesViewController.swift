@@ -19,12 +19,8 @@ class MessagesViewController: UIViewController, MessageActionsDelegate {
 
     var shouldScrollToBottom = false
 
-    var messages: [SignalMessage] {
-        return self.chat.visibleMessages
-    }
-
     lazy var chatInputViewController: ChatInputViewController = {
-        let usernames = self.chat.recipients.map({ addr -> String in addr.name }).map({ name in ContactManager.displayName(for: name) })
+        let usernames = self.chat.recipients.map({ addr -> String in addr.name }).map({ name in SessionManager.shared.contactManager.displayName(for: name) })
 
         let chatInputVC = ChatInputViewController(usernames: usernames, delegate: self)
         chatInputVC.registerPrefixes(forAutoCompletion: ["@"])
@@ -161,10 +157,10 @@ class MessagesViewController: UIViewController, MessageActionsDelegate {
     }
 
     func scrollTableViewToBottom(animated: Bool) {
-        guard !self.messages.isEmpty else { return }
-
-        let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
-        self.tableView.scrollToRow(at: indexPath, at: .top, animated: animated)
+//        guard !self.messagesDataSource.isEmpty else { return }
+//
+//        let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
+//        self.tableView.scrollToRow(at: indexPath, at: .top, animated: animated)
     }
 
     private func didRequestRetryMessage(message: OutgoingSignalMessage, to recipients: [SignalAddress]) {

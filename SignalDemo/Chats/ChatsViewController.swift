@@ -95,10 +95,6 @@ extension ChatsViewController: UITableViewDelegate {
 
 extension ChatsViewController: ScannerViewControllerDelegate {
     func scannerViewController(_ controller: ScannerViewController, didScanResult result: String) {
-        defer {
-            self.navigationController?.popToViewController(self, animated: true)
-        }
-
         guard let url = URL(string: result),
             url.scheme == "quetzalcoatl",
             let id = url.host
@@ -107,7 +103,10 @@ extension ChatsViewController: ScannerViewControllerDelegate {
                 return
         }
 
-        _ = self.chatsDataSource.createChat(with: id)
+        self.navigationController?.popToViewController(self, animated: true)
+        let contactViewController = ContactViewController.controller(with: id)
+        self.navigationController?.pushViewController(contactViewController, animated: true)
+//        _ = self.chatsDataSource.createChat(with: id)
     }
 
     func scannerViewControllerDidCancel(_ controller: ScannerViewController) {

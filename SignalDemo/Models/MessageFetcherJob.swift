@@ -39,7 +39,7 @@ public  final class MessageFetcherJob: NSObject {
             guard let strongSelf = self else { return }
 
             for envelope in envelopes {
-                strongSelf.messageReceiver.decryptCiphertextEnvelope(envelope)
+                _ = strongSelf.messageReceiver.decryptCiphertextEnvelope(envelope)
                 strongSelf.acknowledgeDelivery(envelope: envelope)
             }
 

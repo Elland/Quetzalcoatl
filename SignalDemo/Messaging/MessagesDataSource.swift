@@ -25,8 +25,10 @@ class MessagesDataSource: NSObject {
 
     weak var messageActionsDelegate: MessageActionsDelegate?
 
+    private var _cachedMessages: [SignalMessage]
+
     private var messages: [SignalMessage] {
-        return self.chat.visibleMessages
+        return self._cachedMessages
     }
 
     private var chat: SignalChat
@@ -41,6 +43,8 @@ class MessagesDataSource: NSObject {
     init(tableView: UITableView, chat: SignalChat) {
         self.tableView = tableView
         self.chat = chat
+
+        self._cachedMessages = self.chat.visibleMessages
 
         super.init()
 
@@ -79,7 +83,7 @@ extension MessagesDataSource: UITableViewDataSource {
 
     func configuredStatusCell(_ cell: StatusCell, with message: InfoSignalMessage) -> StatusCell {
         let localizedFormat = NSLocalizedString(message.customMessage, comment: "")
-        let contact = ContactManager.displayName(for: message.senderId)
+        let contact = SessionManager.shared.contactManager.displayName(for: message.senderId)
         let string = String(format: localizedFormat, contact, message.additionalInfo)
 
         let attributed = NSMutableAttributedString(string: string)
@@ -96,7 +100,7 @@ extension MessagesDataSource: UITableViewDataSource {
 
         cell.isOutgoingMessage = message is OutgoingSignalMessage
         cell.messageBody = message.body // SofaMessage(content: message.body).body
-        cell.avatar = ContactManager.image(for: message.senderId)
+        cell.avatar = SessionManager.shared.contactManager.image(for: message.senderId)
 
         cell.messageState = (message as? OutgoingSignalMessage)?.messageState ?? .none
 
@@ -132,6 +136,8 @@ extension MessagesDataSource: SignalServiceStoreMessageDelegate {
     }
 
     func signalServiceStoreDidChangeMessages() {
+        // invalidate cache
+        self._cachedMessages = self.chat.visibleMessages
         self.tableView.endUpdates()
 
         if self.messageActionsDelegate?.shouldScrollToBottom ?? false  {

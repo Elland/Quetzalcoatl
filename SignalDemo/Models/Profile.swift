@@ -71,6 +71,14 @@ struct Profile: Codable {
         return false
     }
 
+    init(id: String, username: String, name: String, avatar: String, description: String) {
+        self.id = id
+        self.username = username
+        self.name = name
+        self.avatar = avatar
+        self.description = description
+    }
+
     init(password: String, privateKey: String, username: String? = nil, name: String? = nil, avatar: String? = nil, description: String? = nil) {
         let cereal = EtherealCereal(privateKey: privateKey)
 

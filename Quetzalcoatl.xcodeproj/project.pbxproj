@@ -36,6 +36,8 @@
 		9F27B9F12090C61F0032C7DD /* InfoSignalMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F27B9F02090C61F0032C7DD /* InfoSignalMessage.swift */; };
 		9F33523E20862B5500E0F145 /* QuetzalcoatlClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F33523D20862B5500E0F145 /* QuetzalcoatlClient.swift */; };
 		9F3BA4FF2171E89D00817674 /* MessageErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3BA4FE2171E89D00817674 /* MessageErrorView.swift */; };
+		9F3BA501217228F000817674 /* ContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3BA500217228F000817674 /* ContactViewController.swift */; };
+		9F3BA5032172292000817674 /* ContactViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9F3BA5022172292000817674 /* ContactViewController.storyboard */; };
 		9F5CF5C52163840400FAAFD4 /* String+Truncation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5CF5C42163840400FAAFD4 /* String+Truncation.swift */; };
 		9F5CF5C7216384D600FAAFD4 /* ChatsNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5CF5C6216384D600FAAFD4 /* ChatsNavigationController.swift */; };
 		9F5CF5C9216385F200FAAFD4 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5CF5C8216385F200FAAFD4 /* Theme.swift */; };
@@ -244,6 +246,8 @@
 		9F27B9F02090C61F0032C7DD /* InfoSignalMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoSignalMessage.swift; sourceTree = "<group>"; };
 		9F33523D20862B5500E0F145 /* QuetzalcoatlClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuetzalcoatlClient.swift; sourceTree = "<group>"; };
 		9F3BA4FE2171E89D00817674 /* MessageErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageErrorView.swift; sourceTree = "<group>"; };
+		9F3BA500217228F000817674 /* ContactViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactViewController.swift; sourceTree = "<group>"; };
+		9F3BA5022172292000817674 /* ContactViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ContactViewController.storyboard; sourceTree = "<group>"; };
 		9F5CF5C42163840400FAAFD4 /* String+Truncation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Truncation.swift"; sourceTree = "<group>"; };
 		9F5CF5C6216384D600FAAFD4 /* ChatsNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsNavigationController.swift; sourceTree = "<group>"; };
 		9F5CF5C8216385F200FAAFD4 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
@@ -623,6 +627,8 @@
 				9F89636F21661D1700CC639A /* TabBarController.swift */,
 				9F73B80A216F5D89002CF67E /* ConnectionStatusViewController.swift */,
 				9FE84C57216DE3D000B5522B /* ContactScannerViewController.swift */,
+				9F3BA500217228F000817674 /* ContactViewController.swift */,
+				9F3BA5022172292000817674 /* ContactViewController.storyboard */,
 				9FB2D61B216CD370008EE350 /* Chats */,
 				9FB2D61D216CD392008EE350 /* Messaging */,
 				9FB2D61A216CD35C008EE350 /* Settings */,
@@ -981,6 +987,7 @@
 				9F1F13E22170CCF600477BA1 /* addContactApp.m4a in Resources */,
 				9FE925EA208A08F8008ABCE4 /* Assets.xcassets in Resources */,
 				9FCDD50820A1E21A006835DC /* Localizable.strings in Resources */,
+				9F3BA5032172292000817674 /* ContactViewController.storyboard in Resources */,
 				9F1F13E42170CCF600477BA1 /* messageSent.m4a in Resources */,
 				9F1F13E32170CCF600477BA1 /* PN.m4a in Resources */,
 			);
@@ -1077,6 +1084,7 @@
 				9F5CF5C7216384D600FAAFD4 /* ChatsNavigationController.swift in Sources */,
 				9F3BA4FF2171E89D00817674 /* MessageErrorView.swift in Sources */,
 				9F73B80B216F5D89002CF67E /* ConnectionStatusViewController.swift in Sources */,
+				9F3BA501217228F000817674 /* ContactViewController.swift in Sources */,
 				9FE925FA208A09B1008ABCE4 /* SofaMessage.swift in Sources */,
 				9FA5FDA421623A410046F0A7 /* SLKTextView+SLKAdditions.m in Sources */,
 				9FB2D621216CD93B008EE350 /* Blockies.swift in Sources */,

@@ -200,6 +200,9 @@ struct UserKeys {
     static let nameField = Expression<String?>("name")
     static let avatarField = Expression<String?>("avatar")
     static let descriptionField = Expression<String?>("description")
+
+    // for contacts only
+    static let addressField = Expression<String>("address")
 }
 
 class FilePersistenceStore {
@@ -210,6 +213,7 @@ class FilePersistenceStore {
     let attachmentsTable = Table("attachments")
     let recipientsTable = Table("recipients")
     let senderTable = Table("sender")
+    let contactsTable = Table("contacts")
     let userTable = Table("user")
     let signalLibraryTable = Table("signal_library")
 
@@ -257,6 +261,7 @@ class FilePersistenceStore {
             t.column(SignalMessageKeys.attachmentIdsField)
         })
 
+        // attachments
         _ = try? self.dbConnection.run(self.attachmentsTable.create { t in
             t.column(SignalAttachmentKeys.uniqueIdField, primaryKey: true)
             t.column(SignalAttachmentKeys.keyField)
@@ -301,6 +306,17 @@ class FilePersistenceStore {
             t.column(UserKeys.descriptionField)
 
             t.unique([UserKeys.privateKeyField, UserKeys.usernameField])
+        })
+
+        // create contacts table
+        _ = try? self.dbConnection.run(self.contactsTable.create  { t in
+            t.column(UserKeys.addressField)
+            t.column(UserKeys.usernameField)
+            t.column(UserKeys.nameField)
+            t.column(UserKeys.avatarField)
+            t.column(UserKeys.descriptionField)
+
+            t.unique([UserKeys.addressField, UserKeys.usernameField])
         })
 
         NSLog("Did finish database setup.")
@@ -348,6 +364,39 @@ class FilePersistenceStore {
         let description = try! userRow.get(UserKeys.descriptionField)
 
         return Profile(password: password, privateKey: privateKey, username: username, name: name, avatar: avatar, description: description)
+    }
+
+    func storeContact(_ contact: Profile) {
+        let insert: Insert = self.buildContactOperation(contact)
+        self.insert(insert)
+    }
+
+    func updateContact(_ contact: Profile) {
+        let update: Update = self.buildContactOperation(contact)
+        self.update(update)
+    }
+
+    public func retrieveContacts() -> [Profile] {
+        var contacts = [Profile]()
+        let query = self.buildQuery(for: self.contactsTable)
+
+        do {
+            for contactRow in try self.dbConnection.prepare(query) {
+                let address = try contactRow.get(UserKeys.addressField)
+                let username = try contactRow.get(UserKeys.usernameField)
+                let name = try contactRow.get(UserKeys.nameField) ?? ""
+                let avatar = try contactRow.get(UserKeys.avatarField) ?? ""
+                let description = try contactRow.get(UserKeys.descriptionField) ?? ""
+
+                let contact = Profile(id: address, username: username, name: name, avatar: avatar, description: description)
+
+                contacts.append(contact)
+            }
+        } catch {
+            fatalError()
+        }
+
+        return contacts
     }
 
     private func insert(_ insert: Insert) {
@@ -422,6 +471,24 @@ class FilePersistenceStore {
             return self.attachmentsTable.insert(values) as! T
         } else if T.self is Update.Type {
             return self.attachmentsTable.filter(SignalAttachmentKeys.uniqueIdField == attachment.uniqueId).update(values) as! T
+        } else {
+            fatalError()
+        }
+    }
+
+    private func buildContactOperation<T: Expressible>(_ contact: Profile) -> T {
+        let values = [
+            UserKeys.addressField <- contact.id,
+            UserKeys.usernameField <- contact.username,
+            UserKeys.nameField <- contact.name,
+            UserKeys.avatarField <- contact.avatar,
+            UserKeys.descriptionField <- contact.description
+        ]
+
+        if T.self is Insert.Type {
+            return self.contactsTable.insert(values) as! T
+        } else if T.self is Update.Type {
+            return self.contactsTable.filter(UserKeys.addressField == contact.id).update(values) as! T
         } else {
             fatalError()
         }

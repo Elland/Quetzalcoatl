@@ -42,9 +42,9 @@ class ChatsDataSource: NSObject {
         NotificationCenter.default.addObserver(forName: AvatarManager.avatarDidUpdateNotification, object: nil, queue: .main) { notif in
             self.tableView.reloadData()
         }
-        NotificationCenter.default.addObserver(forName: ContactManager.displayNameDidUpdateNotification, object: nil, queue: .main) { notif in
-            self.tableView.reloadData()
-        }
+//        NotificationCenter.default.addObserver(forName: ContactManager.displayNameDidUpdateNotification, object: nil, queue: .main) { notif in
+//            self.tableView.reloadData()
+//        }
     }
 
     func createChat(with id: String) -> SignalChat {

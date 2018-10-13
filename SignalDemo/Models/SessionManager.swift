@@ -26,7 +26,9 @@ class SessionManager {
 
     var persistenceStore = FilePersistenceStore()
 
-    var signalRecipientsDelegate: SignalRecipientsDisplayDelegate = ContactManager.shared
+    lazy var contactManager: ContactManager = {
+        return ContactManager(persistenceStore: self.persistenceStore)
+    }()
 
     var chatDelegate: SignalServiceStoreChatDelegate? {
         didSet {
@@ -47,7 +49,7 @@ class SessionManager {
     let teapot = Teapot(baseURL: URL(string: "https://quetzalcoatl-chat-service.herokuapp.com")!)
 
     lazy var quetzalcoatl: Quetzalcoatl = {
-        return Quetzalcoatl(baseURL: self.teapot.baseURL, recipientsDelegate: self.signalRecipientsDelegate, persistenceStore: self.persistenceStore)
+        return Quetzalcoatl(baseURL: self.teapot.baseURL, recipientsDelegate: self.contactManager, persistenceStore: self.persistenceStore)
     }()
 
     init() {
