@@ -35,6 +35,7 @@
 		9F27B9EF2090B40C0032C7DD /* SignalLibraryStoreProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F27B9EE2090B40C0032C7DD /* SignalLibraryStoreProtocol.swift */; };
 		9F27B9F12090C61F0032C7DD /* InfoSignalMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F27B9F02090C61F0032C7DD /* InfoSignalMessage.swift */; };
 		9F33523E20862B5500E0F145 /* QuetzalcoatlClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F33523D20862B5500E0F145 /* QuetzalcoatlClient.swift */; };
+		9F3BA4FF2171E89D00817674 /* MessageErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3BA4FE2171E89D00817674 /* MessageErrorView.swift */; };
 		9F5CF5C52163840400FAAFD4 /* String+Truncation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5CF5C42163840400FAAFD4 /* String+Truncation.swift */; };
 		9F5CF5C7216384D600FAAFD4 /* ChatsNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5CF5C6216384D600FAAFD4 /* ChatsNavigationController.swift */; };
 		9F5CF5C9216385F200FAAFD4 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5CF5C8216385F200FAAFD4 /* Theme.swift */; };
@@ -242,6 +243,7 @@
 		9F27B9EE2090B40C0032C7DD /* SignalLibraryStoreProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalLibraryStoreProtocol.swift; sourceTree = "<group>"; };
 		9F27B9F02090C61F0032C7DD /* InfoSignalMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoSignalMessage.swift; sourceTree = "<group>"; };
 		9F33523D20862B5500E0F145 /* QuetzalcoatlClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuetzalcoatlClient.swift; sourceTree = "<group>"; };
+		9F3BA4FE2171E89D00817674 /* MessageErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageErrorView.swift; sourceTree = "<group>"; };
 		9F5CF5C42163840400FAAFD4 /* String+Truncation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Truncation.swift"; sourceTree = "<group>"; };
 		9F5CF5C6216384D600FAAFD4 /* ChatsNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsNavigationController.swift; sourceTree = "<group>"; };
 		9F5CF5C8216385F200FAAFD4 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
@@ -480,6 +482,7 @@
 			isa = PBXGroup;
 			children = (
 				9F0A19B120A09F7E0051B268 /* MessagesTextCell.swift */,
+				9F3BA4FE2171E89D00817674 /* MessageErrorView.swift */,
 				9F0A19B420A09F7E0051B268 /* StatusCell.swift */,
 			);
 			path = Cells;
@@ -1072,6 +1075,7 @@
 				9FA5FD7721621E3B0046F0A7 /* ChatCell.swift in Sources */,
 				9FE84C5F216E146F00B5522B /* ChatsDataSource.swift in Sources */,
 				9F5CF5C7216384D600FAAFD4 /* ChatsNavigationController.swift in Sources */,
+				9F3BA4FF2171E89D00817674 /* MessageErrorView.swift in Sources */,
 				9F73B80B216F5D89002CF67E /* ConnectionStatusViewController.swift in Sources */,
 				9FE925FA208A09B1008ABCE4 /* SofaMessage.swift in Sources */,
 				9FA5FDA421623A410046F0A7 /* SLKTextView+SLKAdditions.m in Sources */,

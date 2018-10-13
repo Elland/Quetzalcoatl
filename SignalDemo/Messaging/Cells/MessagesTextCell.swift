@@ -18,24 +18,10 @@ class MessagesTextCell: UITableViewCell {
             self.textView.textColor = self.isOutgoingMessage ? .defaultTextLight : .defaultTextDark
             self.textView.backgroundColor = self.bubbleView.backgroundColor
             self.avatarImageView.isHidden = self.isOutgoingMessage
-
-            // Now mess up with some constraints to get the desired left/right align
-            if self.isOutgoingMessage {
-                self.bubbleViewLeft.priority = .defaultLow
-                self.bubbleViewRight.priority = UILayoutPriority(999)
-            } else {
-                self.bubbleViewLeft.priority = UILayoutPriority(999)
-                self.bubbleViewRight.priority = .defaultLow
-            }
         }
     }
 
-    var messageState: OutgoingSignalMessage.MessageState = .none {
-        didSet {
-            self.errorViewWidthConstraint.constant = self.messageState == .unsent ? 24.0 : 0.0
-            self.errorView.alpha = self.messageState == .unsent ? 1.0 : 0.0
-        }
-    }
+    var messageState: OutgoingSignalMessage.MessageState = .none
 
     var avatar: UIImage? {
         didSet {
@@ -43,86 +29,26 @@ class MessagesTextCell: UITableViewCell {
         }
     }
 
-    var messageBody: String = "" {
-        didSet {
-            self.textView.text = self.messageBody
-
-            self.textViewHeight.isActive = self.messageBody.isEmpty
-            self.textViewTopMargin.constant = self.messageBody.isEmpty ? 0 : 8
-            self.textViewBottomMargin.constant = self.messageBody.isEmpty ? 0 : -8
+    var messageBody: String {
+        set {
+            self.textView.text = newValue
+        }
+        get {
+            return self.textView.text
         }
     }
 
     var messageImage: UIImage? {
-        didSet {
-            self.messageImageView.image = self.messageImage
-
-            self.imageViewHeight.isActive = false
-            self.imageViewAspectRatio.isActive = false
-
-            if let image = self.messageImage {
-                let aspectRatio: CGFloat = image.size.height / image.size.width
-                self.imageViewAspectRatio = self.messageImageView.heightAnchor.constraint(equalTo: self.messageImageView.widthAnchor, multiplier: aspectRatio)
-                self.imageViewAspectRatio.isActive = true
-
-                self.imageViewHeight = self.messageImageView.heightAnchor.constraint(lessThanOrEqualTo: self.bubbleView.widthAnchor, multiplier: 1.0)
-                self.imageViewHeight.isActive = true
-                self.messageImageWidth.isActive = true
-            } else {
-                self.imageViewAspectRatio.isActive = false
-                self.imageViewHeight = self.messageImageView.heightAnchor.constraint(equalToConstant: 0)
-                self.imageViewHeight.isActive = true
-                self.messageImageWidth.isActive = false
-            }
+        set {
+            self.messageImageView.image = newValue
+        }
+        get {
+            return self.messageImageView.image
         }
     }
 
-    private lazy var errorViewWidthConstraint: NSLayoutConstraint = {
-        return self.errorView.widthAnchor.constraint(equalToConstant: 24)
-    }()
-
-    private lazy var textViewBottomMargin: NSLayoutConstraint = {
-        return self.textView.bottomAnchor.constraint(equalTo: self.bubbleView.bottomAnchor, constant: -8)
-    }()
-
-    private lazy var textViewTopMargin: NSLayoutConstraint = {
-        return self.textView.topAnchor.constraint(equalTo: self.messageImageView.bottomAnchor, constant: 8)
-    }()
-
-    private lazy var imageViewAspectRatio: NSLayoutConstraint = {
-        return self.messageImageView.heightAnchor.constraint(equalTo: self.messageImageView.widthAnchor, multiplier: 1.0)
-    }()
-
-    private lazy var messageImageWidth: NSLayoutConstraint = {
-        return self.messageImageView.widthAnchor.constraint(equalTo: self.containerView.widthAnchor, multiplier: 0.75)
-    }()
-
-    private lazy var imageViewHeight: NSLayoutConstraint = {
-        return self.messageImageView.heightAnchor.constraint(lessThanOrEqualTo: self.bubbleView.widthAnchor, multiplier: 1.0)
-    }()
-
-    private lazy var textViewHeight: NSLayoutConstraint = {
-        return self.textView.heightAnchor.constraint(equalToConstant: 0)
-    }()
-
-    private lazy var bubbleViewLeft: NSLayoutConstraint = {
-        let c = self.bubbleView.leftAnchor.constraint(equalTo: self.avatarImageView.rightAnchor, constant: 8)
-        c.priority = UILayoutPriority(999)
-
-        return c
-    }()
-
-    private lazy var bubbleViewRight: NSLayoutConstraint = {
-        let c = self.bubbleView.rightAnchor.constraint(equalTo: self.containerView.rightAnchor, constant: -8)
-        c.priority = UILayoutPriority(999)
-
-        return c
-    }()
-
     private lazy var messageImageView: UIImageView = {
-        let view = UIImageView(withAutoLayout: true)
-
-        return view
+        return UIImageView(withAutoLayout: false)
     }()
 
     private lazy var errorLabel: UILabel = {
@@ -142,7 +68,7 @@ class MessagesTextCell: UITableViewCell {
         let attributedString = NSMutableAttributedString(string: "Localized.messages_sent_error", attributes: attributes)
         attributedString.addAttributes(boldAttributes, range: NSRange(location: 0, length: 13))
 
-        let view = UILabel(withAutoLayout: true)
+        let view = UILabel(withAutoLayout: false)
         view.alpha = 0
         view.attributedText = attributedString
         view.adjustsFontForContentSizeCategory = true
@@ -152,7 +78,7 @@ class MessagesTextCell: UITableViewCell {
     }()
 
     private lazy var textView: UITextView = {
-        let view = UITextView(withAutoLayout: true)
+        let view = UITextView(withAutoLayout: false)
         view.font = .systemFont(ofSize: 15)
         view.adjustsFontForContentSizeCategory = true
         view.dataDetectorTypes = [.link]
@@ -168,15 +94,15 @@ class MessagesTextCell: UITableViewCell {
         view.linkTextAttributes = [NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single]
         view.tintColor = .white
 
-        view.setContentHuggingPriority(UILayoutPriority(999), for: .vertical)
-        view.setContentHuggingPriority(UILayoutPriority(999), for: .horizontal)
-        view.setContentCompressionResistancePriority(.fittingSizeLevel, for: .horizontal)
+//        view.setContentHuggingPriority(UILayoutPriority(999), for: .vertical)
+//        view.setContentHuggingPriority(UILayoutPriority(999), for: .horizontal)
+//        view.setContentCompressionResistancePriority(.fittingSizeLevel, for: .horizontal)
 
         return view
     }()
 
     private lazy var bubbleView: UIView = {
-        let view = UIView(withAutoLayout: true)
+        let view = UIView(withAutoLayout: false)
         view.layer.cornerRadius = 8
         view.clipsToBounds = true
 
@@ -186,14 +112,8 @@ class MessagesTextCell: UITableViewCell {
         return view
     }()
 
-    private lazy var containerView: UIView = {
-        let view = UIView(withAutoLayout: true)
-
-        return view
-    }()
-
     private lazy var avatarImageView: UIImageView = {
-        let view = UIImageView(withAutoLayout: true)
+        let view = UIImageView(withAutoLayout: false)
         view.contentMode = .scaleAspectFill
         view.clipsToBounds = true
         view.layer.cornerRadius = 22
@@ -205,7 +125,7 @@ class MessagesTextCell: UITableViewCell {
     }()
 
     private lazy var errorView: MessagesErrorView = {
-        let view = MessagesErrorView(withAutoLayout: true)
+        let view = MessagesErrorView(withAutoLayout: false)
         view.addTarget(self, action: #selector(self.didTapErrorView), for: .touchUpInside)
 
         return view
@@ -218,47 +138,12 @@ class MessagesTextCell: UITableViewCell {
         self.selectionStyle = .none
         self.contentView.autoresizingMask = [.flexibleHeight]
 
-        self.contentView.addSubview(self.containerView)
-        self.containerView.addSubview(self.bubbleView)
-        self.containerView.addSubview(self.avatarImageView)
-        self.containerView.addSubview(self.errorView)
+        self.contentView.addSubview(self.bubbleView)
+        self.contentView.addSubview(self.avatarImageView)
+        self.contentView.addSubview(self.errorView)
 
         self.bubbleView.addSubview(self.messageImageView)
         self.bubbleView.addSubview(self.textView)
-
-        self.avatarImageView.set(height: 44)
-        self.avatarImageView.set(width: 44)
-
-        self.containerView.leftToSuperview()
-        self.containerView.topToSuperview()
-        self.containerView.bottomToSuperview()
-        self.containerView.rightToSuperview()
-
-        self.avatarImageView.topAnchor.constraint(greaterThanOrEqualTo: self.containerView.topAnchor, constant: 8).isActive = true
-        self.avatarImageView.bottomAnchor.constraint(equalTo: self.containerView.bottomAnchor, constant: -8).isActive = true
-        self.avatarImageView.leftAnchor.constraint(equalTo: self.containerView.leftAnchor, constant: 8).isActive = true
-
-        self.errorView.set(height: 24)
-        self.errorViewWidthConstraint.isActive = true
-        self.errorView.rightAnchor.constraint(equalTo: self.containerView.rightAnchor, constant: -8).isActive = true
-        self.errorView.bottomAnchor.constraint(equalTo: self.containerView.bottomAnchor, constant: -12).isActive = true
-
-        self.bubbleViewLeft.isActive = true
-        self.bubbleViewRight.isActive = true
-        self.bubbleView.topAnchor.constraint(greaterThanOrEqualTo: self.containerView.topAnchor, constant: 8).isActive = true
-        self.bubbleView.bottomAnchor.constraint(equalTo: self.containerView.bottomAnchor, constant: -8).isActive = true
-
-        self.messageImageView.topAnchor.constraint(equalTo: self.bubbleView.topAnchor, constant: 0).isActive = true
-        self.messageImageWidth.isActive = true
-
-        var constraints = NSLayoutConstraint.constraints(withVisualFormat: "|[image]|", options: [], metrics: [:], views: ["image" : self.messageImageView])
-        constraints.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-[text]-|", options: [], metrics: [:], views: ["text": self.textView]))
-        constraints.append(contentsOf: [self.textViewHeight, self.imageViewAspectRatio, self.imageViewHeight, self.textViewBottomMargin, self.textViewTopMargin])
-
-        NSLayoutConstraint.activate(constraints)
-
-        self.textViewHeight.constant = 0
-        self.textView.textContainerInset = .zero
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -268,29 +153,39 @@ class MessagesTextCell: UITableViewCell {
     @objc private func didTapErrorView() {
         self.delegate?.didTapErrorView(for: self)
     }
-}
 
-final class MessagesErrorView: UIControl {
-    private lazy var imageView: UIImageView = {
-        let view = UIImageView(withAutoLayout: true)
-        view.image = UIImage(named: "error")!
-        view.contentMode = .scaleAspectFit
+    override func layoutSubviews() {
+        super.layoutSubviews()
+//        let aspectRatio: CGFloat = image.size.height / image.size.width
 
-        return view
-    }()
+        let margin: CGFloat = 8
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+        self.avatarImageView.isHidden = self.isOutgoingMessage
+        self.avatarImageView.frame = CGRect(x: margin, y: 0, width: 44, height: 44)
 
-        self.addSubview(self.imageView)
+        if self.messageState == .unsent {
+            self.errorView.frame = CGRect(x: UIScreen.main.bounds.width - 30, y: 0, width: 30, height: 30)
+        } else {
+            self.errorView.frame = .zero
+        }
 
-        self.imageView.set(height: 24)
-        self.imageView.set(width: 24)
-        self.imageView.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: 0).isActive = true
-        self.imageView.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 0).isActive = true
-    }
+        /* |-[avatar]-[bubbled-left]-[text]-[bubbled-right]-[error]-| */
+        let origin = self.avatarImageView.bounds.width + (margin * 3)
+        let width = (UIScreen.main.bounds.width - (margin * 2)) - origin - self.errorView.bounds.width
+        let maxSize = CGSize(width: width, height: .greatestFiniteMagnitude)
+        let boundingTextRect = self.textView.attributedText.boundingRect(with: maxSize, options: [.usesLineFragmentOrigin], context: nil).integral
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        self.textView.frame = CGRect(origin: CGPoint(x: margin, y: margin), size: boundingTextRect.size)
+
+        self.bubbleView.bounds = self.textView.frame.inset(by: UIEdgeInsets(top: -margin, left: -margin, bottom: -margin, right: -margin))
+
+        let cellHeight = ceil(max(self.bubbleView.bounds.height, self.avatarImageView.bounds.height) + (margin * 2))
+        let cellWidth = ceil(self.superview?.bounds.width ?? UIScreen.main.bounds.width)
+
+        let bubbleOrigin = self.isOutgoingMessage ? cellWidth - self.bubbleView.bounds.width - margin - self.errorView.bounds.width : origin
+        self.bubbleView.frame.origin = CGPoint(x: bubbleOrigin, y: 0)
+
+        self.contentView.frame = CGRect(x: 0, y: 0, width: cellWidth, height: cellHeight)
+        self.bounds = self.contentView.bounds
     }
 }

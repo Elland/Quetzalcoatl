@@ -131,10 +131,11 @@ final class IDAPIClient {
         }
     }
 
-    func findUserWithId(_ id: String, completion: @escaping (_ profile: Profile) -> Void) {
+    func findUserWithId(_ id: String, completion: @escaping (_ profile: Profile?) -> Void) {
         self.fetchTimestamp { timestamp in
             self.teapot.get("/v2/user/\(id)", headerFields: ["Token-Timestamp": timestamp]) { (result: NetworkResult) in
-                var profile: Profile
+
+                var profile: Profile? = nil
 
                 defer {
                     completion(profile)
@@ -148,8 +149,10 @@ final class IDAPIClient {
 
                     let decoder = JSONDecoder()
                     profile = try! decoder.decode(Profile.self, from: data)
+
+                    completion(profile)
                 case .failure(_, _, let error):
-                    fatalError(error.localizedDescription)
+                    NSLog("%@", error.localizedDescription)
                 }
             }
         }

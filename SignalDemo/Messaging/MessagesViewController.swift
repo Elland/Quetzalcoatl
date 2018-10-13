@@ -70,6 +70,15 @@ class MessagesViewController: UIViewController, MessageActionsDelegate {
 
             self.avatarImageView.image = image
         }
+
+        NotificationCenter.default.addObserver(forName: ContactManager.displayNameDidUpdateNotification, object: nil, queue: .main) { notif in
+            guard let id = notif.object as? String,
+                self.chat.recipients.map({$0.name}).contains(id),
+                let name = notif.userInfo?["displayName"] as? String
+                else { return }
+
+            self.title = name
+        }
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -177,6 +186,25 @@ class MessagesViewController: UIViewController, MessageActionsDelegate {
 }
 
 extension MessagesViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let message = self.messagesDataSource.message(at: indexPath)
+
+        let cell: UITableViewCell
+        if let message = message as? InfoSignalMessage {
+            cell = self.messagesDataSource.configuredStatusCell(StatusCell(), with: message)
+        } else {
+            cell = self.messagesDataSource.configuredTextCell(MessagesTextCell(), with: message)
+        }
+
+        cell.layoutIfNeeded()
+
+        return cell.bounds.height
+    }
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let message = self.messagesDataSource.message(at: indexPath)
 

@@ -58,55 +58,56 @@ extension MessagesDataSource: UITableViewDataSource {
         return self.messages.count
     }
 
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = self.configuredCell(for: indexPath)
-        cell.layoutIfNeeded()
 
         return cell
     }
 
-    private func configuredCell(for indexPath: IndexPath) -> UITableViewCell {
+    func configuredCell(for indexPath: IndexPath) -> UITableViewCell {
         let message = self.message(at: indexPath)
 
         if let message = message as? InfoSignalMessage {
             let cell = self.tableView.dequeue(StatusCell.self, for: indexPath)
 
-            let localizedFormat = NSLocalizedString(message.customMessage, comment: "")
-            let contact = ContactManager.displayName(for: message.senderId)
-            let string = String(format: localizedFormat, contact, message.additionalInfo)
-
-            let attributed = NSMutableAttributedString(string: string)
-            attributed.addAttribute(.font, value: UIFont.boldSystemFont(ofSize: 17), range: (string as NSString).range(of: contact))
-            attributed.addAttribute(.font, value: UIFont.boldSystemFont(ofSize: 17), range: (string as NSString).range(of: message.additionalInfo))
-
-            cell.textLabel?.attributedText = attributed
-
-            return cell
+            return self.configuredStatusCell(cell, with: message)
         } else {
             let cell = self.tableView.dequeue(MessagesTextCell.self, for: indexPath)
-            cell.indexPath = indexPath
-
-            cell.delegate = self.messageActionsDelegate
-
-            cell.isOutgoingMessage = message is OutgoingSignalMessage
-            cell.messageBody = message.body // SofaMessage(content: message.body).body
-            cell.avatar = ContactManager.image(for: message.senderId)
-
-            cell.messageState = (message as? OutgoingSignalMessage)?.messageState ?? .none
-            //            cell.dateStrng = self.dateFormatter.string(from: Date(milisecondTimeIntervalSinceEpoch: message.timestamp))
-
-            if let attachment = message.attachment, let image = UIImage(data: attachment) {
-                cell.messageImage = image
-            } else {
-                cell.messageImage = nil
-            }
-
-            return cell
+            return self.configuredTextCell(cell, with: message)
         }
+    }
+
+    func configuredStatusCell(_ cell: StatusCell, with message: InfoSignalMessage) -> StatusCell {
+        let localizedFormat = NSLocalizedString(message.customMessage, comment: "")
+        let contact = ContactManager.displayName(for: message.senderId)
+        let string = String(format: localizedFormat, contact, message.additionalInfo)
+
+        let attributed = NSMutableAttributedString(string: string)
+        attributed.addAttribute(.font, value: UIFont.boldSystemFont(ofSize: 17), range: (string as NSString).range(of: contact))
+        attributed.addAttribute(.font, value: UIFont.boldSystemFont(ofSize: 17), range: (string as NSString).range(of: message.additionalInfo))
+
+        cell.textLabel?.attributedText = attributed
+
+        return cell
+    }
+
+    func configuredTextCell(_ cell: MessagesTextCell, with message: SignalMessage) -> MessagesTextCell {
+        cell.delegate = self.messageActionsDelegate
+
+        cell.isOutgoingMessage = message is OutgoingSignalMessage
+        cell.messageBody = message.body // SofaMessage(content: message.body).body
+        cell.avatar = ContactManager.image(for: message.senderId)
+
+        cell.messageState = (message as? OutgoingSignalMessage)?.messageState ?? .none
+
+        if let attachment = message.attachment, let image = UIImage(data: attachment) {
+            cell.messageImage = image
+        } else {
+            cell.messageImage = nil
+        }
+
+        return cell
+
     }
 }
 

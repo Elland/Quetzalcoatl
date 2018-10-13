@@ -44,7 +44,9 @@ class AvatarManager {
 
     static func cachedAvatar(for id: String) -> UIImage? {
         self.shared.idClient.findUserWithId(id) { profile in
-            self.avatar(for: id, at: profile.avatar, { avatarImage in
+            guard let path = profile?.avatar else { return }
+
+            self.avatar(for: id, at: path, { avatarImage in
 
                 guard let avatarImage = avatarImage,
                     let cached = self.shared.cache[id],

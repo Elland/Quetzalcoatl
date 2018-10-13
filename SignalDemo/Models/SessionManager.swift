@@ -26,7 +26,7 @@ class SessionManager {
 
     var persistenceStore = FilePersistenceStore()
 
-    var signalRecipientsDelegate = SignalRecipientsDisplayManager()
+    var signalRecipientsDelegate: SignalRecipientsDisplayDelegate = ContactManager.shared
 
     var chatDelegate: SignalServiceStoreChatDelegate? {
         didSet {
@@ -170,14 +170,3 @@ extension SessionManager: SignalServiceStoreMessageDelegate {
 
     }
 }
-
-struct SignalRecipientsDisplayManager: SignalRecipientsDisplayDelegate {
-    func displayName(for address: String) -> String {
-        return ContactManager.displayName(for: address)
-    }
-
-    func image(for address: String) -> UIImage? {
-        return ContactManager.image(for: address)
-    }
-}
-

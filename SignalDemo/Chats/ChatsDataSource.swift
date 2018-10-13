@@ -38,20 +38,17 @@ class ChatsDataSource: NSObject {
         super.init()
 
         self.tableView.dataSource = self
+
+        NotificationCenter.default.addObserver(forName: AvatarManager.avatarDidUpdateNotification, object: nil, queue: .main) { notif in
+            self.tableView.reloadData()
+        }
+        NotificationCenter.default.addObserver(forName: ContactManager.displayNameDidUpdateNotification, object: nil, queue: .main) { notif in
+            self.tableView.reloadData()
+        }
     }
 
     func createChat(with id: String) -> SignalChat {
-        let chat = self.quetzalcoatl.store.fetchOrCreateChat(with: id)
-
-//        if chat.messages.isEmpty {
-//            if chat.isGroupChat {
-//                self.quetzalcoatl.sendGroupMessage("", type: .deliver, to: chat.recipients)
-//            } else {
-//                self.quetzalcoatl.sendMessage("", to: chat.recipients.first!, in: chat)
-//            }
-//        }
-
-        return chat
+        return self.quetzalcoatl.store.fetchOrCreateChat(with: id)
     }
 
     func deleteChat(_ chat: SignalChat) {
