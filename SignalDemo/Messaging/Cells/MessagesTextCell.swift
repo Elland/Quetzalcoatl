@@ -156,12 +156,11 @@ class MessagesTextCell: UITableViewCell {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-//        let aspectRatio: CGFloat = image.size.height / image.size.width
 
         let margin: CGFloat = 8
 
         self.avatarImageView.isHidden = self.isOutgoingMessage
-        self.avatarImageView.frame = CGRect(x: margin, y: 0, width: 44, height: 44)
+        self.avatarImageView.bounds = CGRect(x: margin, y: 0, width: 44, height: 44)
 
         if self.messageState == .unsent {
             self.errorView.frame = CGRect(x: UIScreen.main.bounds.width - 30, y: 0, width: 30, height: 30)
@@ -171,7 +170,7 @@ class MessagesTextCell: UITableViewCell {
 
         /* |-[avatar]-[bubbled-left]-[text]-[bubbled-right]-[error]-| */
         let origin = self.avatarImageView.bounds.width + (margin * 3)
-        let width = (UIScreen.main.bounds.width - (margin * 2)) - origin - self.errorView.bounds.width
+        let width = (UIScreen.main.bounds.width - margin) - origin - self.errorView.bounds.width
         let maxSize = CGSize(width: width, height: .greatestFiniteMagnitude)
         let boundingTextRect = self.textView.attributedText.boundingRect(with: maxSize, options: [.usesLineFragmentOrigin], context: nil).integral
 
@@ -182,8 +181,10 @@ class MessagesTextCell: UITableViewCell {
         let cellHeight = ceil(max(self.bubbleView.bounds.height, self.avatarImageView.bounds.height) + (margin * 2))
         let cellWidth = ceil(self.superview?.bounds.width ?? UIScreen.main.bounds.width)
 
+        self.avatarImageView.frame.origin = CGPoint(x: margin, y: cellHeight - (self.avatarImageView.bounds.height + margin))
+
         let bubbleOrigin = self.isOutgoingMessage ? cellWidth - self.bubbleView.bounds.width - margin - self.errorView.bounds.width : origin
-        self.bubbleView.frame.origin = CGPoint(x: bubbleOrigin, y: 0)
+        self.bubbleView.frame.origin = CGPoint(x: bubbleOrigin, y: cellHeight - (self.bubbleView.bounds.height + margin))
 
         self.contentView.frame = CGRect(x: 0, y: 0, width: cellWidth, height: cellHeight)
         self.bounds = self.contentView.bounds

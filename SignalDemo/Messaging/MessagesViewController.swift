@@ -110,9 +110,7 @@ class MessagesViewController: UIViewController, MessageActionsDelegate {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        self.chat.markAllAsRead()
         SessionManager.shared.currentChatId = self.chat.uniqueId
-
         self.scrollTableViewToBottom(animated: false)
     }
 
@@ -151,13 +149,17 @@ class MessagesViewController: UIViewController, MessageActionsDelegate {
         self.view.layoutIfNeeded()
 
         self.tableView.contentInset.bottom = self.chatInputViewController.textInputbar.frame.height
+        self.tableView.scrollIndicatorInsets = self.tableView.contentInset
     }
 
     func scrollTableViewToBottom(animated: Bool) {
-//        guard !self.messagesDataSource.isEmpty else { return }
-//
-//        let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
-//        self.tableView.scrollToRow(at: indexPath, at: .top, animated: animated)
+        guard !self.messagesDataSource.messages.isEmpty else { return }
+
+        let indexPath = IndexPath(row: self.messagesDataSource.messages.count - 1, section: 0)
+
+        UIView.performWithoutAnimation {
+            self.tableView.scrollToRow(at: indexPath, at: .top, animated: false)
+        }
     }
 
     private func didRequestRetryMessage(message: OutgoingSignalMessage, in chat: SignalChat) {
@@ -243,7 +245,7 @@ extension MessagesViewController: ChatInputViewControllerDelegate {
         } else {
             let diff = UIScreen.main.bounds.height - rect.origin.y
             self.tableView.contentInset.bottom = diff + self.chatInputViewController.textInputbar.frame.height
-            self.scrollTableViewToBottom(animated: true)
+            self.scrollTableViewToBottom(animated: false)
         }
 
         self.view.layoutIfNeeded()

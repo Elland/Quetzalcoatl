@@ -11,10 +11,9 @@ import UserNotifications
 
 class BackgroundNotificationHandler: NSObject {
     static func handle(_ notification: UNNotification, _ completion: @escaping ((_ options: UNNotificationPresentationOptions) -> Void)) {
-        NSLog("\(notification.request.content)")
         self.enqueueLocalNotification(body: notification.request.content.body, title: notification.request.content.title)
 
-        completion([]) //[.badge, .alert, .sound])
+        completion([.badge, .alert, .sound])
     }
 
     static func enqueueLocalNotification(body: String, title: String) {

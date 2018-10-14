@@ -94,4 +94,8 @@ extension ChatsViewController: UITableViewDelegate {
 
         return [deleteAction]
     }
+
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
 }

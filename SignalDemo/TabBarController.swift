@@ -58,6 +58,7 @@ class TabBarController: UITabBarController {
         self.tabBar.layer.borderColor = UIColor.gray.cgColor
         self.tabBar.layer.borderWidth = .lineHeight
         self.tabBar.clipsToBounds = true
+        self.switch(to: .chats)
     }
 
     func `switch`(to tab: Tab) {

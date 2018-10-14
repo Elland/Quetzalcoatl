@@ -27,7 +27,7 @@ class MessagesDataSource: NSObject {
 
     private var _cachedMessages: [SignalMessage]
 
-    private var messages: [SignalMessage] {
+    var messages: [SignalMessage] {
         return self._cachedMessages
     }
 
@@ -127,11 +127,11 @@ extension MessagesDataSource: SignalServiceStoreMessageDelegate {
 
         switch changeType {
         case .insert:
-            self.tableView.insertRows(at: [indexPath], with: .automatic)
+            self.tableView.insertRows(at: [indexPath], with: .none)
         case .delete:
-            self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            self.tableView.deleteRows(at: [indexPath], with: .none)
         case .update:
-            self.tableView.reloadRows(at: [indexPath], with: .automatic)
+            self.tableView.reloadRows(at: [indexPath], with: .none)
         }
     }
 
@@ -142,7 +142,7 @@ extension MessagesDataSource: SignalServiceStoreMessageDelegate {
 
         if self.messageActionsDelegate?.shouldScrollToBottom ?? false  {
             self.messageActionsDelegate?.shouldScrollToBottom = false
-            self.messageActionsDelegate?.scrollTableViewToBottom(animated: true)
+            self.messageActionsDelegate?.scrollTableViewToBottom(animated: false)
         }
     }
 }

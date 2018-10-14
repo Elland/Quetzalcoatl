@@ -8,6 +8,13 @@
 import UIKit
 
 class ChatTableView: UITableView {
+
+//    override var contentOffset: CGPoint {
+//        didSet {
+//            print("did set: \(self.contentOffset)")
+//        }
+//    }
+
     override init(frame: CGRect, style: UITableView.Style) {
         super.init(frame: frame, style: style)
 
@@ -16,8 +23,7 @@ class ChatTableView: UITableView {
         self.estimatedRowHeight = 64.0
         self.separatorStyle = .none
         self.keyboardDismissMode = .interactive
-        self.contentInsetAdjustmentBehavior = .always
-//        self.transform = self.transform.rotated(by: .pi)
+        self.contentInsetAdjustmentBehavior = .never
     }
 
     required init?(coder aDecoder: NSCoder) {
