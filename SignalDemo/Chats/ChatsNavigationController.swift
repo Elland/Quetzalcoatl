@@ -13,4 +13,12 @@ class ChatsNavigationController: ConnectionStatusDisplayingNavigationController 
         guard let chatsViewController = self.viewControllers.first as? ChatsViewController else { return }
         chatsViewController.openChat(with: identifier, animated: animated)
     }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+    }
 }

@@ -10,9 +10,12 @@ import Quetzalcoatl
 import AwesomeCache
 
 class ContactManager {
-    static let displayNameDidUpdateNotification = Notification.Name("AvatarManager.displayNameDidUpdateNotification")
+    static let displayNameDidUpdateNotification = Notification.Name("ContactManager.displayNameDidUpdateNotification")
+    static let didAddContactNotification = Notification.Name("ContactManager.didAddContactNotification")
 
     private(set) var profiles: [Profile] = []
+
+    private let idClient = IDAPIClient()
 
     let persistenceStore: FilePersistenceStore
 
@@ -54,9 +57,40 @@ class ContactManager {
 
 extension ContactManager: SignalRecipientsDisplayDelegate {
     func displayName(for address: String) -> String {
-        guard let profile = self.profiles.first(where: { $0.id == address }) else { return address.truncated(limit: 6, leader: "") }
+        if let current = Profile.current,  current.id == address  {
+            return current.nameOrDisplayName
+        }
 
-        return profile.nameOrDisplayName
+        if let profile = self.profiles.first(where: { $0.id == address }) {
+
+            self.idClient.findUserWithId(address) { newProfile in
+                guard let newProfile = newProfile, newProfile.name != profile.name else { return }
+                self.persistenceStore.updateContact(newProfile)
+                self.fetchContactsFromDatabase()
+
+                NSLog("Updated contact %@", newProfile.nameOrUsername)
+
+                NotificationCenter.default.post(name: ContactManager.displayNameDidUpdateNotification, object: newProfile)
+            }
+
+            return profile.nameOrDisplayName
+        } else {
+            self.idClient.findUserWithId(address) { newProfile in
+                guard let newProfile = newProfile else { return }
+                if self.persistenceStore.retrieveContacts().first(where: {$0.id == address}) != nil {
+                    self.persistenceStore.updateContact(newProfile)
+                } else {
+                    self.persistenceStore.storeContact(newProfile)
+                }
+                self.fetchContactsFromDatabase()
+
+                NSLog("Added contact %@", newProfile.nameOrUsername)
+
+                NotificationCenter.default.post(name: ContactManager.displayNameDidUpdateNotification, object: newProfile)
+            }
+
+            return address.truncated(limit: 6, leader: "")
+        }
     }
 
     func image(for address: String) -> UIImage? {

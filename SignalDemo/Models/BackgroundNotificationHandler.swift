@@ -14,7 +14,7 @@ class BackgroundNotificationHandler: NSObject {
         NSLog("\(notification.request.content)")
         self.enqueueLocalNotification(body: notification.request.content.body, title: notification.request.content.title)
 
-        completion([.badge, .alert, .sound])
+        completion([]) //[.badge, .alert, .sound])
     }
 
     static func enqueueLocalNotification(body: String, title: String) {

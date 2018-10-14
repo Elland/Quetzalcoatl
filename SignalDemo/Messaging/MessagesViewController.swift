@@ -68,12 +68,9 @@ class MessagesViewController: UIViewController, MessageActionsDelegate {
         }
 
         NotificationCenter.default.addObserver(forName: ContactManager.displayNameDidUpdateNotification, object: nil, queue: .main) { notif in
-            guard let id = notif.object as? String,
-                self.chat.recipients.map({$0.name}).contains(id),
-                let name = notif.userInfo?["displayName"] as? String
-                else { return }
+            guard let profile = notif.object as? Profile else { return }
 
-            self.title = name
+            self.title = profile.nameOrUsername
         }
     }
 
@@ -163,8 +160,8 @@ class MessagesViewController: UIViewController, MessageActionsDelegate {
 //        self.tableView.scrollToRow(at: indexPath, at: .top, animated: animated)
     }
 
-    private func didRequestRetryMessage(message: OutgoingSignalMessage, to recipients: [SignalAddress]) {
-        self.quetzalcoatl.retryMessage(message, to: recipients)
+    private func didRequestRetryMessage(message: OutgoingSignalMessage, in chat: SignalChat) {
+        self.quetzalcoatl.retryMessage(message, in: chat)
     }
 
     private func didRequestNewIdentity(for address: SignalAddress, deleting message: SignalMessage) {
@@ -174,7 +171,7 @@ class MessagesViewController: UIViewController, MessageActionsDelegate {
 
     private func didRequestSendMessage(text: String, in chat: SignalChat) {
         if chat.isGroupChat {
-            self.quetzalcoatl.sendGroupMessage(text, type: .deliver, to: chat.recipients)
+            self.quetzalcoatl.sendGroupMessage(text, type: .deliver, in: chat)
         } else {
             self.quetzalcoatl.sendMessage(text, to: chat.recipients.first!, in: chat)
         }
@@ -224,6 +221,7 @@ extension MessagesViewController: UITableViewDelegate {
             self.present(alert, animated: true)
         } else if message is ErrorSignalMessage {
             let result = self.quetzalcoatl.libraryStore.deleteAllDeviceSessions(for: message.senderId)
+            self.quetzalcoatl.deleteMessage(message)
             print(result)
         }
     }
@@ -259,6 +257,6 @@ extension MessagesViewController: ChatInputViewControllerDelegate {
 extension MessagesViewController: MessagesTextCellDelegate {
     func didTapErrorView(for cell: MessagesTextCell) {
         guard let message = self.messagesDataSource.message(at: cell.indexPath) as? OutgoingSignalMessage else { fatalError("Trying to send a non-outgoing message!") }
-        self.didRequestRetryMessage(message: message, to: self.chat.recipients)
+        self.didRequestRetryMessage(message: message, in: self.chat)
     }
 }

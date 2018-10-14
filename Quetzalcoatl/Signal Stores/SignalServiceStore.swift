@@ -190,7 +190,7 @@ public class SignalServiceStore {
     }
 
     func groupChat(recipientIdentifiers: [String]) -> SignalChat? {
-        return self.persistenceStore.retrieveChats(with: NSPredicate(format: "%K == %@", "recipientId", recipientIdentifiers.joined(separator: ",")), sortDescriptors: nil).first
+        return self.persistenceStore.retrieveChats(with: NSPredicate(format: "%K == %@", "recipientIds", recipientIdentifiers.joined(separator: ",")), sortDescriptors: nil).first
     }
 
     func groupChat(groupId: String) -> SignalChat? {

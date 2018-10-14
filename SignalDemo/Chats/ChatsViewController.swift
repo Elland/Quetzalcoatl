@@ -7,7 +7,6 @@
 
 import EtherealCereal
 import Quetzalcoatl
-import CameraScanner
 import Teapot
 import UIKit
 
@@ -41,6 +40,8 @@ class ChatsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.title = "Chats"
+        
         let createChatButton = UIBarButtonItem(title: "Create chat", style: .plain, target: self, action: #selector(self.didTapCreateChatButton(_:)))
         self.navigationItem.rightBarButtonItem = createChatButton
 
@@ -58,10 +59,12 @@ class ChatsViewController: UIViewController {
     }
 
     @IBAction func didTapCreateChatButton(_ sender: Any) {
-        let scannerController = ContactScannerViewController(instructions:  "", types: [.qrCode], startScanningAtLoad: true, showSwitchCameraButton: false, showTorchButton: false, alertIfUnavailable: true)
+        let contactsListViewController = ContactsListViewController(createChat: true)
+        contactsListViewController.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: contactsListViewController, action: #selector(contactsListViewController.resign))
 
-        scannerController.delegate = self
-        self.navigationController?.pushViewController(scannerController, animated: true)
+        let nav = UINavigationController(rootViewController: contactsListViewController)
+
+        self.present(nav, animated: true)
     }
 
     func openChat(_ chat: SignalChat, animated: Bool) {
@@ -90,26 +93,5 @@ extension ChatsViewController: UITableViewDelegate {
         }
 
         return [deleteAction]
-    }
-}
-
-extension ChatsViewController: ScannerViewControllerDelegate {
-    func scannerViewController(_ controller: ScannerViewController, didScanResult result: String) {
-        guard let url = URL(string: result),
-            url.scheme == "quetzalcoatl",
-            let id = url.host
-            else {
-                controller.startScanning()
-                return
-        }
-
-        self.navigationController?.popToViewController(self, animated: true)
-        let contactViewController = ContactViewController.controller(with: id)
-        self.navigationController?.pushViewController(contactViewController, animated: true)
-//        _ = self.chatsDataSource.createChat(with: id)
-    }
-
-    func scannerViewControllerDidCancel(_ controller: ScannerViewController) {
-        self.navigationController?.popViewController(animated: true)
     }
 }

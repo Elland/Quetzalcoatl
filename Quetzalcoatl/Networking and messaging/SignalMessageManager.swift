@@ -228,7 +228,7 @@ public class SignalMessageManager {
                 try self.store.save(newGroupChat)
                 
                 // create info message informing of update
-                let infoMessage = InfoSignalMessage(senderId: self.sender.username, chatId: newGroupChat.uniqueId, messageType: .groupUpdate, customMessage: updateInfo.customMessage, additionalInfo: updateInfo.additionalInfo, store: self.store)
+                let infoMessage = InfoSignalMessage(senderId: envelope.source, chatId: newGroupChat.uniqueId, messageType: .groupUpdate, customMessage: updateInfo.customMessage, additionalInfo: updateInfo.additionalInfo, store: self.store)
 
                 try self.store.save(infoMessage)
             } catch (let error) {
@@ -271,7 +271,6 @@ public class SignalMessageManager {
         }
     }
 
-    /// TODO: Fix group info requests. Should tell others about a group.
     private func handleGroupInfoRequest(envelope: Signalservice_Envelope, dataMessage: Signalservice_DataMessage, groupChat: SignalChat?) {
         guard let groupChat = groupChat else { return }
         /// Important: don't give info about a group if they don't belong to it.

@@ -96,6 +96,7 @@ class ChatCell: UITableViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
+        label.adjustsFontSizeToFitWidth = true
 
         return label
     }()

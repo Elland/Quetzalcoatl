@@ -60,10 +60,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         NSLog("Did receive notification %@", notification)
 
-        completionHandler([.badge, .alert, .sound])
-//        BackgroundNotificationHandler.handle(notification) { options in
-//            completionHandler(options)
-//        }
+//        completionHandler([.badge, .alert, .sound])
+        BackgroundNotificationHandler.handle(notification) { options in
+            completionHandler(options)
+        }
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {

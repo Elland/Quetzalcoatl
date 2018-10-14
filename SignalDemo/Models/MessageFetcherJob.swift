@@ -102,7 +102,7 @@ public  final class MessageFetcherJob: NSObject {
 
         self.teapot.get(path, headerFields: headerFields) { result in
             switch result {
-            case let .success(params, response):
+            case let .success(params, _):
                 guard let (envelopes, more) = self.parseMessagesResponse(params?.dictionary) else {
                     return completion([], false, nil)
                 }

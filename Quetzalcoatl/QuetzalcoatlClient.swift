@@ -159,16 +159,13 @@ public class Quetzalcoatl {
         RunLoop.main.add(self.keepAliveTimer, forMode: .default)
     }
 
-    public func sendGroupMessage(_ body: String, type: OutgoingSignalMessage.GroupMetaMessageType, to recipientAddresses: [SignalAddress], attachments: [Data] = []) {
+    public func sendGroupMessage(_ body: String = "", message: OutgoingSignalMessage? = nil, type: OutgoingSignalMessage.GroupMetaMessageType, in chat: SignalChat, attachments: [Data] = []) {
 
         guard let messageSender = self.messageManager else { fatalError() }
 
-        let names = recipientAddresses.map { (address) -> String in address.name }
-        let chat = self.store.fetchOrCreateChat(with: names)
-
         let recipients = chat.recipients.filter({ recipient -> Bool in recipient.name != messageSender.sender.username })
 
-        let message = OutgoingSignalMessage(recipientId: chat.uniqueId, senderId: messageSender.sender.username, chatId: chat.uniqueId, body: body, groupMessageType: type, store: self.store)
+        let message = message ?? OutgoingSignalMessage(recipientId: chat.uniqueId, senderId: messageSender.sender.username, chatId: chat.uniqueId, body: body, groupMessageType: type, store: self.store)
         try? self.store.save(message)
 
         let dispatchGroup = DispatchGroup()
@@ -197,15 +194,20 @@ public class Quetzalcoatl {
         let message = OutgoingSignalMessage(recipientId: recipient.name, senderId: senderId, chatId: chat.uniqueId, body: body, store: self.store)
         try! self.store.save(message)
 
-        self.dispatchMessage(message, attachments: attachments, to: recipient)
+        self.dispatchMessage(message, attachments: attachments, to: recipient, in: chat)
     }
 
-    public func retryMessage(_ message: OutgoingSignalMessage, to recipients: [SignalAddress]) {
+    public func retryMessage(_ message: OutgoingSignalMessage, in chat: SignalChat) {
         let attachments = [message.attachment].compactMap({$0})
 
-        for recipient in recipients {
-            self.dispatchMessage(message, attachments: attachments, to: recipient)
+        for recipient in chat.recipients {
+            self.dispatchMessage(message, attachments: attachments, to: recipient, in: chat)
         }
+    }
+
+    public func sendInitialGroupMessage(in chat: SignalChat) {
+        try? self.store.save(chat)
+        self.sendGroupMessage(type: .new, in: chat)
     }
 
     public func deleteMessage(_ message: SignalMessage) {
@@ -221,8 +223,7 @@ public class Quetzalcoatl {
         _ = self.libraryStore.saveRemoteIdentity(with: address, identityKey: nil)
     }
 
-    private func dispatchMessage(_ message: OutgoingSignalMessage, attachments: [Data], to recipient: SignalAddress) {
-        guard let chat = self.store.chat(chatId: message.chatId) else { fatalError("Could not retrieve chat for message") }
+    private func dispatchMessage(_ message: OutgoingSignalMessage, attachments: [Data], to recipient: SignalAddress, in chat: SignalChat) {
         let dispatchGroup = DispatchGroup()
 
         for attachment in attachments {

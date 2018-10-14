@@ -52,6 +52,8 @@ class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.title = "Settings"
+        
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(self.updateUser))
 
         self.setupView()
